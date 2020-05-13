@@ -8,7 +8,8 @@ class MyApp extends StatefulWidget {
     return _MyAppState();
   }
 }
-class _MyAppState extends State<MyApp>{
+
+class _MyAppState extends State<MyApp> {
   List<String> _products = ['assets/food.jpg'];
   @override
   Widget build(BuildContext context) {
@@ -24,23 +25,27 @@ class _MyAppState extends State<MyApp>{
               child: RaisedButton(
                 onPressed: () {
                   setState(() {
-                    _products.add('assets/food.jpg')
+                    _products.add('assets/food.jpg');
                   });
                 },
                 child: Text('Add Product'),
               ),
             ),
-
-
-            Column(children: _products.map((product) => Card(
-              child: Column(   children: <Widget>[
-                  Image.asset(product),
-                  Text('Food Paradise'),
-                ],
-                  ),),
-              ).toList(),,),
-
-
+            Column(
+              children: _products
+                  .map(
+                    (product) => Card(
+                      child: Column(
+                        children: <Widget>[
+                          Image.asset(product),
+                          Text('Food Paradise'),
+                        ],
+                      ),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ],
         ),
       ),
     );
