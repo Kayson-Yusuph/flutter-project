@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         appBar: AppBar(
           title: Text('EasyList'),
         ),
-        body: ProductManager(_startingProduct),
+        body: ProductManager(startingProduct: _startingProduct),
       ),
     );
   }
