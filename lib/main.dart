@@ -19,7 +19,7 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          brightness: nightMode ? Brightness.light : Brightness.dark,
+          brightness: !nightMode ? Brightness.light : Brightness.dark,
           primarySwatch: Colors.lightGreen,
           accentColor: Colors.deepPurple),
       home: Scaffold(
@@ -27,7 +27,7 @@ class _MyAppState extends State<MyApp> {
           title: Text('EasyList'),
           actions: [
             IconButton(
-              icon: Icon(!nightMode ? Icons.wb_sunny : Icons.filter_drama),
+              icon: Icon(nightMode ? Icons.wb_sunny : Icons.filter_drama),
               onPressed: () {
                 setState(() => nightMode = !nightMode);
               },
