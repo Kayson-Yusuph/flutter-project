@@ -34,7 +34,7 @@ class _MyAppState extends State<MyApp> {
             )
           ],
         ),
-        body: ProductManager(startingProduct: _startingProduct),
+        body: ProductManager(),
       ),
     );
   }
