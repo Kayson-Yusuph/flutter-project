@@ -6,9 +6,7 @@ class Products extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 610,
-        child: ListView(
+    return  ListView(
       children: products
           .map(
             (product) => Card(
@@ -21,6 +19,6 @@ class Products extends StatelessWidget {
             ),
           )
           .toList(),
-    ));
+    );
   }
 }
