@@ -12,7 +12,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  final String _startingProduct = 'Food Paradise';
+  // final String _startingProduct = 'Food Paradise';
   bool nightMode = false;
   IconData mode = Icons.wb_sunny;
   @override
