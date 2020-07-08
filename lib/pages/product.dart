@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ProductsDetailsPage extends StatelessWidget {
+  final String title;
+  final String imageUrl;
+
+  ProductsDetailsPage({this.title, this.imageUrl});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,9 +15,9 @@ class ProductsDetailsPage extends StatelessWidget {
       body: Center(
         child: Column(
           children: <Widget>[
-            Image.asset('assets/food.jpg'),
+            Image.asset(imageUrl),
             SizedBox(height: 10.0),
-            Text('Details'),
+            Text(title),
             SizedBox(height: 10.0),
             RaisedButton(
               color: Theme.of(context).primaryColor,
