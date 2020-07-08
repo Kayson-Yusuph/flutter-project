@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import './product_manager.dart';
+import './pages/home.dart';
 
 void main() => runApp(MyApp());
 
@@ -22,20 +22,14 @@ class _MyAppState extends State<MyApp> {
           brightness: !nightMode ? Brightness.light : Brightness.dark,
           primarySwatch: Colors.lightGreen,
           accentColor: Colors.deepPurple),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('EasyList'),
-          actions: [
-            IconButton(
-              icon: Icon(nightMode ? Icons.wb_sunny : Icons.filter_drama),
-              onPressed: () {
-                setState(() => nightMode = !nightMode);
-              },
-            )
-          ],
-        ),
-        body: ProductManager(),
+      home: HomePage(
+        setMode: setMode,
+        mode: nightMode
       ),
     );
+  }
+
+  setMode(mode) {
+    setState(() => nightMode = !nightMode);
   }
 }
