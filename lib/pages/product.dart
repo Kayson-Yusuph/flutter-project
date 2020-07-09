@@ -6,6 +6,34 @@ class ProductsDetailsPage extends StatelessWidget {
 
   ProductsDetailsPage({this.title, this.imageUrl});
 
+  _showDeleteWarning(BuildContext context) {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Delete confirmation'),
+          content: Text('This action can not undo, are you sure?'),
+          actions: [
+            RaisedButton(
+              child: Text('DISCARD'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+            RaisedButton(
+              color: Theme.of(context).accentColor,
+              child: Text('CONTINUE'),
+              onPressed: () {
+                Navigator.pop(context);
+                Navigator.pop(context, true);
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -25,9 +53,9 @@ class ProductsDetailsPage extends StatelessWidget {
               Text(title),
               SizedBox(height: 10.0),
               RaisedButton(
-                color: Theme.of(context).primaryColor,
+                color: Theme.of(context).accentColor,
                 child: Text('DELETE'),
-                onPressed: () => Navigator.pop(context, true),
+                onPressed: () => _showDeleteWarning(context),
               ),
             ],
           ),
