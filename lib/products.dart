@@ -27,7 +27,7 @@ class Products extends StatelessWidget {
                     ),
                   ),
                 ).then((value) {
-                  if(value != null && value) {
+                  if(value) {
                     deleteProduct(index);
                   }
                 }),
