@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_project/pages/products.dart';
 
 class AuthPage extends StatelessWidget {
   final bool mode;
@@ -14,13 +13,7 @@ class AuthPage extends StatelessWidget {
       body: Center(
         child: RaisedButton(
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (BuildContext context) =>
-                    ProductsPage(mode: mode, setMode: setMode),
-              ),
-            );
+            Navigator.pushReplacementNamed(context, '/');
           },
           child: Text('LOGIN'),
         ),
