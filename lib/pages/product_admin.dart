@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import './products.dart';
+import './product_create.dart';
+import './product_list.dart';
 
 class ProductAdminPage extends StatelessWidget {
   final bool mode;
@@ -41,7 +43,7 @@ class ProductAdminPage extends StatelessWidget {
             tabs: [
               Tab(
                 text: 'Create Product',
-                icon: Icon(Icons.edit),
+                icon: Icon(Icons.create),
               ),
               Tab(
                 text: 'Product List',
@@ -59,8 +61,11 @@ class ProductAdminPage extends StatelessWidget {
             ),
           ],
         ),
-        body: Center(
-          child: Text('No product to manage'),
+        body: TabBarView(
+          children: [
+            ProductCreatePage(),
+            ProductListPage()
+          ],
         ),
       ),
     );
