@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
         title: Text('EasyList'),
         actions: [
           IconButton(
-            icon: Icon(_nigthMode ? Icons.wb_sunny : Icons.filter_drama),
+            icon: Icon(Icons.wb_sunny),
             onPressed: () {
               _changeMode(_nigthMode);
             },

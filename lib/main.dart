@@ -23,8 +23,7 @@ class _MyAppState extends State<MyApp> {
           primarySwatch: Colors.lightGreen,
           accentColor: Colors.deepPurple),
       home: HomePage(
-        setMode: setMode,
-        mode: nightMode
+        setMode: setMode
       ),
     );
   }
