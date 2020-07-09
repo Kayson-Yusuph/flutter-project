@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 
 import '../product_manager.dart';
 
-class HomePage extends StatefulWidget {
+class ProductsPage extends StatefulWidget {
   final Function setMode;
   final bool mode;
 
-  HomePage({this.setMode, this.mode});
+  ProductsPage({this.setMode, this.mode});
   @override
-  State<StatefulWidget> createState() => _HomePageState();
+  State<StatefulWidget> createState() => _ProductsPage();
 }
 
-class _HomePageState extends State<HomePage> {
+class _ProductsPage extends State<ProductsPage> {
   bool _nigthMode;
   Function _changeMode;
   @override
