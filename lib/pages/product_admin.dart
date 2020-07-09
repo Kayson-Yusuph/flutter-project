@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import './products.dart';
 import './product_create.dart';
 import './product_list.dart';
 
@@ -54,10 +53,7 @@ class ProductAdminPage extends StatelessWidget {
           ],
         ),
         body: TabBarView(
-          children: [
-            ProductCreatePage(),
-            ProductListPage()
-          ],
+          children: [ProductCreatePage(), ProductListPage()],
         ),
       ),
     );

@@ -1,26 +1,21 @@
 import 'package:flutter/material.dart';
 
 import '../product_manager.dart';
-import './product_admin.dart';
 
-class ProductsPage extends StatefulWidget {
-  final Function setMode;
+class ProductsPage extends StatelessWidget {
   final bool mode;
+  final Function setMode;
+  final Function addProduct;
+  final Function deleteProduct;
+  final List<Map<String, String>> products;
 
-  ProductsPage({this.setMode, this.mode});
-  @override
-  State<StatefulWidget> createState() => _ProductsPage();
-}
-
-class _ProductsPage extends State<ProductsPage> {
-  bool _nigthMode;
-  Function _changeMode;
-  @override
-  void initState() {
-    _nigthMode = widget.mode;
-    _changeMode = widget.setMode;
-    super.initState();
-  }
+  ProductsPage({
+    this.products,
+    this.mode,
+    this.setMode,
+    this.addProduct,
+    this.deleteProduct,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +42,16 @@ class _ProductsPage extends State<ProductsPage> {
           IconButton(
             icon: Icon(Icons.wb_sunny),
             onPressed: () {
-              _changeMode(_nigthMode);
+              setMode(mode);
             },
           )
         ],
       ),
-      body: ProductManager(),
+      body: ProductManager(
+        products: products,
+        addProduct: addProduct,
+        deleteProduct: deleteProduct,
+      ),
     );
   }
 }
