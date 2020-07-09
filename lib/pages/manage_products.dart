@@ -1,27 +1,12 @@
 import 'package:flutter/material.dart';
 
-import '../product_manager.dart';
-import './manage_products.dart';
+import './products.dart';
 
-class ProductsPage extends StatefulWidget {
-  final Function setMode;
+class ManageProductsPange extends StatelessWidget {
   final bool mode;
+  final Function setMode;
 
-  ProductsPage({this.setMode, this.mode});
-  @override
-  State<StatefulWidget> createState() => _ProductsPage();
-}
-
-class _ProductsPage extends State<ProductsPage> {
-  bool _nigthMode;
-  Function _changeMode;
-  @override
-  void initState() {
-    _nigthMode = widget.mode;
-    _changeMode = widget.setMode;
-    super.initState();
-  }
-
+  ManageProductsPange({this.mode, this.setMode});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,13 +18,15 @@ class _ProductsPage extends State<ProductsPage> {
               title: Text('Choose'),
             ),
             ListTile(
-              title: Text('Manage products'),
+              title: Text('Product list'),
               onTap: () {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => ManageProductsPange(
-                        mode: _nigthMode, setMode: _changeMode),
+                    builder: (BuildContext context) => ProductsPage(
+                      mode: mode,
+                      setMode: setMode,
+                    ),
                   ),
                 );
               },
@@ -48,17 +35,19 @@ class _ProductsPage extends State<ProductsPage> {
         ),
       ),
       appBar: AppBar(
-        title: Text('EasyList'),
+        title: Text('Manage products'),
         actions: [
           IconButton(
             icon: Icon(Icons.wb_sunny),
             onPressed: () {
-              _changeMode(_nigthMode);
+              setMode(mode);
             },
           )
         ],
       ),
-      body: ProductManager(),
+      body: Center(
+        child: Text('No product to manage'),
+      ),
     );
   }
 }
