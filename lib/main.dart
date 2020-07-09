@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import './pages/product_admin.dart';
 import './pages/products.dart';
 import './pages/product.dart';
+import './pages/page_not_found.dart';
 
 void main() => runApp(MyApp());
 
@@ -45,15 +46,19 @@ class _MyAppState extends State<MyApp> {
           return null;
         }
         if (route[1] == 'products') {
-        final int index = int.parse(route[2]);
+          final int index = int.parse(route[2]);
           return MaterialPageRoute(
-                    builder: (BuildContext context) => ProductsDetailsPage(
-                      title: products[index]['title'],
-                      imageUrl: products[index]['image'],
-                    ),
+            builder: (BuildContext context) => ProductsDetailsPage(
+              title: products[index]['title'],
+              imageUrl: products[index]['image'],
+            ),
           );
         }
         return null;
+      },
+      onUnknownRoute: (RouteSettings settings) {
+        return MaterialPageRoute(
+            builder: (BuildContext context) => PageNotFound());
       },
     );
   }

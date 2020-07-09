@@ -17,8 +17,8 @@ class Products extends StatelessWidget {
               FlatButton(
                 child: Text('Details'),
                 onPressed: () => Navigator.pushNamed(
-                  context, '/products/$index').then((value) {
-                  if (value) {
+                  context, '/product/$index').then((value) {
+                  if (value != null && value) {
                     deleteProduct(index);
                   }
                 }),
