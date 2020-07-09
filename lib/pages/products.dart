@@ -35,15 +35,7 @@ class _ProductsPage extends State<ProductsPage> {
             ListTile(
               title: Text('Manage products'),
               onTap: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => ProductAdminPage(
-                      mode: _nigthMode,
-                      setMode: _changeMode,
-                    ),
-                  ),
-                );
+                Navigator.pushReplacementNamed(context, '/admin');
               },
             ),
           ],
