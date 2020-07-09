@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../product_manager.dart';
-import './manage_products.dart';
+import './product_admin.dart';
 
 class ProductsPage extends StatefulWidget {
   final Function setMode;
@@ -38,8 +38,10 @@ class _ProductsPage extends State<ProductsPage> {
                 Navigator.pushReplacement(
                   context,
                   MaterialPageRoute(
-                    builder: (BuildContext context) => ManageProductsPange(
-                        mode: _nigthMode, setMode: _changeMode),
+                    builder: (BuildContext context) => ProductAdminPage(
+                      mode: _nigthMode,
+                      setMode: _changeMode,
+                    ),
                   ),
                 );
               },
