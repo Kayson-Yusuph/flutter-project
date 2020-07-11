@@ -11,9 +11,9 @@ class ProductCreatePage extends StatefulWidget {
 }
 
 class _ProductCreatePageState extends State<ProductCreatePage> {
-  String title;
-  String description;
-  double price;
+  String _title;
+  String _description;
+  double _price;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -26,7 +26,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               border: OutlineInputBorder(),
             ),
             onChanged: (String value) {
-              setState(() => title = value);
+              setState(() => _title = value);
             },
           ),
           SizedBox(
@@ -39,7 +39,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
             ),
             maxLines: 5,
             onChanged: (String value) {
-              setState(() => description = value);
+              setState(() => _description = value);
             },
           ),
           SizedBox(
@@ -50,7 +50,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
                 labelText: 'Price', border: OutlineInputBorder()),
             keyboardType: TextInputType.number,
             onChanged: (String value) {
-              setState(() => price = double.parse(value));
+              setState(() => _price = double.parse(value));
             },
           ),
           ButtonBar(
@@ -59,35 +59,36 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
                 color: Theme.of(context).secondaryHeaderColor,
                 child: Text('Cancel'),
                 onPressed: () {
-                  title = '';
-                  description = '';
-                  price = 0;
+                  _title = '';
+                  _description = '';
+                  _price = 0;
                 },
               ),
               RaisedButton(
                 color: Theme.of(context).primaryColor,
                 child: Text('Save'),
-                onPressed: (title == '' || description == '' || price == null)
-                    ? null
-                    : () {
-                        print({
-                          'title': title,
-                          'description': description,
-                          'price': price
-                        });
-                        final product = {
-                          'title': title,
-                          'image': 'assets/food.jpg',
-                          'description': description,
-                          'price': price
-                        };
-                        if (title != null &&
-                            description != null &&
-                            price != null) {
-                          widget.addProduct(product);
-                        }
-                        Navigator.pushReplacementNamed(context, '/');
-                      },
+                onPressed:
+                    (_title == '' || _description == '' || _price == null)
+                        ? null
+                        : () {
+                            print({
+                              'title': _title,
+                              'description': _description,
+                              'price': _price
+                            });
+                            final product = {
+                              'title': _title,
+                              'image': 'assets/food.jpg',
+                              'description': _description,
+                              'price': _price
+                            };
+                            if (_title != null &&
+                                _description != null &&
+                                _price != null) {
+                              widget.addProduct(product);
+                            }
+                            Navigator.pushReplacementNamed(context, '/');
+                          },
               ),
             ],
           ),
