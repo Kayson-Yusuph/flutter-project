@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 
 class ProductsDetailsPage extends StatelessWidget {
-  final String title;
-  final String imageUrl;
+  final Map<String, dynamic> product;
 
-  ProductsDetailsPage({this.title, this.imageUrl});
+  ProductsDetailsPage({this.product});
 
   _showDeleteWarning(BuildContext context) {
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: Text('Delete confirmation'),
+          title: Text('Delete ${product['title']}'),
           content: Text('This action can not undo, are you sure?'),
           actions: [
             RaisedButton(
@@ -49,9 +48,22 @@ class ProductsDetailsPage extends StatelessWidget {
         body: Center(
           child: Column(
             children: <Widget>[
-              Image.asset(imageUrl),
+              Image.asset(product['image']),
+              SizedBox(height: 10.0),SizedBox(height: 10,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(product['title']),
+              SizedBox(
+                width: 15,
+              ),
+              Text(
+                'TZS ${product['price'].toString()}',
+              ),
+            ],
+          ),
               SizedBox(height: 10.0),
-              Text(title),
+              Text(product['description']),
               SizedBox(height: 10.0),
               RaisedButton(
                 color: Theme.of(context).accentColor,
