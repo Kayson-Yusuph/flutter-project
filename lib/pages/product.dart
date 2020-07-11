@@ -15,6 +15,7 @@ class ProductsDetailsPage extends StatelessWidget {
           content: Text('This action can not undo, are you sure?'),
           actions: [
             RaisedButton(
+              color: Theme.of(context).secondaryHeaderColor,
               child: Text('DISCARD'),
               onPressed: () {
                 Navigator.pop(context);
