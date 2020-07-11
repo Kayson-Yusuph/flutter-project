@@ -11,9 +11,9 @@ class ProductCreatePage extends StatefulWidget {
 }
 
 class _ProductCreatePageState extends State<ProductCreatePage> {
-  String title = '';
-  String description = '';
-  double price = 0;
+  String title;
+  String description;
+  double price;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -67,20 +67,27 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               RaisedButton(
                 color: Theme.of(context).primaryColor,
                 child: Text('Save'),
-                onPressed: () {
-                  print({
-                    'title': title,
-                    'description': description,
-                    'price': price
-                  });
-                  widget.addProduct({
-                    'title': title,
-                    'image': 'assets/food.jpg',
-                    'description': description,
-                    'price': price
-                  });
-                  Navigator.pushReplacementNamed(context, '/');
-                },
+                onPressed: (title == '' || description == '' || price == null)
+                    ? null
+                    : () {
+                        print({
+                          'title': title,
+                          'description': description,
+                          'price': price
+                        });
+                        final product = {
+                          'title': title,
+                          'image': 'assets/food.jpg',
+                          'description': description,
+                          'price': price
+                        };
+                        if (title != null &&
+                            description != null &&
+                            price != null) {
+                          widget.addProduct(product);
+                        }
+                        Navigator.pushReplacementNamed(context, '/');
+                      },
               ),
             ],
           ),
