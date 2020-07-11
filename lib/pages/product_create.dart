@@ -13,7 +13,9 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   double price = 0;
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return Container(
+      margin: EdgeInsets.all(10),
+      child: Column(
       children: [
         TextField(
           decoration: InputDecoration(
@@ -69,6 +71,6 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
           ],
         ),
       ],
-    );
+    ), );
   }
 }
