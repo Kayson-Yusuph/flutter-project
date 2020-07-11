@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 import './pages/product_admin.dart';
-import './pages/products.dart';
+// import './pages/products.dart';
+import './pages/auth.dart';
 import './pages/product.dart';
 import './pages/page_not_found.dart';
 
@@ -26,13 +27,13 @@ class _MyAppState extends State<MyApp> {
           brightness: !nightMode ? Brightness.light : Brightness.dark,
           primarySwatch: Colors.lightGreen,
           accentColor: Colors.deepPurple),
-      // home: AuthPage(mode: nightMode, setMode: setMode),
+      home: AuthPage(mode: nightMode, setMode: setMode),
       routes: {
-        '/': (BuildContext context) => ProductsPage(
-              mode: nightMode,
-              setMode: setMode,
-              products: products,
-            ),
+        // '/': (BuildContext context) => ProductsPage(
+        //       mode: nightMode,
+        //       setMode: setMode,
+        //       products: products,
+        //     ),
         '/admin': (BuildContext context) => ProductAdminPage(
               mode: nightMode,
               setMode: setMode,
