@@ -7,7 +7,7 @@ class ProductsPage extends StatelessWidget {
   final Function setMode;
   final Function addProduct;
   final Function deleteProduct;
-  final List<Map<String, String>> products;
+  final List<Map<String, dynamic>> products;
 
   ProductsPage({
     this.products,

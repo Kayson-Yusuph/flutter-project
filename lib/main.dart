@@ -18,7 +18,7 @@ class _MyAppState extends State<MyApp> {
   // final String _startingProduct = 'Food Paradise';
   bool nightMode = false;
   IconData mode = Icons.wb_sunny;
-  List<Map<String, String>> products = [];
+  List<Map<String, dynamic>> products = [];
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -38,6 +38,7 @@ class _MyAppState extends State<MyApp> {
         '/admin': (BuildContext context) => ProductAdminPage(
               mode: nightMode,
               setMode: setMode,
+              addProduct: _addProduct
             )
       },
       onGenerateRoute: (RouteSettings settings) {
@@ -63,7 +64,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void _addProduct(Map<String, String> product) {
+  void _addProduct(Map<String, dynamic> product) {
     setState(() => products.add(product));
   }
 

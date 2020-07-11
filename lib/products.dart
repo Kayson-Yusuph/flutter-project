@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Products extends StatelessWidget {
-  final List<Map<String, String>> products;
+  final List<Map<String, dynamic>> products;
   final Function deleteProduct;
   Products(this.products, {this.deleteProduct});
 
@@ -10,14 +10,27 @@ class Products extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Image.asset(products[index]['image']),
-          Text(products[index]['title']),
+          SizedBox(height: 10,),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(products[index]['title']),
+              SizedBox(
+                width: 15,
+              ),
+              Text(
+                'TZS ${products[index]['price'].toString()}',
+              ),
+            ],
+          ),
           ButtonBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
               FlatButton(
                 child: Text('Details'),
-                onPressed: () => Navigator.pushNamed(
-                  context, '/products/$index').then((value) {
+                onPressed: () =>
+                    Navigator.pushNamed(context, '/products/$index')
+                        .then((value) {
                   if (value != null && value) {
                     deleteProduct(index);
                   }
