@@ -49,6 +49,9 @@ class _AuthPageState extends State<AuthPage> {
                 });
               },
             ),
+            SizedBox(
+              height: 10,
+            ),
             SwitchListTile(
               value: _acceptTerms,
               onChanged: (bool value) {
@@ -57,6 +60,9 @@ class _AuthPageState extends State<AuthPage> {
                 });
               },
               title: Text('Accept terms '),
+            ),
+            SizedBox(
+              height: 10,
             ),
             RaisedButton(
               color: Theme.of(context).primaryColor,
