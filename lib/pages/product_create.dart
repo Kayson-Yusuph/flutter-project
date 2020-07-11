@@ -15,7 +15,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(10),
-      child: Column(
+      child: ListView(
       children: [
         TextField(
           decoration: InputDecoration(
