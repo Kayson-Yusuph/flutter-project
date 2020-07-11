@@ -32,13 +32,12 @@ class _MyAppState extends State<MyApp> {
               mode: nightMode,
               setMode: setMode,
               products: products,
-              addProduct: _addProduct,
-              deleteProduct: deleteProduct,
             ),
         '/admin': (BuildContext context) => ProductAdminPage(
               mode: nightMode,
               setMode: setMode,
-              addProduct: _addProduct
+              addProduct: _addProduct,
+              deleteProduct: deleteProduct,
             )
       },
       onGenerateRoute: (RouteSettings settings) {

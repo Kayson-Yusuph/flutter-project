@@ -7,8 +7,9 @@ class ProductAdminPage extends StatelessWidget {
   final bool mode;
   final Function setMode;
   final Function addProduct;
+  final Function deleteProduct;
 
-  ProductAdminPage({this.mode, this.setMode, this.addProduct});
+  ProductAdminPage({this.mode, this.setMode, this.addProduct, this.deleteProduct});
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
