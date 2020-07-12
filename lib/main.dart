@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import './pages/product_admin.dart';
-// import './pages/products.dart';
+import './pages/products.dart';
 import './pages/auth.dart';
 import './pages/product.dart';
 import './pages/page_not_found.dart';
@@ -20,6 +20,8 @@ class _MyAppState extends State<MyApp> {
   bool nightMode = false;
   IconData mode = Icons.wb_sunny;
   List<Map<String, dynamic>> products = [];
+  bool isLogin = false;
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -27,19 +29,25 @@ class _MyAppState extends State<MyApp> {
           brightness: !nightMode ? Brightness.light : Brightness.dark,
           primarySwatch: Colors.lightGreen,
           accentColor: Colors.deepPurple),
-      home: AuthPage(mode: nightMode, setMode: setMode),
+      // home: AuthPage(mode: nightMode, setMode: setMode),
       routes: {
-        // '/': (BuildContext context) => ProductsPage(
-        //       mode: nightMode,
-        //       setMode: setMode,
-        //       products: products,
-        //     ),
-        '/admin': (BuildContext context) => ProductAdminPage(
+        '/': (BuildContext context) => !isLogin
+            ? AuthPage(
+                mode: nightMode,
+                setMode: setMode,
+                signIn: signIn,
+              )
+            : ProductsPage(
               mode: nightMode,
               setMode: setMode,
-              addProduct: _addProduct,
-              deleteProduct: deleteProduct,
-            )
+              products: products,
+            ),
+        '/admin': (BuildContext context) => ProductAdminPage(
+                mode: nightMode,
+                setMode: setMode,
+                addProduct: _addProduct,
+                deleteProduct: deleteProduct,
+              )
       },
       onGenerateRoute: (RouteSettings settings) {
         List<String> route = settings.name.split('/');
@@ -73,5 +81,10 @@ class _MyAppState extends State<MyApp> {
 
   setMode(mode) {
     setState(() => nightMode = !nightMode);
+  }
+
+  signIn(BuildContext context) {
+    setState(() => isLogin = true);
+    Navigator.pushReplacementNamed(context, '/');
   }
 }

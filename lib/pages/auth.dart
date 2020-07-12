@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 class AuthPage extends StatefulWidget {
   final bool mode;
   final Function setMode;
-  AuthPage({this.mode, this.setMode});
+  final Function signIn;
+  AuthPage({this.mode, this.setMode, this.signIn});
   @override
   State<StatefulWidget> createState() => _AuthPageState();
 }
@@ -66,8 +67,8 @@ class _AuthPageState extends State<AuthPage> {
             ),
             RaisedButton(
               color: Theme.of(context).primaryColor,
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
+              onPressed: !_acceptTerms? null: () {
+                widget.signIn(context);
               },
               child: Text('LOGIN'),
             )
