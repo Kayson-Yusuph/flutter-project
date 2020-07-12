@@ -26,10 +26,7 @@ class Products extends StatelessWidget {
                 width: 10,
               ),
               Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 5,
-                  vertical: 7,
-                ),
+                padding: EdgeInsets.all(5),
                 decoration: BoxDecoration(
                     color: Theme.of(context).accentColor,
                     borderRadius: BorderRadius.circular(6)),
@@ -39,6 +36,13 @@ class Products extends StatelessWidget {
                 ),
               ),
             ],
+          ),
+          DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey, width: 1),
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Padding(padding: EdgeInsets.all(5), child: Text('Mpanda-Katavi, Tanzania'),),
           ),
           ButtonBar(
             alignment: MainAxisAlignment.center,
