@@ -9,16 +9,34 @@ class Products extends StatelessWidget {
       child: Column(
         children: <Widget>[
           Image.asset(products[index]['image']),
-          SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(products[index]['title']),
-              SizedBox(
-                width: 15,
-              ),
               Text(
-                'TZS ${products[index]['price'].toString()}',
+                products[index]['title'],
+                style: TextStyle(
+                  fontSize: 26,
+                  fontFamily: 'Oswald',
+                ),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 5,
+                  vertical: 7,
+                ),
+                decoration: BoxDecoration(
+                    color: Theme.of(context).accentColor,
+                    borderRadius: BorderRadius.circular(6)),
+                child: Text(
+                  'TZS ${products[index]['price'].toString()}',
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
             ],
           ),
