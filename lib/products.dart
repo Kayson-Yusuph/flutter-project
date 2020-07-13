@@ -1,14 +1,21 @@
 import 'package:flutter/material.dart';
 
-class Products extends StatelessWidget {
+class Products extends StatefulWidget {
   final List<Map<String, dynamic>> products;
   Products(this.products);
+  @override
+  State<StatefulWidget> createState() => _ProductsState();
+}
+
+class _ProductsState extends State<Products> {
+  List<Map<String, dynamic>> _products = [];
+  bool favoured = false;
 
   Card _buildProductItem(BuildContext context, int index) {
     return Card(
       child: Column(
         children: <Widget>[
-          Image.asset(products[index]['image']),
+          Image.asset(_products[index]['image']),
           SizedBox(
             height: 10,
           ),
@@ -16,7 +23,7 @@ class Products extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
-                products[index]['title'],
+                _products[index]['title'],
                 style: TextStyle(
                   fontSize: 26,
                   fontFamily: 'Oswald',
@@ -31,7 +38,7 @@ class Products extends StatelessWidget {
                     color: Theme.of(context).accentColor,
                     borderRadius: BorderRadius.circular(6)),
                 child: Text(
-                  'TZS ${products[index]['price'].toString()}',
+                  'TZS ${_products[index]['price'].toString()}',
                   style: TextStyle(color: Colors.white),
                 ),
               ),
@@ -42,15 +49,25 @@ class Products extends StatelessWidget {
               border: Border.all(color: Colors.grey, width: 1),
               borderRadius: BorderRadius.circular(6),
             ),
-            child: Padding(padding: EdgeInsets.all(5), child: Text('Mpanda-Katavi, Tanzania'),),
+            child: Padding(
+              padding: EdgeInsets.all(5),
+              child: Text('Mpanda-Katavi, Tanzania'),
+            ),
           ),
           ButtonBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
-              FlatButton(
-                child: Text('Details'),
+              IconButton(
+                icon: Icon(Icons.info),
                 onPressed: () =>
                     Navigator.pushNamed(context, '/products/$index'),
+              ),
+              IconButton(
+                icon: Icon(favoured? Icons.favorite: Icons.favorite_border),
+                onPressed: () => {
+                  // ...
+                  setState(() => favoured = !favoured)
+                },
               )
             ],
           )
@@ -61,10 +78,10 @@ class Products extends StatelessWidget {
 
   Widget _buildProductList() {
     Widget productCards;
-    if (products.length > 0) {
+    if (_products.length > 0) {
       productCards = ListView.builder(
         itemBuilder: _buildProductItem,
-        itemCount: products.length,
+        itemCount: _products.length,
       );
     } else {
       productCards = Center(
@@ -72,6 +89,12 @@ class Products extends StatelessWidget {
       );
     }
     return productCards;
+  }
+
+  @override
+  void initState() {
+    _products = widget.products;
+    super.initState();
   }
 
   @override
