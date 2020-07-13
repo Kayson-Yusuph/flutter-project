@@ -20,6 +20,13 @@ class _AuthPageState extends State<AuthPage> {
         title: Text('Login'),
       ),
       body: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            fit: BoxFit.cover,
+            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
+            image: AssetImage('assets/background.jpg'),
+          ),
+        ),
         margin: EdgeInsets.all(10),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -67,9 +74,11 @@ class _AuthPageState extends State<AuthPage> {
             ),
             RaisedButton(
               color: Theme.of(context).primaryColor,
-              onPressed: !_acceptTerms? null: () {
-                widget.signIn(context);
-              },
+              onPressed: !_acceptTerms
+                  ? null
+                  : () {
+                      widget.signIn(context);
+                    },
               child: Text('LOGIN'),
             )
           ],
