@@ -37,6 +37,12 @@ class ProductsPage extends StatelessWidget {
         title: Text('EasyList'),
         actions: [
           IconButton(
+            icon: Icon(Icons.favorite),
+            onPressed: () {
+              // ...
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.wb_sunny),
             onPressed: () {
               setMode(mode);

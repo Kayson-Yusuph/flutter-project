@@ -59,11 +59,13 @@ class _ProductsState extends State<Products> {
             children: <Widget>[
               IconButton(
                 icon: Icon(Icons.info),
+                color: Theme.of(context).primaryColor,
                 onPressed: () =>
                     Navigator.pushNamed(context, '/products/$index'),
               ),
               IconButton(
                 icon: Icon(favoured? Icons.favorite: Icons.favorite_border),
+                color: Colors.red,
                 onPressed: () => {
                   // ...
                   setState(() => favoured = !favoured)
