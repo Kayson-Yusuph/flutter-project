@@ -20,70 +20,81 @@ class _AuthPageState extends State<AuthPage> {
         title: Text('Login'),
       ),
       body: Container(
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            fit: BoxFit.cover,
-            colorFilter: ColorFilter.mode(Colors.black.withOpacity(0.5), BlendMode.dstATop),
-            image: AssetImage('assets/background.jpg'),
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              fit: BoxFit.cover,
+              colorFilter: ColorFilter.mode(
+                  Colors.black.withOpacity(0.5), BlendMode.dstATop),
+              image: AssetImage('assets/background.jpg'),
+            ),
           ),
-        ),
-        margin: EdgeInsets.all(10),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              decoration: InputDecoration(
-                labelText: 'E-Mail',
-                border: OutlineInputBorder(),
-              ),
-              onChanged: (String value) {
-                setState(() {
-                  _emailValue = value;
-                });
-              },
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            TextField(
-              obscureText: true,
-              decoration: InputDecoration(
-                labelText: 'Password',
-                border: OutlineInputBorder(),
-              ),
-              onChanged: (String value) {
-                setState(() {
-                  _passwordValue = value;
-                });
-              },
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            SwitchListTile(
-              value: _acceptTerms,
-              onChanged: (bool value) {
-                setState(() {
-                  _acceptTerms = value;
-                });
-              },
-              title: Text('Accept terms '),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            RaisedButton(
-              color: Theme.of(context).primaryColor,
-              onPressed: !_acceptTerms
-                  ? null
-                  : () {
-                      widget.signIn(context);
+          margin: EdgeInsets.all(10),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: 'E-Mail',
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (String value) {
+                      setState(() {
+                        _emailValue = value;
+                      });
                     },
-              child: Text('LOGIN'),
-            )
-          ],
-        ),
-      ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  TextField(
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      labelText: 'Password',
+                      fillColor: Colors.white,
+                      filled: true,
+                      border: OutlineInputBorder(),
+                    ),
+                    onChanged: (String value) {
+                      setState(() {
+                        _passwordValue = value;
+                      });
+                    },
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Container(
+                    color: Colors.white,
+                    child: SwitchListTile(
+                      value: _acceptTerms,
+                      onChanged: (bool value) {
+                        setState(() {
+                          _acceptTerms = value;
+                        });
+                      },
+                      title: Text('Accept terms '),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  RaisedButton(
+                    color: Theme.of(context).primaryColor,
+                    onPressed: !_acceptTerms
+                        ? null
+                        : () {
+                            widget.signIn(context);
+                          },
+                    child: Text('LOGIN'),
+                  )
+                ],
+              ),
+            ),
+          )),
     );
   }
 }
