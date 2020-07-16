@@ -22,9 +22,9 @@ class _ProductCardState extends State<ProductCard> {
 
   @override
   void initState() {
-    // _product = widget.product;
+    _product = widget.product;
     _index = widget.index;
-    print('favourite is ' + _product['favourite']);
+    print('favourite is  ${_product['favourite']}');
     super.initState();
   }
   @override

@@ -15,6 +15,7 @@ class ProductsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('This is products page');
     return Scaffold(
       drawer: Drawer(
         child: Column(

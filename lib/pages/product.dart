@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/widgets/products/price_tag.dart';
 
 import '../widgets/ui_elements/title_default.dart';
 
@@ -59,9 +60,7 @@ class ProductsDetailsPage extends StatelessWidget {
               SizedBox(
                 width: 15,
               ),
-              Text(
-                'TZS ${product['price'].toString()}',
-              ),
+              PriceTag(product['price'].toString(),),
             ],
           ),
               SizedBox(height: 10.0),
