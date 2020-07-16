@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../widgets/ui_elements/title_default.dart';
+
 class ProductsDetailsPage extends StatelessWidget {
   final Map<String, dynamic> product;
 
@@ -53,7 +55,7 @@ class ProductsDetailsPage extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(product['title']),
+              TitleDefault(title: product['title']),
               SizedBox(
                 width: 15,
               ),
