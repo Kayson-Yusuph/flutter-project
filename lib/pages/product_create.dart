@@ -80,7 +80,8 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
                               'title': _title,
                               'image': 'assets/food.jpg',
                               'description': _description,
-                              'price': _price
+                              'price': _price,
+                              'favourite': false
                             };
                             if (_title != null &&
                                 _description != null &&

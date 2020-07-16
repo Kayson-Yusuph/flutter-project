@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import './price_tag.dart';
+import '../ui_elements/title_default.dart';
 
 class ProductCard extends StatefulWidget {
   final bool favourite;
@@ -38,13 +39,7 @@ class _ProductCardState extends State<ProductCard> {
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text(
-                _product['title'],
-                style: TextStyle(
-                  fontSize: 26,
-                  fontFamily: 'Oswald',
-                ),
-              ),
+            TitleDefault(title: _product['title'],),
               SizedBox(
                 width: 10,
               ),

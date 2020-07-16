@@ -35,13 +35,19 @@ class ProductsPage extends StatelessWidget {
       ),
       appBar: AppBar(
         title: Text('EasyList'),
-        actions: [
+        actions: products.length > 0 ? [
           IconButton(
             icon: Icon(Icons.favorite),
             onPressed: () {
               // ...
             },
-          ),
+          ), IconButton(
+            icon: Icon(Icons.wb_sunny),
+            onPressed: () {
+              setMode(mode);
+            },
+          )
+        ]: [
           IconButton(
             icon: Icon(Icons.wb_sunny),
             onPressed: () {
