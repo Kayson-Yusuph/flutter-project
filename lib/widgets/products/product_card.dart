@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../ui_elements/address_tag.dart';
 
 import './price_tag.dart';
 import '../ui_elements/title_default.dart';
@@ -47,16 +48,7 @@ class _ProductCardState extends State<ProductCard> {
               ,
             ],
           ),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey, width: 1),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(5),
-              child: Text('Mpanda-Katavi, Tanzania'),
-            ),
-          ),
+          AddressTag('Mpanda-Katavi, Tanzania'),
           ButtonBar(
             alignment: MainAxisAlignment.center,
             children: <Widget>[
