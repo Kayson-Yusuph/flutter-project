@@ -86,6 +86,13 @@ class _AuthPageState extends State<AuthPage> {
   
   @override
   Widget build(BuildContext context) {
+    final double deviceWidth = MediaQuery.of(context).size.width;
+    double targetWidth = deviceWidth;
+    if(deviceWidth > 550) {
+      targetWidth = deviceWidth * 0.6;
+    } else if(deviceWidth > 410) {
+      targetWidth = deviceWidth * 0.8;
+    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
@@ -97,7 +104,7 @@ class _AuthPageState extends State<AuthPage> {
           child: Center(
             child: SingleChildScrollView(
               child: Container(
-                width: 400,
+                width: targetWidth,
                 child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
