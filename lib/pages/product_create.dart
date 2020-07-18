@@ -51,14 +51,22 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
           );
   }
 
-RaisedButton _buildCreateRaisedButton() {
-    return RaisedButton(
-                color: Theme.of(context).primaryColor,
-                child: Text('Save'),
-                onPressed:
-                    (_title == '' || _description == '' || _price == null)
-                        ? null : onCreate,
-              );
+Widget _buildCreateRaisedButton() {
+    // return RaisedButton(
+    //             color: Theme.of(context).primaryColor,
+    //             child: Text('Save'),
+    //             onPressed:
+    //                 (_title == '' || _description == '' || _price == null)
+    //                     ? null : onCreate,
+    //           );
+    return GestureDetector(
+      onTap: () { print('Double tapped!');},
+      child: Container(
+      padding: EdgeInsets.all(5),
+      color: Colors.green,
+      child: Text('Create'),
+    ),
+    );
   }
 
   void onCreate() {
