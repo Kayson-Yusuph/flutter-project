@@ -22,7 +22,6 @@ class _ProductCardState extends State<ProductCard> {
   void initState() {
     _product = widget.product;
     _index = widget.index;
-    print('favourite is12  ${_product['favourite']}');
     super.initState();
   }
 

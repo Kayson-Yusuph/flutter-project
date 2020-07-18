@@ -14,38 +14,39 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
   String _title;
   String _description;
   double _price;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  TextField _buildTitleTextField() {
-    return TextField(
+  TextFormField _buildTitleTextField() {
+    return TextFormField(
             decoration: InputDecoration(
               labelText: 'Title',
               border: OutlineInputBorder(),
             ),
-            onChanged: (String value) {
+            onSaved: (String value) {
               setState(() => _title = value);
             },
           );
   }
 
-  TextField _buildDescriptionTextField() {
-    return TextField(
+  TextFormField _buildDescriptionTextField() {
+    return TextFormField(
             decoration: InputDecoration(
               labelText: 'Description',
               border: OutlineInputBorder(),
             ),
             maxLines: 5,
-            onChanged: (String value) {
+            onSaved: (String value) {
               setState(() => _description = value);
             },
           );
   }
 
-  TextField _buildPriceTextField() {
-    return TextField(
+  TextFormField _buildPriceTextField() {
+    return TextFormField(
             decoration: InputDecoration(
                 labelText: 'Price', border: OutlineInputBorder()),
             keyboardType: TextInputType.number,
-            onChanged: (String value) {
+            onSaved: (String value) {
               setState(() => _price = double.parse(value));
             },
           );
@@ -55,13 +56,14 @@ Widget _buildCreateRaisedButton() {
     return RaisedButton(
                 color: Theme.of(context).primaryColor,
                 child: Text('Save'),
-                onPressed:
-                    (_title == '' || _description == '' || _price == null)
-                        ? null : onCreate,
+                onPressed: onCreate,
+                    // (_title == '' || _description == '' || _price == null)
+                    //     ? null : onCreate,
               );
   }
 
   void onCreate() {
+    _formKey.currentState.save();
     final product = {
       'title': _title,
       'image': 'assets/food.jpg',
@@ -144,9 +146,9 @@ Widget _buildCreateRaisedButton() {
     }
     return Container(
       margin: EdgeInsets.all(10),
-      child: ListView(
+      child: Form(key: _formKey, child: ListView(
         children: _buildListViewChildren(alignVertical),
-      ),
+      ),),
     );
   }
 }
