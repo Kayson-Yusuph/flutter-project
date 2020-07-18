@@ -13,28 +13,18 @@ class _AuthPageState extends State<AuthPage> {
   String _emailValue;
   String _passwordValue;
   bool _acceptTerms = false;
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
-      body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
+
+  DecorationImage _buildBackgroundImage() {
+    return DecorationImage(
               fit: BoxFit.cover,
               colorFilter: ColorFilter.mode(
                   Colors.black.withOpacity(0.5), BlendMode.dstATop),
               image: AssetImage('assets/background.jpg'),
-            ),
-          ),
-          margin: EdgeInsets.all(10),
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextField(
+            );
+  }
+
+  TextField _buildEmailTextField() {
+    return TextField(
                     decoration: InputDecoration(
                       labelText: 'E-Mail',
                       fillColor: Colors.white,
@@ -46,11 +36,11 @@ class _AuthPageState extends State<AuthPage> {
                         _emailValue = value;
                       });
                     },
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  TextField(
+                  );
+  }
+
+  TextField _buildPasswordTextField() {
+    return TextField(
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Password',
@@ -63,11 +53,11 @@ class _AuthPageState extends State<AuthPage> {
                         _passwordValue = value;
                       });
                     },
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
+                  );
+  }
+
+  Container _buildTermsAndConditionSwitch() {
+    return Container(
                     color: Colors.white,
                     child: SwitchListTile(
                       value: _acceptTerms,
@@ -78,19 +68,51 @@ class _AuthPageState extends State<AuthPage> {
                       },
                       title: Text('Accept terms '),
                     ),
-                  ),
+                  );
+  }
+
+  RaisedButton _buildLoginRaisedButton() {
+    return RaisedButton(
+                    color: Theme.of(context).primaryColor,
+                    onPressed: !_acceptTerms
+                        ? null : _onLogin,
+                    child: Text('LOGIN'),
+                  );
+  }
+
+  void _onLogin() {
+    widget.signIn(context);
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Login'),
+      ),
+      body: Container(
+          decoration: BoxDecoration(
+            image: _buildBackgroundImage(),
+          ),
+          margin: EdgeInsets.all(10),
+          child: Center(
+            child: SingleChildScrollView(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  _buildEmailTextField(),
                   SizedBox(
                     height: 10,
                   ),
-                  RaisedButton(
-                    color: Theme.of(context).primaryColor,
-                    onPressed: !_acceptTerms
-                        ? null
-                        : () {
-                            widget.signIn(context);
-                          },
-                    child: Text('LOGIN'),
-                  )
+                  _buildPasswordTextField(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  _buildTermsAndConditionSwitch(),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  _buildLoginRaisedButton(),
                 ],
               ),
             ),

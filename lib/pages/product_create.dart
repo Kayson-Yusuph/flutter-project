@@ -51,7 +51,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
           );
   }
 
-  _buildCreateRaisedButton() {
+RaisedButton _buildCreateRaisedButton() {
     return RaisedButton(
                 color: Theme.of(context).primaryColor,
                 child: Text('Save'),
@@ -61,7 +61,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               );
   }
 
-  onCreate() {
+  void onCreate() {
     final product = {
       'title': _title,
       'image': 'assets/food.jpg',
