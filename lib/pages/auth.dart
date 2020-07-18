@@ -94,10 +94,11 @@ class _AuthPageState extends State<AuthPage> {
           decoration: BoxDecoration(
             image: _buildBackgroundImage(),
           ),
-          margin: EdgeInsets.all(10),
           child: Center(
             child: SingleChildScrollView(
-              child: Column(
+              child: Container(
+                width: 400,
+                child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   _buildEmailTextField(),
@@ -114,9 +115,9 @@ class _AuthPageState extends State<AuthPage> {
                   ),
                   _buildLoginRaisedButton(),
                 ],
-              ),
+              ), ),
             ),
-          )),
+          ),),
     );
   }
 }
