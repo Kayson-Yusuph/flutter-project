@@ -76,21 +76,18 @@ RaisedButton _buildCreateRaisedButton() {
     }
     Navigator.pushReplacementNamed(context, '/');
   }
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(10),
-      child: ListView(
-        children: [
+
+  List<Widget> _buildListViewChildren(bool vertical) {
+    List<Widget> children =  <Widget>[
           _buildTitleTextField(),
           SizedBox(
             height: 10,
           ),
-          _buildDescriptionTextField(),
+          _buildPriceTextField(),
           SizedBox(
             height: 10,
           ),
-          _buildPriceTextField(),
+          _buildDescriptionTextField(),
           ButtonBar(
             children: [
               RaisedButton(
@@ -105,7 +102,50 @@ RaisedButton _buildCreateRaisedButton() {
               _buildCreateRaisedButton(),
             ],
           ),
-        ],
+        ];
+
+    if(!vertical) {
+      children =  <Widget>[
+        Row(children: [
+        Flexible(child: _buildTitleTextField(), flex: 4,),
+          SizedBox(
+            width: 10,
+          ),
+          Flexible(child: _buildPriceTextField(), flex: 3,),
+        ],),
+          SizedBox(
+            height: 10,
+          ),
+          _buildDescriptionTextField(),
+          ButtonBar(
+            children: [
+              RaisedButton(
+                color: Theme.of(context).secondaryHeaderColor,
+                child: Text('Cancel'),
+                onPressed: () {
+                  _title = '';
+                  _description = '';
+                  _price = 0;
+                },
+              ),
+              _buildCreateRaisedButton(),
+            ],
+          ),
+        ];
+    }
+    return children;
+  }
+  @override
+  Widget build(BuildContext context) {
+    final deviceWidth = MediaQuery.of(context).size.width;
+  bool alignVertical = true;
+    if(deviceWidth > 420) {
+      alignVertical = false;
+    }
+    return Container(
+      margin: EdgeInsets.all(10),
+      child: ListView(
+        children: _buildListViewChildren(alignVertical),
       ),
     );
   }
