@@ -24,9 +24,11 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
             ),
             // autovalidate: true,
             validator: (String value) {
-              if(value.isEmpty) {
-                return 'Title is required';
+              dynamic rtn;
+              if(value.isEmpty || value.length < 5) {
+                rtn = 'Title is required and must be 5+ characters';
               }
+              return rtn;
             },
             onSaved: (String value) {
               setState(() => _title = value);
@@ -41,9 +43,11 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               border: OutlineInputBorder(),
             ),
             validator: (String value) {
-              if(value.isEmpty) {
-                return 'Description is required';
+              dynamic rtn;
+              if(value.isEmpty || value.length < 10) {
+                rtn = 'Description is required and must be 10+ characters';
               }
+              return rtn;
             },
             maxLines: 5,
             onSaved: (String value) {
@@ -58,13 +62,11 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
                 labelText: 'Price', border: OutlineInputBorder()),
             keyboardType: TextInputType.number,
             validator: (String value) {
-
-              if(value.isNotEmpty && double.tryParse(value) == null) {
-                return 'Enter a valid price in number';
+              dynamic rtn;
+              if(value.isEmpty || double.tryParse(value) == null) {
+                rtn = 'Price is required and must be a number';
               }
-              if(value.isEmpty) {
-                return 'Price is required';
-              }
+              return rtn;
             },
             onSaved: (String value) {
               setState(() => _price = double.parse(value));
