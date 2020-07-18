@@ -11,7 +11,6 @@ class ProductsWidget extends StatefulWidget {
 
 class _ProductsWidgetState extends State<ProductsWidget> {
   List<Map<String, dynamic>> _products = [];
-  bool favoured = false;
 
   @override
   void initState() {
@@ -24,7 +23,7 @@ class _ProductsWidgetState extends State<ProductsWidget> {
     Widget productCards;
     if (_products.length > 0) {
       productCards = ListView.builder(
-        itemBuilder: (BuildContext context, int index) => ProductCard(favourite: favoured, index: index, product: _products[index], manageFavourite: manageFavourite,),
+        itemBuilder: (BuildContext context, int index) => ProductCard( index: index, product: _products[index],),
         itemCount: _products.length,
       );
     } else {
@@ -33,9 +32,5 @@ class _ProductsWidgetState extends State<ProductsWidget> {
       );
     }
     return productCards;
-  }
-
-  void manageFavourite(favoured) {
-    setState(() => favoured = !favoured);
   }
 }

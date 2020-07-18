@@ -76,7 +76,7 @@ class ProductsDetailsPage extends StatelessWidget {
               SizedBox(height: 10.0),SizedBox(height: 10,),
               _buildTitleAndPriceRow(),
               SizedBox(height: 10.0),
-              Text(product['description']),
+              Center(child: Text(product['description']),),
               SizedBox(height: 10.0),
             _buildDeleteRaisedButton(context),
             ],

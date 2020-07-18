@@ -5,19 +5,16 @@ import '../ui_elements/address_tag.dart';
 import '../ui_elements/title_default.dart';
 
 class ProductCard extends StatefulWidget {
-  final bool favourite;
   final int index;
   final Map<String, dynamic> product;
-  final Function manageFavourite;
 
-  ProductCard({this.favourite, this.index, this.product, this.manageFavourite});
+  ProductCard({ this.index, this.product });
   @override
   State<StatefulWidget> createState() => _ProductCardState();
 }
 
 class _ProductCardState extends State<ProductCard> {
 
-  bool _favourite = false;
   int _index = 0;
   Map<String, dynamic> _product = {};
 
@@ -25,7 +22,7 @@ class _ProductCardState extends State<ProductCard> {
   void initState() {
     _product = widget.product;
     _index = widget.index;
-    print('favourite is  ${_product['favourite']}');
+    print('favourite is12  ${_product['favourite']}');
     super.initState();
   }
 
@@ -54,11 +51,11 @@ class _ProductCardState extends State<ProductCard> {
                   Navigator.pushNamed(context, '/products/$_index'),
             ),
             IconButton(
-              icon: Icon(_favourite? Icons.favorite: Icons.favorite_border),
+              icon: Icon(_product['favourite']? Icons.favorite: Icons.favorite_border),
               color: Colors.red,
-              onPressed: () => {
+              onPressed: () {
                 // ...
-                manageFavourite(_favourite)
+                manageFavourite();
               },
             )
           ],
@@ -80,7 +77,7 @@ class _ProductCardState extends State<ProductCard> {
       ),
     );
   }
-  void manageFavourite(favoured) {
-    setState(() => favoured = !favoured);
+  void manageFavourite() {
+    setState(() => _product['favourite'] = !_product['favourite']);
   }
 }
