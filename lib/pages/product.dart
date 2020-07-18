@@ -24,7 +24,7 @@ class ProductsDetailsPage extends StatelessWidget {
               },
             ),
             RaisedButton(
-              color: Theme.of(context).accentColor,
+              color: Colors.red,
               child: Text('CONTINUE'),
               onPressed: () {
                 Navigator.pop(context);
@@ -52,7 +52,7 @@ class ProductsDetailsPage extends StatelessWidget {
 
   RaisedButton _buildDeleteRaisedButton(BuildContext context) {
     return  RaisedButton(
-                color: Theme.of(context).accentColor,
+                color: Colors.red,
                 child: Text('DELETE'),
                 onPressed: () => _showDeleteWarning(context),
               );
