@@ -22,6 +22,12 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               labelText: 'Title',
               border: OutlineInputBorder(),
             ),
+            // autovalidate: true,
+            validator: (String value) {
+              if(value.isEmpty) {
+                return 'Title is required';
+              }
+            },
             onSaved: (String value) {
               setState(() => _title = value);
             },
@@ -34,6 +40,11 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               labelText: 'Description',
               border: OutlineInputBorder(),
             ),
+            validator: (String value) {
+              if(value.isEmpty) {
+                return 'Description is required';
+              }
+            },
             maxLines: 5,
             onSaved: (String value) {
               setState(() => _description = value);
@@ -46,6 +57,15 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
             decoration: InputDecoration(
                 labelText: 'Price', border: OutlineInputBorder()),
             keyboardType: TextInputType.number,
+            validator: (String value) {
+
+              if(value.isNotEmpty && double.tryParse(value) == null) {
+                return 'Enter a valid price in number';
+              }
+              if(value.isEmpty) {
+                return 'Price is required';
+              }
+            },
             onSaved: (String value) {
               setState(() => _price = double.parse(value));
             },
@@ -63,6 +83,9 @@ Widget _buildCreateRaisedButton() {
   }
 
   void onCreate() {
+    if(!_formKey.currentState.validate()) {
+      return;
+    }
     _formKey.currentState.save();
     final product = {
       'title': _title,
