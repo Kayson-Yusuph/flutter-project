@@ -11,9 +11,13 @@ class ProductCreatePage extends StatefulWidget {
 }
 
 class _ProductCreatePageState extends State<ProductCreatePage> {
-  String _title;
-  String _description;
-  double _price;
+  final Map<String, dynamic> _formData = {
+    'title': null,
+    'price': null,
+    'description': null,
+    'image': 'assets/food.jpg',
+    'favourite': false
+  };
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   TextFormField _buildTitleTextField() {
@@ -31,7 +35,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               return rtn;
             },
             onSaved: (String value) {
-              setState(() => _title = value);
+              _formData['title'] = value;
             },
           );
   }
@@ -51,7 +55,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
             },
             maxLines: 5,
             onSaved: (String value) {
-              setState(() => _description = value);
+              _formData['description'] = value;
             },
           );
   }
@@ -69,19 +73,28 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
               return rtn;
             },
             onSaved: (String value) {
-              setState(() => _price = double.parse(value));
+              _formData['price'] = double.parse(value);
             },
           );
   }
 
-Widget _buildCreateRaisedButton() {
-    return RaisedButton(
+ButtonBar _buildButtonBar() {
+    return ButtonBar(
+            children: [
+              RaisedButton(
+                color: Theme.of(context).secondaryHeaderColor,
+                child: Text('Cancel'),
+                onPressed: () {              
+                  Navigator.pushReplacementNamed(context, '/');
+                },
+              ),
+              RaisedButton(
                 color: Theme.of(context).primaryColor,
                 child: Text('Save'),
                 onPressed: onCreate,
-                    // (_title == '' || _description == '' || _price == null)
-                    //     ? null : onCreate,
-              );
+              ),
+            ],
+          );
   }
 
   void onCreate() {
@@ -89,18 +102,7 @@ Widget _buildCreateRaisedButton() {
       return;
     }
     _formKey.currentState.save();
-    final product = {
-      'title': _title,
-      'image': 'assets/food.jpg',
-      'description': _description,
-      'price': _price,
-      'favourite': false
-    };
-    if (_title != null &&
-        _description != null &&
-        _price != null) {
-      widget.addProduct(product);
-    }
+    widget.addProduct(_formData);
     Navigator.pushReplacementNamed(context, '/');
   }
 
@@ -115,20 +117,7 @@ Widget _buildCreateRaisedButton() {
             height: 10,
           ),
           _buildDescriptionTextField(),
-          ButtonBar(
-            children: [
-              RaisedButton(
-                color: Theme.of(context).secondaryHeaderColor,
-                child: Text('Cancel'),
-                onPressed: () {
-                  _title = '';
-                  _description = '';
-                  _price = 0;
-                },
-              ),
-              _buildCreateRaisedButton(),
-            ],
-          ),
+          _buildButtonBar(),
         ];
 
     if(!vertical) {
@@ -144,20 +133,7 @@ Widget _buildCreateRaisedButton() {
             height: 10,
           ),
           _buildDescriptionTextField(),
-          ButtonBar(
-            children: [
-              RaisedButton(
-                color: Theme.of(context).secondaryHeaderColor,
-                child: Text('Cancel'),
-                onPressed: () {
-                  _title = '';
-                  _description = '';
-                  _price = 0;
-                },
-              ),
-              _buildCreateRaisedButton(),
-            ],
-          ),
+          _buildButtonBar(),
         ];
     }
     return children;
