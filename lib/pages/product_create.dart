@@ -165,15 +165,19 @@ Widget _buildCreateRaisedButton() {
   @override
   Widget build(BuildContext context) {
     final deviceWidth = MediaQuery.of(context).size.width;
-  bool alignVertical = true;
+    bool alignVertical = true;
     if(deviceWidth > 420) {
       alignVertical = false;
     }
-    return Container(
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).requestFocus(FocusNode());
+      },
+      child: Container(
       margin: EdgeInsets.all(10),
       child: Form(key: _formKey, child: ListView(
         children: _buildListViewChildren(alignVertical),
       ),),
-    );
+    ),);
   }
 }
