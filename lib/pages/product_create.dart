@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
-class ProductCreatePage extends StatefulWidget {
+class ProductCreatePage extends StatelessWidget {
   final Function addProduct;
 
   ProductCreatePage(this.addProduct);
-  @override
-  State<StatefulWidget> createState() {
-    return _ProductCreatePageState();
-  }
-}
+  // @override
+//   State<StatefulWidget> createState() {
+//     return _ProductCreatePageState();
+//   }
+// }
 
-class _ProductCreatePageState extends State<ProductCreatePage> {
+// class _ProductCreatePageState extends State<ProductCreatePage> {
   final Map<String, dynamic> _formData = {
     'title': null,
     'price': null,
@@ -29,8 +29,8 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
             // autovalidate: true,
             validator: (String value) {
               dynamic rtn;
-              if(value.isEmpty || value.length < 5) {
-                rtn = 'Title is required and must be 5+ characters';
+              if(value.isEmpty || value.length < 4) {
+                rtn = 'Title is required and must be 4+ characters';
               }
               return rtn;
             },
@@ -78,7 +78,7 @@ class _ProductCreatePageState extends State<ProductCreatePage> {
           );
   }
 
-ButtonBar _buildButtonBar() {
+ButtonBar _buildButtonBar(BuildContext context) {
     return ButtonBar(
             children: [
               RaisedButton(
@@ -91,22 +91,22 @@ ButtonBar _buildButtonBar() {
               RaisedButton(
                 color: Theme.of(context).primaryColor,
                 child: Text('Save'),
-                onPressed: onCreate,
+                onPressed: () => onCreate(context),
               ),
             ],
           );
   }
 
-  void onCreate() {
+  void onCreate(BuildContext context) {
     if(!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
-    widget.addProduct(_formData);
+    addProduct(_formData);
     Navigator.pushReplacementNamed(context, '/');
   }
 
-  List<Widget> _buildListViewChildren(bool vertical) {
+  List<Widget> _buildListViewChildren(BuildContext context, bool vertical) {
     List<Widget> children =  <Widget>[
           _buildTitleTextField(),
           SizedBox(
@@ -117,7 +117,7 @@ ButtonBar _buildButtonBar() {
             height: 10,
           ),
           _buildDescriptionTextField(),
-          _buildButtonBar(),
+          _buildButtonBar(context),
         ];
 
     if(!vertical) {
@@ -133,7 +133,7 @@ ButtonBar _buildButtonBar() {
             height: 10,
           ),
           _buildDescriptionTextField(),
-          _buildButtonBar(),
+          _buildButtonBar(context),
         ];
     }
     return children;
@@ -152,7 +152,7 @@ ButtonBar _buildButtonBar() {
       child: Container(
       margin: EdgeInsets.all(10),
       child: Form(key: _formKey, child: ListView(
-        children: _buildListViewChildren(alignVertical),
+        children: _buildListViewChildren(context, alignVertical),
       ),),
     ),);
   }
