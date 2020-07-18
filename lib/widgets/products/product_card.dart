@@ -28,6 +28,42 @@ class _ProductCardState extends State<ProductCard> {
     print('favourite is  ${_product['favourite']}');
     super.initState();
   }
+
+  Row _buildTitleAndPriceRow(){
+    return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+          TitleDefault(title: _product['title'],),
+            SizedBox(
+              width: 10,
+            ),
+            PriceTag(_product['price'].toString(),)
+            ,
+          ],
+        );
+  } 
+
+  ButtonBar _buildButtonBar() {
+    return ButtonBar(
+          alignment: MainAxisAlignment.center,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(Icons.info),
+              color: Theme.of(context).primaryColor,
+              onPressed: () =>
+                  Navigator.pushNamed(context, '/products/$_index'),
+            ),
+            IconButton(
+              icon: Icon(_favourite? Icons.favorite: Icons.favorite_border),
+              color: Colors.red,
+              onPressed: () => {
+                // ...
+                manageFavourite(_favourite)
+              },
+            )
+          ],
+        );
+  }
   @override
   Card build(BuildContext context) {
     return Card(
@@ -37,37 +73,9 @@ class _ProductCardState extends State<ProductCard> {
           SizedBox(
             height: 10,
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-            TitleDefault(title: _product['title'],),
-              SizedBox(
-                width: 10,
-              ),
-              PriceTag(_product['price'].toString(),)
-              ,
-            ],
-          ),
+          _buildTitleAndPriceRow(),
           AddressTag('Mpanda-Katavi, Tanzania'),
-          ButtonBar(
-            alignment: MainAxisAlignment.center,
-            children: <Widget>[
-              IconButton(
-                icon: Icon(Icons.info),
-                color: Theme.of(context).primaryColor,
-                onPressed: () =>
-                    Navigator.pushNamed(context, '/products/$_index'),
-              ),
-              IconButton(
-                icon: Icon(_favourite? Icons.favorite: Icons.favorite_border),
-                color: Colors.red,
-                onPressed: () => {
-                  // ...
-                  manageFavourite(_favourite)
-                },
-              )
-            ],
-          )
+          _buildButtonBar(),
         ],
       ),
     );

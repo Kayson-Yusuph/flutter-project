@@ -37,6 +37,27 @@ class ProductsDetailsPage extends StatelessWidget {
     );
   }
 
+  Row _buildTitleAndPriceRow() {
+    return Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TitleDefault(title: product['title']),
+              SizedBox(
+                width: 15,
+              ),
+              PriceTag(product['price'].toString(),),
+            ],
+          );
+  }
+
+  RaisedButton _buildDeleteRaisedButton(BuildContext context) {
+    return  RaisedButton(
+                color: Theme.of(context).accentColor,
+                child: Text('DELETE'),
+                onPressed: () => _showDeleteWarning(context),
+              );
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -53,24 +74,11 @@ class ProductsDetailsPage extends StatelessWidget {
             children: <Widget>[
               Image.asset(product['image']),
               SizedBox(height: 10.0),SizedBox(height: 10,),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TitleDefault(title: product['title']),
-              SizedBox(
-                width: 15,
-              ),
-              PriceTag(product['price'].toString(),),
-            ],
-          ),
+              _buildTitleAndPriceRow(),
               SizedBox(height: 10.0),
               Text(product['description']),
               SizedBox(height: 10.0),
-              RaisedButton(
-                color: Theme.of(context).accentColor,
-                child: Text('DELETE'),
-                onPressed: () => _showDeleteWarning(context),
-              ),
+            _buildDeleteRaisedButton(context),
             ],
           ),
         ),

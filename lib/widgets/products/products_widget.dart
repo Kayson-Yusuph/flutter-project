@@ -22,7 +22,6 @@ class _ProductsWidgetState extends State<ProductsWidget> {
   @override
   Widget build(BuildContext context) {
     Widget productCards;
-    print('product lenngth is ${_products.length}');
     if (_products.length > 0) {
       productCards = ListView.builder(
         itemBuilder: (BuildContext context, int index) => ProductCard(favourite: favoured, index: index, product: _products[index], manageFavourite: manageFavourite,),

@@ -13,50 +13,57 @@ class ProductsPage extends StatelessWidget {
     this.setMode,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    print('This is products page');
-    return Scaffold(
-      drawer: Drawer(
-        child: Column(
-          children: [
-            AppBar(
-              automaticallyImplyLeading: false,
-              title: Text('Choose'),
-            ),
-            ListTile(
-              leading: Icon(Icons.edit),
-              title: Text('Manage products'),
-              onTap: () {
-                Navigator.pushReplacementNamed(context, '/admin');
-              },
-            ),
-          ],
-        ),
-      ),
-      appBar: AppBar(
-        title: Text('EasyList'),
-        actions: products.length > 0 ? [
-          IconButton(
-            icon: Icon(Icons.favorite),
-            onPressed: () {
-              // ...
+  Drawer _buildSideDrawer(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: [
+          AppBar(
+            automaticallyImplyLeading: false,
+            title: Text('Choose'),
+          ),
+          ListTile(
+            leading: Icon(Icons.edit),
+            title: Text('Manage products'),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, '/admin');
             },
-          ), IconButton(
-            icon: Icon(Icons.wb_sunny),
-            onPressed: () {
-              setMode(mode);
-            },
-          )
-        ]: [
-          IconButton(
-            icon: Icon(Icons.wb_sunny),
-            onPressed: () {
-              setMode(mode);
-            },
-          )
+          ),
         ],
       ),
+    );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: Text('EasyList'),
+      actions: products.length > 0 ? [
+        IconButton(
+          icon: Icon(Icons.favorite),
+          onPressed: () {
+            // ...
+          },
+        ), IconButton(
+          icon: Icon(Icons.wb_sunny),
+          onPressed: () {
+            setMode(mode);
+          },
+        )
+      ]: [
+        IconButton(
+          icon: Icon(Icons.wb_sunny),
+          onPressed: () {
+            setMode(mode);
+          },
+        )
+      ],
+    );
+  }
+  
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      drawer: _buildSideDrawer(context),
+      appBar: _buildAppBar(),
       body: ProductsWidget(products),
     );
   }
