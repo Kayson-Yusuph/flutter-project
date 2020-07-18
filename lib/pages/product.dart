@@ -70,7 +70,7 @@ class ProductsDetailsPage extends StatelessWidget {
           title: Text('Product Details'),
         ),
         body: Center(
-          child: Column(
+          child: ListView(
             children: <Widget>[
               Image.asset(product['image']),
               SizedBox(height: 10.0),SizedBox(height: 10,),
