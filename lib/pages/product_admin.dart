@@ -10,6 +10,21 @@ class ProductAdminPage extends StatelessWidget {
   final Function deleteProduct;
 
   ProductAdminPage({this.mode, this.setMode, this.addProduct, this.deleteProduct});
+
+TabBar _buildTabsBar() {
+    return TabBar(
+            tabs: [
+              Tab(
+                text: 'Create Product',
+                icon: Icon(Icons.create),
+              ),
+              Tab(
+                text: 'Product List',
+                icon: Icon(Icons.list),
+              ),
+            ],
+          );
+  }
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -33,18 +48,7 @@ class ProductAdminPage extends StatelessWidget {
           ),
         ),
         appBar: AppBar(
-          bottom: TabBar(
-            tabs: [
-              Tab(
-                text: 'Create Product',
-                icon: Icon(Icons.create),
-              ),
-              Tab(
-                text: 'Product List',
-                icon: Icon(Icons.list),
-              ),
-            ],
-          ),
+          bottom: _buildTabsBar(),
           title: Text('Manage products'),
           actions: [
             IconButton(
