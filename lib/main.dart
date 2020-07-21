@@ -43,6 +43,7 @@ class _MyAppState extends State<MyApp> {
               products: products,
             ),
         '/admin': (BuildContext context) => ProductAdminPage(
+                products: products,
                 mode: nightMode,
                 setMode: setMode,
                 addProduct: _addProduct,

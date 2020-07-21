@@ -4,12 +4,13 @@ import './product_create.dart';
 import './product_list.dart';
 
 class ProductAdminPage extends StatelessWidget {
+  final List<Map<String, dynamic>> products;
   final bool mode;
   final Function setMode;
   final Function addProduct;
   final Function deleteProduct;
 
-  ProductAdminPage({this.mode, this.setMode, this.addProduct, this.deleteProduct});
+  ProductAdminPage({this.products,this.mode, this.setMode, this.addProduct, this.deleteProduct});
 
 TabBar _buildTabsBar() {
     return TabBar(
@@ -60,7 +61,7 @@ TabBar _buildTabsBar() {
           ],
         ),
         body: TabBarView(
-          children: [ProductCreatePage(addProduct), ProductListPage()],
+          children: [ProductCreatePage(addProduct), ProductListPage(products: products,)],
         ),
       ),
     );

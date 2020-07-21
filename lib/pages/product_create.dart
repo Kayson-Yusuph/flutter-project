@@ -4,13 +4,6 @@ class ProductCreatePage extends StatelessWidget {
   final Function addProduct;
 
   ProductCreatePage(this.addProduct);
-  // @override
-//   State<StatefulWidget> createState() {
-//     return _ProductCreatePageState();
-//   }
-// }
-
-// class _ProductCreatePageState extends State<ProductCreatePage> {
   final Map<String, dynamic> _formData = {
     'title': null,
     'price': null,
