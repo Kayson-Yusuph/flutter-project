@@ -13,6 +13,7 @@ class _AuthPageState extends State<AuthPage> {
   String _emailValue;
   String _passwordValue;
   bool _acceptTerms = false;
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   DecorationImage _buildBackgroundImage() {
     return DecorationImage(
@@ -23,24 +24,29 @@ class _AuthPageState extends State<AuthPage> {
             );
   }
 
-  TextField _buildEmailTextField() {
-    return TextField(
+  TextFormField _buildEmailTextField() {
+    return TextFormField(
                     decoration: InputDecoration(
                       labelText: 'E-Mail',
                       fillColor: Colors.white,
                       filled: true,
                       border: OutlineInputBorder(),
                     ),
-                    onChanged: (String value) {
-                      setState(() {
+                    validator: (String value) {
+                      dynamic rtn;
+                      if(value.isEmpty) {
+                        rtn = 'Email is required';  
+                      }
+                      return rtn;
+                    },
+                    onSaved: (String value) {
                         _emailValue = value;
-                      });
                     },
                   );
   }
 
-  TextField _buildPasswordTextField() {
-    return TextField(
+  TextFormField _buildPasswordTextField() {
+    return TextFormField(
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Password',
@@ -48,10 +54,15 @@ class _AuthPageState extends State<AuthPage> {
                       filled: true,
                       border: OutlineInputBorder(),
                     ),
-                    onChanged: (String value) {
-                      setState(() {
-                        _passwordValue = value;
-                      });
+                    validator: (String value) {
+                      dynamic rtn;
+                      if(value.isEmpty) {
+                        rtn = 'Password is required';  
+                      }
+                      return rtn;
+                    },
+                    onSaved: (String value) {
+                      _passwordValue = value;
                     },
                   );
   }
@@ -81,6 +92,10 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   void _onLogin() {
+    if(!_formKey.currentState.validate()) {
+      return;
+    }
+    _formKey.currentState.save();
     widget.signIn(context);
   }
   
@@ -101,7 +116,7 @@ class _AuthPageState extends State<AuthPage> {
           decoration: BoxDecoration(
             image: _buildBackgroundImage(),
           ),
-          child: Center(
+          child: Form( key: _formKey, child: Center(
             child: SingleChildScrollView(
               child: Container(
                 width: targetWidth,
@@ -124,7 +139,7 @@ class _AuthPageState extends State<AuthPage> {
                 ],
               ), ),
             ),
-          ),),
+          ),),),
     );
   }
 }
