@@ -61,7 +61,7 @@ TabBar _buildTabsBar() {
           ],
         ),
         body: TabBarView(
-          children: [ProductCreatePage(addProduct), ProductListPage(products: products,)],
+          children: [ProductCreatePage(addProduct), ProductListPage(products: products,deleteProduct: deleteProduct)],
         ),
       ),
     );
