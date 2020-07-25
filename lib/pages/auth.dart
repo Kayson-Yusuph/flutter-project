@@ -33,11 +33,18 @@ class _AuthPageState extends State<AuthPage> {
                       border: OutlineInputBorder(),
                     ),
                     validator: (String value) {
-                      dynamic rtn;
-                      if(value.isEmpty) {
-                        rtn = 'Email is required';  
-                      }
-                      return rtn;
+                      // dynamic rtn;
+                      // if(value.isEmpty) {
+                      //   rtn = 'Email is required';  
+                      // }
+                      // return rtn;
+                      Pattern pattern =
+                          r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
+                      RegExp regex = new RegExp(pattern);
+                      if (!regex.hasMatch(value))
+                        return 'Enter Valid Email';
+                      else
+                        return null;
                     },
                     onSaved: (String value) {
                         _emailValue = value;
