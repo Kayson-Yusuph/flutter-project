@@ -47,6 +47,7 @@ class _MyAppState extends State<MyApp> {
                 mode: nightMode,
                 setMode: setMode,
                 addProduct: _addProduct,
+                updateProduct: _updateProduct,
                 deleteProduct: deleteProduct,
               )
       },
@@ -78,6 +79,10 @@ class _MyAppState extends State<MyApp> {
 
   void deleteProduct(int index) {
     setState(() => products.removeAt(index));
+  }
+
+  void _updateProduct(int index, Map<String, dynamic> product) {
+    setState(() => products[index] = product);
   }
 
   setMode(mode) {

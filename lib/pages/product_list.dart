@@ -1,18 +1,26 @@
 import 'package:flutter/material.dart';
 
+import './product_edit.dart';
 
 class ProductListPage extends StatelessWidget {
   final List<Map<String, dynamic>> products;
+  final Function addProduct;
   final Function deleteProduct;
-  ProductListPage({this.products, this.deleteProduct});
+  final Function updateProduct;
+  ProductListPage({this.products, this.addProduct,this.updateProduct, this.deleteProduct});
 
+_buildProductEditButton(context, int index) {
+  return IconButton(onPressed: () {
+      Navigator.of(context).push(MaterialPageRoute(builder: (context) => ProductEditPage(productIndex: index, product: products[index], updateProduct: updateProduct,)));
+    }, icon: Icon(Icons.edit,),);
+}
   ListView _buildProductList() {
     return ListView.builder( itemCount: products.length, itemBuilder: (BuildContext context, int index) {
-      return _buildProductListTile(index);
+      return _buildProductListTile(context,index);
     },);
   }
 
-  Dismissible _buildProductListTile(int index) {
+  Dismissible _buildProductListTile(context,int index) {
     final Map<String, dynamic> _product = products[index];
     return Dismissible(key: Key(products[index]['title']), onDismissed: (DismissDirection direction) {
       if(direction == DismissDirection.endToStart) {
@@ -22,9 +30,7 @@ class ProductListPage extends StatelessWidget {
       } else {
         print('Other swips directions!');
       }
-    }, background: Container(color: Colors.red,), child: Column(children: [ListTile(leading: CircleAvatar(backgroundImage: AssetImage(_product['image'],),), title: Text(_product['title'],),subtitle: Text('TZS ${_product['price'].toString()}'), trailing: GestureDetector(onTap: () {
-      print('${products[index]['title']} selected!');
-    }, child: Icon(Icons.edit,),),), Divider(),],),);
+    }, background: Container(color: Colors.red,), child: Column(children: [ListTile(leading: CircleAvatar(backgroundImage: AssetImage(_product['image'],),), title: Text(_product['title'],),subtitle: Text('TZS ${_product['price'].toString()}'), trailing: _buildProductEditButton(context,index),), Divider(),],),);
   }
   
   @override

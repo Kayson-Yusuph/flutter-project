@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 
-class ProductCreatePage extends StatelessWidget {
+class ProductEditPage extends StatefulWidget {
   final Function addProduct;
+  final Map<String, dynamic> product;
+  final int productIndex;
+  final Function updateProduct;
 
-  ProductCreatePage(this.addProduct);
+  ProductEditPage({this.product,this.productIndex,this.addProduct,this.updateProduct});
+  @override State<StatefulWidget> createState() => _ProductEditPage();
+}
+
+class _ProductEditPage extends State<ProductEditPage> {
   final Map<String, dynamic> _formData = {
     'title': null,
     'price': null,
@@ -11,10 +18,29 @@ class ProductCreatePage extends StatelessWidget {
     'image': 'assets/food.jpg',
     'favourite': false
   };
+  
+  Map<String, dynamic> _product;
+  TextEditingController _title;
+  TextEditingController _price;
+  TextEditingController _description;
+  // TextEditingController _image;
+  // TextEditingController _favourite;
+
+  @override
+  initState() {
+    if(widget.product != null) {
+      _product = widget.product;
+      _title = TextEditingController(text: _product['title']);
+      _price = TextEditingController(text: _product['price'].toString());
+      _description = TextEditingController(text: _product['description']);
+    }
+    super.initState();
+  }
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   TextFormField _buildTitleTextField() {
     return TextFormField(
+            controller: _title,
             decoration: InputDecoration(
               labelText: 'Title',
               border: OutlineInputBorder(),
@@ -35,6 +61,7 @@ class ProductCreatePage extends StatelessWidget {
 
   TextFormField _buildDescriptionTextField() {
     return TextFormField(
+            controller: _description,
             decoration: InputDecoration(
               labelText: 'Description',
               border: OutlineInputBorder(),
@@ -55,6 +82,7 @@ class ProductCreatePage extends StatelessWidget {
 
   TextFormField _buildPriceTextField() {
     return TextFormField(
+            controller: _price,
             decoration: InputDecoration(
                 labelText: 'Price', border: OutlineInputBorder()),
             keyboardType: TextInputType.number,
@@ -77,25 +105,37 @@ ButtonBar _buildButtonBar(BuildContext context) {
               RaisedButton(
                 color: Theme.of(context).secondaryHeaderColor,
                 child: Text('Cancel'),
-                onPressed: () {              
+                onPressed: () {
                   Navigator.pushReplacementNamed(context, '/');
                 },
               ),
               RaisedButton(
                 color: Theme.of(context).primaryColor,
                 child: Text('Save'),
-                onPressed: () => onCreate(context),
+                onPressed: () => onSave(context),
               ),
             ],
           );
   }
 
-  void onCreate(BuildContext context) {
+  void onSave(BuildContext context) {
     if(!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
-    addProduct(_formData);
+    if(_product == null) {
+    widget.addProduct(_formData);
+    } else {
+      print(_formData);
+      final Map<String, dynamic> newProduct = {
+        'title': _formData['title'],
+        'price': _formData['price'],
+        'description': _formData['description'],
+        'image': _product['image'],
+        'favourite': _product['favourite'],
+      };
+      widget.updateProduct(widget.productIndex, newProduct);
+    }
     Navigator.pushReplacementNamed(context, '/');
   }
 
@@ -131,13 +171,8 @@ ButtonBar _buildButtonBar(BuildContext context) {
     }
     return children;
   }
-  @override
-  Widget build(BuildContext context) {
-    final deviceWidth = MediaQuery.of(context).size.width;
-    bool alignVertical = true;
-    if(deviceWidth > 420) {
-      alignVertical = false;
-    }
+
+  _buildPageContent(BuildContext context, bool alignVertical) {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
@@ -148,5 +183,15 @@ ButtonBar _buildButtonBar(BuildContext context) {
         children: _buildListViewChildren(context, alignVertical),
       ),),
     ),);
+  }
+  @override
+  Widget build(BuildContext context) {
+    final deviceWidth = MediaQuery.of(context).size.width;
+    bool alignVertical = true;
+    if(deviceWidth > 420) {
+      alignVertical = false;
+    }
+    return _product == null? _buildPageContent(context, alignVertical):
+    Scaffold(appBar: AppBar(title: Text('Edit product'),),body: _buildPageContent(context, alignVertical),);
   }
 }
