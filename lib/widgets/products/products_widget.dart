@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
 
 import './product_card.dart';
+import '../../models/product.model.dart';
 
 class ProductsWidget extends StatefulWidget {
-  final List<Map<String, dynamic>> products;
+  final List<Product> products;
   ProductsWidget(this.products);
   @override
   State<StatefulWidget> createState() => _ProductsWidgetState();
 }
 
 class _ProductsWidgetState extends State<ProductsWidget> {
-  List<Map<String, dynamic>> _products = [];
+  List<Product> _products = [];
 
   @override
   void initState() {

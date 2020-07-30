@@ -5,6 +5,7 @@ import './pages/products_page.dart';
 import './pages/auth.dart';
 import './pages/product.dart';
 import './pages/page_not_found.dart';
+import './models/product.model.dart';
 
 void main() => runApp(MyApp());
 
@@ -16,10 +17,9 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  // final String _startingProduct = 'Food Paradise';
   bool nightMode = false;
   IconData mode = Icons.wb_sunny;
-  List<Map<String, dynamic>> products = [];
+  List<Product> products = [];
   bool isLogin = false;
 
   @override
@@ -29,7 +29,6 @@ class _MyAppState extends State<MyApp> {
           brightness: !nightMode ? Brightness.light : Brightness.dark,
           primarySwatch: Colors.lightGreen,
           accentColor: Colors.deepPurple),
-      // home: AuthPage(mode: nightMode, setMode: setMode),
       routes: {
         '/': (BuildContext context) => !isLogin
             ? AuthPage(
@@ -73,7 +72,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void _addProduct(Map<String, dynamic> product) {
+  void _addProduct(Product product) {
     setState(() => products.add(product));
   }
 
@@ -81,7 +80,7 @@ class _MyAppState extends State<MyApp> {
     setState(() => products.removeAt(index));
   }
 
-  void _updateProduct(int index, Map<String, dynamic> product) {
+  void _updateProduct(int index, Product product) {
     setState(() => products[index] = product);
   }
 

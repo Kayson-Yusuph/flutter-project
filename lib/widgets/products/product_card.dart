@@ -3,10 +3,11 @@ import 'package:flutter/material.dart';
 import './price_tag.dart';
 import '../ui_elements/address_tag.dart';
 import '../ui_elements/title_default.dart';
+import '../../models/product.model.dart';
 
 class ProductCard extends StatefulWidget {
   final int index;
-  final Map<String, dynamic> product;
+  final Product product;
 
   ProductCard({ this.index, this.product });
   @override
@@ -16,7 +17,7 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
 
   int _index = 0;
-  Map<String, dynamic> _product = {};
+  Product _product;
 
   @override
   void initState() {
@@ -29,11 +30,11 @@ class _ProductCardState extends State<ProductCard> {
     return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-          TitleDefault(title: _product['title'],),
+          TitleDefault(title: _product.title,),
             SizedBox(
               width: 10,
             ),
-            PriceTag(_product['price'].toString(),)
+            PriceTag(_product.price.toString(),)
             ,
           ],
         );
@@ -50,7 +51,7 @@ class _ProductCardState extends State<ProductCard> {
                   Navigator.pushNamed(context, '/products/$_index'),
             ),
             IconButton(
-              icon: Icon(_product['favourite']? Icons.favorite: Icons.favorite_border),
+              icon: Icon(_product.favourite? Icons.favorite: Icons.favorite_border),
               color: Colors.red,
               onPressed: () {
                 // ...
@@ -65,7 +66,7 @@ class _ProductCardState extends State<ProductCard> {
     return Card(
       child: Column(
         children: <Widget>[
-          Image.asset(_product['image']),
+          Image.asset(_product.image),
           SizedBox(
             height: 10,
           ),
@@ -77,6 +78,6 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
   void manageFavourite() {
-    setState(() => _product['favourite'] = !_product['favourite']);
+    setState(() => _product.favourite= !_product.favourite);
   }
 }

@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import './product_edit.dart';
+import '../models/product.model.dart';
 
 class ProductListPage extends StatelessWidget {
-  final List<Map<String, dynamic>> products;
+  final List<Product> products;
   final Function addProduct;
   final Function deleteProduct;
   final Function updateProduct;
@@ -21,8 +22,8 @@ _buildProductEditButton(context, int index) {
   }
 
   Dismissible _buildProductListTile(context,int index) {
-    final Map<String, dynamic> _product = products[index];
-    return Dismissible(key: Key(products[index]['title']), onDismissed: (DismissDirection direction) {
+    final Product _product = products[index];
+    return Dismissible(key: Key(products[index].title), onDismissed: (DismissDirection direction) {
       if(direction == DismissDirection.endToStart) {
         deleteProduct(index);
       } else if(direction == DismissDirection.startToEnd) {
@@ -30,7 +31,7 @@ _buildProductEditButton(context, int index) {
       } else {
         print('Other swips directions!');
       }
-    }, background: Container(color: Colors.red,), child: Column(children: [ListTile(leading: CircleAvatar(backgroundImage: AssetImage(_product['image'],),), title: Text(_product['title'],),subtitle: Text('TZS ${_product['price'].toString()}'), trailing: _buildProductEditButton(context,index),), Divider(),],),);
+    }, background: Container(color: Colors.red,), child: Column(children: [ListTile(leading: CircleAvatar(backgroundImage: AssetImage(_product.image,),), title: Text(_product.title,),subtitle: Text('TZS ${_product.price.toString()}'), trailing: _buildProductEditButton(context,index),), Divider(),],),);
   }
   
   @override

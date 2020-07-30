@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../models/product.model.dart';
+
 class ProductEditPage extends StatefulWidget {
   final Function addProduct;
-  final Map<String, dynamic> product;
+  final Product product;
   final int productIndex;
   final Function updateProduct;
 
@@ -19,7 +21,7 @@ class _ProductEditPage extends State<ProductEditPage> {
     'favourite': false
   };
   
-  Map<String, dynamic> _product;
+  Product _product;
   TextEditingController _title;
   TextEditingController _price;
   TextEditingController _description;
@@ -30,9 +32,9 @@ class _ProductEditPage extends State<ProductEditPage> {
   initState() {
     if(widget.product != null) {
       _product = widget.product;
-      _title = TextEditingController(text: _product['title']);
-      _price = TextEditingController(text: _product['price'].toString());
-      _description = TextEditingController(text: _product['description']);
+      _title = TextEditingController(text: _product.title);
+      _price = TextEditingController(text: _product.price.toString());
+      _description = TextEditingController(text: _product.description);
     }
     super.initState();
   }
@@ -124,16 +126,22 @@ ButtonBar _buildButtonBar(BuildContext context) {
     }
     _formKey.currentState.save();
     if(_product == null) {
-    widget.addProduct(_formData);
+      final Product newProduct = new Product(
+        title:  _formData['title'],
+        price:  _formData['price'],
+        favourite:  _formData['favourite'],
+        image:  _formData['image'],
+        description:  _formData['description']
+        );
+    widget.addProduct(newProduct);
     } else {
-      print(_formData);
-      final Map<String, dynamic> newProduct = {
-        'title': _formData['title'],
-        'price': _formData['price'],
-        'description': _formData['description'],
-        'image': _product['image'],
-        'favourite': _product['favourite'],
-      };
+      final Product newProduct = new Product(
+        title:  _formData['title'],
+        price:  _formData['price'],
+        description:  _formData['description'],
+        image: _product.image,
+        favourite: _product.favourite
+        );
       widget.updateProduct(widget.productIndex, newProduct);
     }
     Navigator.pushReplacementNamed(context, '/');

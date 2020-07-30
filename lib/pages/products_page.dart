@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../widgets/products/products_widget.dart';
+import '../models/product.model.dart';
 
 class ProductsPage extends StatelessWidget {
   final bool mode;
-  final List<Map<String, dynamic>> products;
+  final List<Product> products;
   final Function setMode;
 
   ProductsPage({
