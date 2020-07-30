@@ -2,17 +2,8 @@ import 'package:flutter/material.dart';
 
 import './product_edit.dart';
 import './product_list.dart';
-import '../models/product.model.dart';
 
 class ProductAdminPage extends StatelessWidget {
-  final List<Product> products;
-  final bool mode;
-  final Function setMode;
-  final Function addProduct;
-  final Function updateProduct;
-  final Function deleteProduct;
-
-  ProductAdminPage({this.products,this.mode, this.setMode, this.addProduct, this.updateProduct, this.deleteProduct});
 
 TabBar _buildTabsBar() {
     return TabBar(
@@ -28,12 +19,9 @@ TabBar _buildTabsBar() {
             ],
           );
   }
-  @override
-  Widget build(BuildContext context) {
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        drawer: Drawer(
+
+  Drawer _buildDrawer(BuildContext context) {
+    return Drawer(
           child: Column(
             children: [
               AppBar(
@@ -49,21 +37,33 @@ TabBar _buildTabsBar() {
               ),
             ],
           ),
-        ),
-        appBar: AppBar(
+        );
+  }
+
+  AppBar _buildAppBar() {
+    return AppBar(
           bottom: _buildTabsBar(),
           title: Text('Manage products'),
           actions: [
             IconButton(
               icon: Icon(Icons.wb_sunny),
               onPressed: () {
-                setMode(mode);
+                // setMode(mode);
               },
             ),
           ],
-        ),
+        );
+  }
+  @override
+  Widget build(BuildContext context) {
+    final tabChildren = [ProductEditPage(), ProductListPage()];
+    return DefaultTabController(
+      length: tabChildren.length,
+      child: Scaffold(
+        drawer: _buildDrawer(context),
+        appBar: _buildAppBar(),
         body: TabBarView(
-          children: [ProductEditPage(addProduct: addProduct), ProductListPage(products: products,addProduct: addProduct, deleteProduct: deleteProduct, updateProduct: updateProduct,)],
+          children: tabChildren,
         ),
       ),
     );

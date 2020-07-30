@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import './product_edit.dart';
 import '../models/product.model.dart';
+import '../scoped-model/products.dart';
 
 class ProductListPage extends StatelessWidget {
-  final List<Product> products;
-  final Function addProduct;
-  final Function deleteProduct;
-  final Function updateProduct;
-  ProductListPage({this.products, this.addProduct,this.updateProduct, this.deleteProduct});
 
 _buildProductEditButton(context, int index) {
   return IconButton(onPressed: () {
@@ -34,12 +31,14 @@ _buildProductEditButton(context, int index) {
   
   @override
   Widget build(BuildContext context) {
-    Widget center = Center(
+    return  ScopedModelDescendant<ProductsModel>(builder: (BuildContext context, Widget child, ProductsModel model) {
+Widget center = Center(
       child: Text('Product list is empty!'),
     );
-    if(products.length > 0) {
+    if(model.products.length > 0) {
       center = _buildProductList();
     }
-    return  center;
+    return center;
+    },);
   }
 }

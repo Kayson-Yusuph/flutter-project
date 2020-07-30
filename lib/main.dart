@@ -5,7 +5,6 @@ import './pages/products_page.dart';
 import './pages/auth.dart';
 import './pages/product.dart';
 import './pages/page_not_found.dart';
-import './models/product.model.dart';
 
 void main() => runApp(MyApp());
 
@@ -17,38 +16,21 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  bool nightMode = false;
   IconData mode = Icons.wb_sunny;
-  List<Product> products = [];
   bool isLogin = false;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-          brightness: !nightMode ? Brightness.light : Brightness.dark,
+          brightness: !true ? Brightness.light : Brightness.dark,
           primarySwatch: Colors.lightGreen,
           accentColor: Colors.deepPurple),
       routes: {
         '/': (BuildContext context) => !isLogin
-            ? AuthPage(
-                mode: nightMode,
-                setMode: setMode,
-                signIn: signIn,
-              )
-            : ProductsPage(
-              mode: nightMode,
-              setMode: setMode,
-              products: products,
-            ),
-        '/admin': (BuildContext context) => ProductAdminPage(
-                products: products,
-                mode: nightMode,
-                setMode: setMode,
-                addProduct: _addProduct,
-                updateProduct: _updateProduct,
-                deleteProduct: deleteProduct,
-              )
+            ? AuthPage()
+            : ProductsPage(),
+        '/admin': (BuildContext context) => ProductAdminPage()
       },
       onGenerateRoute: (RouteSettings settings) {
         List<String> route = settings.name.split('/');
@@ -58,9 +40,7 @@ class _MyAppState extends State<MyApp> {
         if (route[1] == 'products') {
           final int index = int.parse(route[2]);
           return MaterialPageRoute(
-            builder: (BuildContext context) => ProductsDetailsPage(
-              product: products[index],
-            ),
+            builder: (BuildContext context) => ProductsDetailsPage(),
           );
         }
         return null;
@@ -72,21 +52,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-  void _addProduct(Product product) {
-    setState(() => products.add(product));
-  }
-
-  void deleteProduct(int index) {
-    setState(() => products.removeAt(index));
-  }
-
-  void _updateProduct(int index, Product product) {
-    setState(() => products[index] = product);
-  }
-
-  setMode(mode) {
-    setState(() => nightMode = !nightMode);
-  }
+  
 
   signIn(BuildContext context) {
     setState(() => isLogin = true);

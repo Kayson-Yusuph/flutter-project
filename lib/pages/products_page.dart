@@ -1,18 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import '../widgets/products/products_widget.dart';
-import '../models/product.model.dart';
+import '../scoped-model/products.dart';
 
 class ProductsPage extends StatelessWidget {
-  final bool mode;
-  final List<Product> products;
-  final Function setMode;
-
-  ProductsPage({
-    this.products,
-    this.mode,
-    this.setMode,
-  });
 
   Drawer _buildSideDrawer(BuildContext context) {
     return Drawer(
@@ -37,7 +29,7 @@ class ProductsPage extends StatelessWidget {
   AppBar _buildAppBar() {
     return AppBar(
       title: Text('EasyList'),
-      actions: products.length > 0 ? [
+      actions: [
         IconButton(
           icon: Icon(Icons.favorite),
           onPressed: () {
@@ -46,26 +38,29 @@ class ProductsPage extends StatelessWidget {
         ), IconButton(
           icon: Icon(Icons.wb_sunny),
           onPressed: () {
-            setMode(mode);
+            // setMode(mode);
           },
         )
-      ]: [
-        IconButton(
-          icon: Icon(Icons.wb_sunny),
-          onPressed: () {
-            setMode(mode);
-          },
-        )
-      ],
+      ]
+      // : [
+      //   IconButton(
+      //     icon: Icon(Icons.wb_sunny),
+      //     onPressed: () {
+      //       // setMode(mode);
+      //     },
+      //   )
+      // ],
     );
   }
   
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScopedModelDescendant<ProductsModel>(builder: (BuildContext context, Widget child, ProductsModel model) {
+      return Scaffold(
       drawer: _buildSideDrawer(context),
       appBar: _buildAppBar(),
-      body: ProductsWidget(products),
+      body: ProductsWidget(model.products),
     );
+    },);
   }
 }
