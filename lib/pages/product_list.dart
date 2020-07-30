@@ -24,10 +24,8 @@ _buildProductEditButton(context, int index) {
   Dismissible _buildProductListTile(context,int index) {
     final Product _product = products[index];
     return Dismissible(key: Key(products[index].title), onDismissed: (DismissDirection direction) {
-      if(direction == DismissDirection.endToStart) {
+      if(direction == DismissDirection.endToStart || direction == DismissDirection.startToEnd) {
         deleteProduct(index);
-      } else if(direction == DismissDirection.startToEnd) {
-        print('Swiped from left to right!');
       } else {
         print('Other swips directions!');
       }
