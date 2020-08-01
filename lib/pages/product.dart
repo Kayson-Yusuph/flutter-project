@@ -1,15 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/widgets/products/price_tag.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import '../widgets/ui_elements/title_default.dart';
 import '../models/product.model.dart';
+import '../scoped-model/products.dart';
 
 class ProductsDetailsPage extends StatelessWidget {
-  final Product product;
+  final int productIndex;
 
-  ProductsDetailsPage({this.product});
+  ProductsDetailsPage(this.productIndex);
 
-  _showDeleteWarning(BuildContext context) {
+  _showDeleteWarning(BuildContext context, Product product) {
     return showDialog(
       context: context,
       builder: (context) {
@@ -38,7 +40,7 @@ class ProductsDetailsPage extends StatelessWidget {
     );
   }
 
-  Row _buildTitleAndPriceRow() {
+  Row _buildTitleAndPriceRow(Product product) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -53,44 +55,50 @@ class ProductsDetailsPage extends StatelessWidget {
     );
   }
 
-  RaisedButton _buildDeleteRaisedButton(BuildContext context) {
+  RaisedButton _buildDeleteRaisedButton(BuildContext context, Product product) {
     return RaisedButton(
       color: Colors.red,
       child: Text('DELETE'),
-      onPressed: () => _showDeleteWarning(context),
+      onPressed: () => _showDeleteWarning(context, product),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () {
-        Navigator.pop(context, false);
-        return Future.value(true);
-      },
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Product Details'),
-        ),
-        body: Center(
-          child: ListView(
-            children: <Widget>[
-              Image.asset(product.image),
-              SizedBox(height: 10.0),
-              SizedBox(
-                height: 10,
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, ProductsModel model) {
+        final List<Product> products = model.products;
+        final Product product = products[productIndex];
+        return WillPopScope(
+          onWillPop: () {
+            Navigator.pop(context, false);
+            return Future.value(true);
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: Text('Product Details'),
+            ),
+            body: Center(
+              child: ListView(
+                children: <Widget>[
+                  Image.asset(product.image),
+                  SizedBox(height: 10.0),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  _buildTitleAndPriceRow(product),
+                  SizedBox(height: 10.0),
+                  Center(
+                    child: Text(product.description),
+                  ),
+                  SizedBox(height: 10.0),
+                  _buildDeleteRaisedButton(context, product),
+                ],
               ),
-              _buildTitleAndPriceRow(),
-              SizedBox(height: 10.0),
-              Center(
-                child: Text(product.description),
-              ),
-              SizedBox(height: 10.0),
-              _buildDeleteRaisedButton(context),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
