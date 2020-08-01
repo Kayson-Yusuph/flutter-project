@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:scoped_model/scoped_model.dart';
+
 import '../models/product.model.dart';
+import '../scoped-model/products.dart';
 
 class ProductEditPage extends StatefulWidget {
   final Function addProduct;
@@ -104,46 +107,54 @@ class _ProductEditPage extends State<ProductEditPage> {
     );
   }
 
-  ButtonBar _buildButtonBar(BuildContext context) {
-    return ButtonBar(
-      children: [
-        RaisedButton(
-          color: Theme.of(context).secondaryHeaderColor,
-          child: Text('Cancel'),
-          onPressed: () {
-            Navigator.pushReplacementNamed(context, '/');
-          },
-        ),
-        RaisedButton(
-          color: Theme.of(context).primaryColor,
-          child: Text('Save'),
-          onPressed: () => onSave(context),
-        ),
-      ],
+  Widget _buildButtonBar() {
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, ProductsModel model) {
+        return ButtonBar(
+          children: [
+            RaisedButton(
+              color: Theme.of(context).secondaryHeaderColor,
+              child: Text('Cancel'),
+              onPressed: () {
+                Navigator.pushReplacementNamed(context, '/');
+              },
+            ),
+            RaisedButton(
+              color: Theme.of(context).primaryColor,
+              child: Text('Save'),
+              onPressed: () =>
+                  onSave(context, model.addProduct, model.updateProduct),
+            ),
+          ],
+        );
+      },
     );
   }
 
-  void onSave(BuildContext context) {
+  void onSave(
+      BuildContext context, Function addProduct, Function updateProduct) {
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
     if (_product == null) {
+      print('Create');
       final Product newProduct = new Product(
           title: _formData['title'],
           price: _formData['price'],
           favourite: _formData['favourite'],
           image: _formData['image'],
           description: _formData['description']);
-      widget.addProduct(newProduct);
+      addProduct(newProduct);
     } else {
+      print('Update');
       final Product newProduct = new Product(
           title: _formData['title'],
           price: _formData['price'],
           description: _formData['description'],
           image: _product.image,
           favourite: _product.favourite);
-      widget.updateProduct(widget.productIndex, newProduct);
+      updateProduct(widget.productIndex, newProduct);
     }
     Navigator.pushReplacementNamed(context, '/');
   }
@@ -159,7 +170,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         height: 10,
       ),
       _buildDescriptionTextField(),
-      _buildButtonBar(context),
+      _buildButtonBar(),
     ];
 
     if (!vertical) {
@@ -183,7 +194,7 @@ class _ProductEditPage extends State<ProductEditPage> {
           height: 10,
         ),
         _buildDescriptionTextField(),
-        _buildButtonBar(context),
+        _buildButtonBar(),
       ];
     }
     return children;

@@ -12,8 +12,8 @@ class ProductListPage extends StatelessWidget {
         Navigator.of(context).push(MaterialPageRoute(
             builder: (context) => ProductEditPage(
                   productIndex: index,
-                  product: products[index],
-                  updateProduct: updateProduct,
+                  product: null,
+                  updateProduct: null,
                 )));
       },
       icon: Icon(
@@ -22,23 +22,24 @@ class ProductListPage extends StatelessWidget {
     );
   }
 
-  ListView _buildProductList() {
+  ListView _buildProductList(BuildContext context, List<Product> products) {
     return ListView.builder(
       itemCount: products.length,
       itemBuilder: (BuildContext context, int index) {
-        return _buildProductListTile(context, index);
+        return _buildProductListTile(context, products, index);
       },
     );
   }
 
-  Dismissible _buildProductListTile(context, int index) {
+  Dismissible _buildProductListTile(
+      context, List<Product> products, int index) {
     final Product _product = products[index];
     return Dismissible(
       key: Key(products[index].title),
       onDismissed: (DismissDirection direction) {
         if (direction == DismissDirection.endToStart ||
             direction == DismissDirection.startToEnd) {
-          deleteProduct(index);
+          // deleteProduct(index);
         } else {
           print('Other swips directions!');
         }
@@ -70,11 +71,12 @@ class ProductListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ProductsModel>(
       builder: (BuildContext context, Widget child, ProductsModel model) {
+        final List<Product> products = model.products;
         Widget center = Center(
           child: Text('Product list is empty!'),
         );
         if (model.products.length > 0) {
-          center = _buildProductList();
+          center = _buildProductList(context, products);
         }
         return center;
       },

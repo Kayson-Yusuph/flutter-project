@@ -105,8 +105,38 @@ class _AuthPageState extends State<AuthPage> {
     widget.signIn(context);
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Form _buildFormWidget(double targetWidth) {
+    return Form(
+      key: _formKey,
+      child: Center(
+        child: SingleChildScrollView(
+          child: Container(
+            width: targetWidth,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildEmailTextField(),
+                SizedBox(
+                  height: 10,
+                ),
+                _buildPasswordTextField(),
+                SizedBox(
+                  height: 10,
+                ),
+                _buildTermsAndConditionSwitch(),
+                SizedBox(
+                  height: 10,
+                ),
+                _buildLoginRaisedButton(),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  _deriveDeviceWidth(BuildContext context) {
     final double deviceWidth = MediaQuery.of(context).size.width;
     double targetWidth = deviceWidth;
     if (deviceWidth > 550) {
@@ -114,6 +144,12 @@ class _AuthPageState extends State<AuthPage> {
     } else if (deviceWidth > 410) {
       targetWidth = deviceWidth * 0.8;
     }
+    return targetWidth;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double targetWidth = _deriveDeviceWidth(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('Login'),
@@ -122,34 +158,7 @@ class _AuthPageState extends State<AuthPage> {
         decoration: BoxDecoration(
           image: _buildBackgroundImage(),
         ),
-        child: Form(
-          key: _formKey,
-          child: Center(
-            child: SingleChildScrollView(
-              child: Container(
-                width: targetWidth,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _buildEmailTextField(),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    _buildPasswordTextField(),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    _buildTermsAndConditionSwitch(),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    _buildLoginRaisedButton(),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ),
+        child: _buildFormWidget(targetWidth),
       ),
     );
   }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
+import 'package:scoped_model/scoped_model.dart';
+
 import './pages/product_admin.dart';
 import './pages/products_page.dart';
 import './pages/auth.dart';
 import './pages/product.dart';
 import './pages/page_not_found.dart';
+import './scoped-model/products.dart';
 
 void main() => runApp(MyApp());
 
@@ -21,37 +24,37 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(
-          brightness: !true ? Brightness.light : Brightness.dark,
-          primarySwatch: Colors.lightGreen,
-          accentColor: Colors.deepPurple),
-      routes: {
-        '/': (BuildContext context) => !isLogin ? AuthPage() : ProductsPage(),
-        '/admin': (BuildContext context) => ProductAdminPage()
-      },
-      onGenerateRoute: (RouteSettings settings) {
-        List<String> route = settings.name.split('/');
-        if (route[0] == null) {
+    return ScopedModel<ProductsModel>(
+      model: ProductsModel(),
+      child: MaterialApp(
+        theme: ThemeData(
+            brightness: !true ? Brightness.light : Brightness.dark,
+            primarySwatch: Colors.lightGreen,
+            accentColor: Colors.deepPurple),
+        routes: {
+          // '/': (BuildContext context) => !isLogin ? AuthPage() : ProductsPage(),
+          '/': (BuildContext context) => !true ? AuthPage() : ProductsPage(),
+          '/admin': (BuildContext context) => ProductAdminPage()
+        },
+        onGenerateRoute: (RouteSettings settings) {
+          List<String> route = settings.name.split('/');
+          if (route[0] == null) {
+            return null;
+          }
+          if (route[1] == 'products') {
+            final int index = int.parse(route[2]);
+            return MaterialPageRoute(
+              builder: (BuildContext context) => ProductsDetailsPage(),
+            );
+          }
           return null;
-        }
-        if (route[1] == 'products') {
-          final int index = int.parse(route[2]);
+        },
+        onUnknownRoute: (RouteSettings settings) {
           return MaterialPageRoute(
-            builder: (BuildContext context) => ProductsDetailsPage(),
-          );
-        }
-        return null;
-      },
-      onUnknownRoute: (RouteSettings settings) {
-        return MaterialPageRoute(
-            builder: (BuildContext context) => PageNotFound());
-      },
+              builder: (BuildContext context) => PageNotFound());
+        },
+      ),
     );
-  }
-
-  signIn(BuildContext context) {
-    setState(() => isLogin = true);
-    Navigator.pushReplacementNamed(context, '/');
+    ;
   }
 }

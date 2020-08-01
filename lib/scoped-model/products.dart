@@ -11,6 +11,7 @@ class ProductsModel extends Model {
 
   void addProduct(Product product) {
     // add product
+    _products.add(product);
   }
 
   void deleteProduct(int index) {

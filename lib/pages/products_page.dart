@@ -58,7 +58,7 @@ class ProductsPage extends StatelessWidget {
         return Scaffold(
           drawer: _buildSideDrawer(context),
           appBar: _buildAppBar(),
-          body: ProductsWidget(model.products),
+          body: ProductsWidget(),
         );
       },
     );
