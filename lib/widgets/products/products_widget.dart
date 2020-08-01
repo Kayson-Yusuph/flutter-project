@@ -24,7 +24,10 @@ class _ProductsWidgetState extends State<ProductsWidget> {
     Widget productCards;
     if (_products.length > 0) {
       productCards = ListView.builder(
-        itemBuilder: (BuildContext context, int index) => ProductCard( index: index, product: _products[index],),
+        itemBuilder: (BuildContext context, int index) => ProductCard(
+          index: index,
+          product: _products[index],
+        ),
         itemCount: _products.length,
       );
     } else {

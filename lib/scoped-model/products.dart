@@ -8,6 +8,7 @@ class ProductsModel extends Model {
   List<Product> get products {
     return List.from(_products);
   }
+
   void addProduct(Product product) {
     // add product
   }
@@ -19,5 +20,4 @@ class ProductsModel extends Model {
   void updateProduct(int index, Product product) {
     // update product
   }
-
 }

@@ -27,9 +27,7 @@ class _MyAppState extends State<MyApp> {
           primarySwatch: Colors.lightGreen,
           accentColor: Colors.deepPurple),
       routes: {
-        '/': (BuildContext context) => !isLogin
-            ? AuthPage()
-            : ProductsPage(),
+        '/': (BuildContext context) => !isLogin ? AuthPage() : ProductsPage(),
         '/admin': (BuildContext context) => ProductAdminPage()
       },
       onGenerateRoute: (RouteSettings settings) {
@@ -51,8 +49,6 @@ class _MyAppState extends State<MyApp> {
       },
     );
   }
-
-  
 
   signIn(BuildContext context) {
     setState(() => isLogin = true);

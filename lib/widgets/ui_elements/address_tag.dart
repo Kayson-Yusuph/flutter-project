@@ -7,14 +7,14 @@ class AddressTag extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey, width: 1),
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Padding(
-              padding: EdgeInsets.all(5),
-              child: Text(address),
-            ),
-          );
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey, width: 1),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(5),
+        child: Text(address),
+      ),
+    );
   }
 }

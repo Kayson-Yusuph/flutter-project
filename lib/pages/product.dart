@@ -40,23 +40,25 @@ class ProductsDetailsPage extends StatelessWidget {
 
   Row _buildTitleAndPriceRow() {
     return Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              TitleDefault(title: product.title),
-              SizedBox(
-                width: 15,
-              ),
-              PriceTag(product.price.toString(),),
-            ],
-          );
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TitleDefault(title: product.title),
+        SizedBox(
+          width: 15,
+        ),
+        PriceTag(
+          product.price.toString(),
+        ),
+      ],
+    );
   }
 
   RaisedButton _buildDeleteRaisedButton(BuildContext context) {
-    return  RaisedButton(
-                color: Colors.red,
-                child: Text('DELETE'),
-                onPressed: () => _showDeleteWarning(context),
-              );
+    return RaisedButton(
+      color: Colors.red,
+      child: Text('DELETE'),
+      onPressed: () => _showDeleteWarning(context),
+    );
   }
 
   @override
@@ -74,12 +76,17 @@ class ProductsDetailsPage extends StatelessWidget {
           child: ListView(
             children: <Widget>[
               Image.asset(product.image),
-              SizedBox(height: 10.0),SizedBox(height: 10,),
+              SizedBox(height: 10.0),
+              SizedBox(
+                height: 10,
+              ),
               _buildTitleAndPriceRow(),
               SizedBox(height: 10.0),
-              Center(child: Text(product.description),),
+              Center(
+                child: Text(product.description),
+              ),
               SizedBox(height: 10.0),
-            _buildDeleteRaisedButton(context),
+              _buildDeleteRaisedButton(context),
             ],
           ),
         ),

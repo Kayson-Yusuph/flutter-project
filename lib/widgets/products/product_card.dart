@@ -9,13 +9,12 @@ class ProductCard extends StatefulWidget {
   final int index;
   final Product product;
 
-  ProductCard({ this.index, this.product });
+  ProductCard({this.index, this.product});
   @override
   State<StatefulWidget> createState() => _ProductCardState();
 }
 
 class _ProductCardState extends State<ProductCard> {
-
   int _index = 0;
   Product _product;
 
@@ -26,41 +25,45 @@ class _ProductCardState extends State<ProductCard> {
     super.initState();
   }
 
-  Row _buildTitleAndPriceRow(){
+  Row _buildTitleAndPriceRow() {
     return Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-          TitleDefault(title: _product.title,),
-            SizedBox(
-              width: 10,
-            ),
-            PriceTag(_product.price.toString(),)
-            ,
-          ],
-        );
-  } 
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        TitleDefault(
+          title: _product.title,
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        PriceTag(
+          _product.price.toString(),
+        ),
+      ],
+    );
+  }
 
   ButtonBar _buildButtonBar() {
     return ButtonBar(
-          alignment: MainAxisAlignment.center,
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.info),
-              color: Theme.of(context).primaryColor,
-              onPressed: () =>
-                  Navigator.pushNamed(context, '/products/$_index'),
-            ),
-            IconButton(
-              icon: Icon(_product.favourite? Icons.favorite: Icons.favorite_border),
-              color: Colors.red,
-              onPressed: () {
-                // ...
-                manageFavourite();
-              },
-            )
-          ],
-        );
+      alignment: MainAxisAlignment.center,
+      children: <Widget>[
+        IconButton(
+          icon: Icon(Icons.info),
+          color: Theme.of(context).primaryColor,
+          onPressed: () => Navigator.pushNamed(context, '/products/$_index'),
+        ),
+        IconButton(
+          icon:
+              Icon(_product.favourite ? Icons.favorite : Icons.favorite_border),
+          color: Colors.red,
+          onPressed: () {
+            // ...
+            manageFavourite();
+          },
+        )
+      ],
+    );
   }
+
   @override
   Card build(BuildContext context) {
     return Card(
@@ -77,7 +80,8 @@ class _ProductCardState extends State<ProductCard> {
       ),
     );
   }
+
   void manageFavourite() {
-    setState(() => _product.favourite= !_product.favourite);
+    setState(() => _product.favourite = !_product.favourite);
   }
 }

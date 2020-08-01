@@ -5,12 +5,12 @@ class TitleDefault extends StatelessWidget {
   TitleDefault({this.title});
   @override
   Widget build(BuildContext context) {
-    return  Text(
-                title,
-                style: TextStyle(
-                  fontSize: 26,
-                  fontFamily: 'Oswald',
-                ),
-              );
+    return Text(
+      title,
+      style: TextStyle(
+        fontSize: 26,
+        fontFamily: 'Oswald',
+      ),
+    );
   }
 }
