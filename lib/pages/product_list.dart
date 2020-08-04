@@ -9,12 +9,8 @@ class ProductListPage extends StatelessWidget {
   _buildProductEditButton(context, int index) {
     return IconButton(
       onPressed: () {
-        Navigator.of(context).push(MaterialPageRoute(
-            builder: (context) => ProductEditPage(
-                  productIndex: index,
-                  product: null,
-                  updateProduct: null,
-                )));
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => ProductEditPage(index)));
       },
       icon: Icon(
         Icons.edit,

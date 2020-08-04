@@ -6,13 +6,9 @@ import '../models/product.model.dart';
 import '../scoped-model/products.dart';
 
 class ProductEditPage extends StatefulWidget {
-  final Function addProduct;
-  final Product product;
   final int productIndex;
-  final Function updateProduct;
 
-  ProductEditPage(
-      {this.product, this.productIndex, this.addProduct, this.updateProduct});
+  ProductEditPage(this.productIndex);
   @override
   State<StatefulWidget> createState() => _ProductEditPage();
 }
@@ -26,7 +22,8 @@ class _ProductEditPage extends State<ProductEditPage> {
     'favourite': false
   };
 
-  Product _product;
+  // Product _product;
+  int productIdex;
   TextEditingController _title;
   TextEditingController _price;
   TextEditingController _description;
@@ -35,12 +32,11 @@ class _ProductEditPage extends State<ProductEditPage> {
 
   @override
   initState() {
-    if (widget.product != null) {
-      _product = widget.product;
-      _title = TextEditingController(text: _product.title);
-      _price = TextEditingController(text: _product.price.toString());
-      _description = TextEditingController(text: _product.description);
-    }
+    productIdex = widget.productIndex;
+    // _product = widget.product;
+    // _title = TextEditingController(text: _product.title);
+    // _price = TextEditingController(text: _product.price.toString());
+    // _description = TextEditingController(text: _product.description);
     super.initState();
   }
 
@@ -107,37 +103,33 @@ class _ProductEditPage extends State<ProductEditPage> {
     );
   }
 
-  Widget _buildButtonBar() {
-    return ScopedModelDescendant(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
-        return ButtonBar(
-          children: [
-            RaisedButton(
-              color: Theme.of(context).secondaryHeaderColor,
-              child: Text('Cancel'),
-              onPressed: () {
-                Navigator.pushReplacementNamed(context, '/');
-              },
-            ),
-            RaisedButton(
-              color: Theme.of(context).primaryColor,
-              child: Text('Save'),
-              onPressed: () =>
-                  onSave(context, model.addProduct, model.updateProduct),
-            ),
-          ],
-        );
-      },
+  Widget _buildButtonBar(
+      Product product, Function addProduct, Function updateProduct) {
+    return ButtonBar(
+      children: [
+        RaisedButton(
+          color: Theme.of(context).secondaryHeaderColor,
+          child: Text('Cancel'),
+          onPressed: () {
+            Navigator.pushReplacementNamed(context, '/');
+          },
+        ),
+        RaisedButton(
+          color: Theme.of(context).primaryColor,
+          child: Text('Save'),
+          onPressed: () => onSave(context, product, addProduct, updateProduct),
+        ),
+      ],
     );
   }
 
-  void onSave(
-      BuildContext context, Function addProduct, Function updateProduct) {
+  void onSave(BuildContext context, Product product, Function addProduct,
+      Function updateProduct) {
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
-    if (_product == null) {
+    if (product == null) {
       print('Create');
       final Product newProduct = new Product(
           title: _formData['title'],
@@ -152,14 +144,15 @@ class _ProductEditPage extends State<ProductEditPage> {
           title: _formData['title'],
           price: _formData['price'],
           description: _formData['description'],
-          image: _product.image,
-          favourite: _product.favourite);
-      updateProduct(widget.productIndex, newProduct);
+          image: product.image,
+          favourite: product.favourite);
+      updateProduct(productIdex, newProduct);
     }
     Navigator.pushReplacementNamed(context, '/');
   }
 
-  List<Widget> _buildListViewChildren(BuildContext context, bool vertical) {
+  List<Widget> _buildListViewChildren(BuildContext context, Product product,
+      Function addProduct, Function updateProduct, bool vertical) {
     List<Widget> children = <Widget>[
       _buildTitleTextField(),
       SizedBox(
@@ -170,7 +163,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         height: 10,
       ),
       _buildDescriptionTextField(),
-      _buildButtonBar(),
+      _buildButtonBar(product, addProduct, updateProduct),
     ];
 
     if (!vertical) {
@@ -194,43 +187,56 @@ class _ProductEditPage extends State<ProductEditPage> {
           height: 10,
         ),
         _buildDescriptionTextField(),
-        _buildButtonBar(),
+        _buildButtonBar(product, addProduct, updateProduct),
       ];
     }
     return children;
   }
 
-  _buildPageContent(BuildContext context, bool alignVertical) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).requestFocus(FocusNode());
-      },
-      child: Container(
-        margin: EdgeInsets.all(10),
-        child: Form(
-          key: _formKey,
-          child: ListView(
-            children: _buildListViewChildren(context, alignVertical),
+  _buildPageContent(BuildContext context, bool alignVertical, bool editMode) {
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, ProductsModel model) {
+        Product _product;
+        if (editMode) {
+          _product = model.products[productIdex];
+          _title = TextEditingController(text: _product.title);
+          _price = TextEditingController(text: _product.price.toString());
+          _description = TextEditingController(text: _product.description);
+        }
+        return GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(FocusNode());
+          },
+          child: Container(
+            margin: EdgeInsets.all(10),
+            child: Form(
+              key: _formKey,
+              child: ListView(
+                children: _buildListViewChildren(context, _product,
+                    model.addProduct, model.updateProduct, alignVertical),
+              ),
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    print('here am i');
     final deviceWidth = MediaQuery.of(context).size.width;
     bool alignVertical = true;
     if (deviceWidth > 420) {
       alignVertical = false;
     }
-    return _product == null
-        ? _buildPageContent(context, alignVertical)
+    return productIdex == null
+        ? _buildPageContent(context, alignVertical, false)
         : Scaffold(
             appBar: AppBar(
               title: Text('Edit product'),
             ),
-            body: _buildPageContent(context, alignVertical),
+            body: _buildPageContent(context, alignVertical, true),
           );
   }
 }
