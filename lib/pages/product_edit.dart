@@ -148,15 +148,15 @@ class _ProductEditPage extends State<ProductEditPage> {
       Function addProduct, Function updateProduct, bool vertical) {
     // print('build List Viw ${product.title}');
     List<Widget> children = <Widget>[
-      _buildTitleTextField(product),
+      Container(child: _buildTitleTextField(product)),,
       SizedBox(
         height: 10,
       ),
-      _buildPriceTextField(product),
+     Container(child: _buildPriceTextField(product),),
       SizedBox(
         height: 10,
       ),
-      _buildDescriptionTextField(product),
+      Container(child: _buildDescriptionTextField(product),),
       _buildButtonBar(product, addProduct, updateProduct),
     ];
 
@@ -165,14 +165,14 @@ class _ProductEditPage extends State<ProductEditPage> {
         Row(
           children: [
             Flexible(
-              child: _buildTitleTextField(product),
+              child: Container(child: _buildTitleTextField(product),),
               flex: 4,
             ),
             SizedBox(
               width: 10,
             ),
             Flexible(
-              child: _buildPriceTextField(product),
+              child: Container(child: _buildPriceTextField(product),),
               flex: 3,
             ),
           ],
@@ -180,7 +180,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         SizedBox(
           height: 10,
         ),
-        _buildDescriptionTextField(product),
+        Container(child: _buildDescriptionTextField(product),),
         _buildButtonBar(product, addProduct, updateProduct),
       ];
     }
