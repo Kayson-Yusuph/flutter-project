@@ -6,11 +6,12 @@ import '../models/product.model.dart';
 import '../scoped-model/products.dart';
 
 class ProductListPage extends StatelessWidget {
-  _buildProductEditButton(context, int index) {
+  _buildProductEditButton(context, int index, Function selectProductindex) {
     return IconButton(
       onPressed: () {
-        Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => ProductEditPage(index)));
+        selectProductindex(index);
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => ProductEditPage()));
       },
       icon: Icon(
         Icons.edit,
@@ -18,17 +19,18 @@ class ProductListPage extends StatelessWidget {
     );
   }
 
-  ListView _buildProductList(BuildContext context, List<Product> products) {
+  ListView _buildProductList(
+      BuildContext context, List<Product> products, Function setIndex) {
     return ListView.builder(
       itemCount: products.length,
       itemBuilder: (BuildContext context, int index) {
-        return _buildProductListTile(context, products, index);
+        return _buildProductListTile(context, products, index, setIndex);
       },
     );
   }
 
   Dismissible _buildProductListTile(
-      context, List<Product> products, int index) {
+      context, List<Product> products, int index, Function setIndex) {
     final Product _product = products[index];
     return Dismissible(
       key: Key(products[index].title),
@@ -55,7 +57,7 @@ class ProductListPage extends StatelessWidget {
               _product.title,
             ),
             subtitle: Text('TZS ${_product.price.toString()}'),
-            trailing: _buildProductEditButton(context, index),
+            trailing: _buildProductEditButton(context, index, setIndex),
           ),
           Divider(),
         ],
@@ -72,7 +74,8 @@ class ProductListPage extends StatelessWidget {
           child: Text('Product list is empty!'),
         );
         if (model.products.length > 0) {
-          center = _buildProductList(context, products);
+          center = _buildProductList(
+              context, products, model.setSelectedProductIndex);
         }
         return center;
       },
