@@ -28,24 +28,26 @@ class _ProductEditPage extends State<ProductEditPage> {
   EnsureVisibleWhenFocused _buildTitleTextField(Product product) {
     return EnsureVisibleWhenFocused(
       focusNode: _titleFocusNode,
-      child: TextFormField(
-        initialValue: product == null? '': product.title,
-        focusNode: _titleFocusNode,
-        decoration: InputDecoration(
-          labelText: 'Title',
-          border: OutlineInputBorder(),
+      child: Container(
+        child: TextFormField(
+          initialValue: product == null ? '' : product.title,
+          focusNode: _titleFocusNode,
+          decoration: InputDecoration(
+            labelText: 'Title',
+            border: OutlineInputBorder(),
+          ),
+          // autovalidate: true,
+          validator: (String value) {
+            dynamic rtn;
+            if (value.isEmpty || value.length < 4) {
+              rtn = 'Title is required and must be 4+ characters';
+            }
+            return rtn;
+          },
+          onSaved: (String value) {
+            _formData['title'] = value;
+          },
         ),
-        // autovalidate: true,
-        validator: (String value) {
-          dynamic rtn;
-          if (value.isEmpty || value.length < 4) {
-            rtn = 'Title is required and must be 4+ characters';
-          }
-          return rtn;
-        },
-        onSaved: (String value) {
-          _formData['title'] = value;
-        },
       ),
     );
   }
@@ -54,7 +56,7 @@ class _ProductEditPage extends State<ProductEditPage> {
     return EnsureVisibleWhenFocused(
         focusNode: _descriptionFocusNode,
         child: TextFormField(
-        initialValue: product == null? '': product.description,
+          initialValue: product == null ? '' : product.description,
           focusNode: _descriptionFocusNode,
           decoration: InputDecoration(
             labelText: 'Description',
@@ -78,7 +80,7 @@ class _ProductEditPage extends State<ProductEditPage> {
     return EnsureVisibleWhenFocused(
         focusNode: _priceFocusNode,
         child: TextFormField(
-        initialValue: product == null? '': product.price.toString(),
+          initialValue: product == null ? '' : product.price.toString(),
           focusNode: _priceFocusNode,
           decoration:
               InputDecoration(labelText: 'Price', border: OutlineInputBorder()),
@@ -148,15 +150,19 @@ class _ProductEditPage extends State<ProductEditPage> {
       Function addProduct, Function updateProduct, bool vertical) {
     // print('build List Viw ${product.title}');
     List<Widget> children = <Widget>[
-      Container(child: _buildTitleTextField(product)),,
+      Container(child: _buildTitleTextField(product)),
       SizedBox(
         height: 10,
       ),
-     Container(child: _buildPriceTextField(product),),
+      Container(
+        child: _buildPriceTextField(product),
+      ),
       SizedBox(
         height: 10,
       ),
-      Container(child: _buildDescriptionTextField(product),),
+      Container(
+        child: _buildDescriptionTextField(product),
+      ),
       _buildButtonBar(product, addProduct, updateProduct),
     ];
 
@@ -165,14 +171,18 @@ class _ProductEditPage extends State<ProductEditPage> {
         Row(
           children: [
             Flexible(
-              child: Container(child: _buildTitleTextField(product),),
+              child: Container(
+                child: _buildTitleTextField(product),
+              ),
               flex: 4,
             ),
             SizedBox(
               width: 10,
             ),
             Flexible(
-              child: Container(child: _buildPriceTextField(product),),
+              child: Container(
+                child: _buildPriceTextField(product),
+              ),
               flex: 3,
             ),
           ],
@@ -180,7 +190,9 @@ class _ProductEditPage extends State<ProductEditPage> {
         SizedBox(
           height: 10,
         ),
-        Container(child: _buildDescriptionTextField(product),),
+        Container(
+          child: _buildDescriptionTextField(product),
+        ),
         _buildButtonBar(product, addProduct, updateProduct),
       ];
     }

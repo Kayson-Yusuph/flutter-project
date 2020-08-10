@@ -24,7 +24,7 @@ class ProductsModel extends Model {
   void addProduct(Product product) {
     // add product
     _products.add(product);
-    // _selectedProductIndex = null;
+    _selectedProductIndex = null;
   }
 
   void deleteProduct() {
@@ -40,6 +40,10 @@ class ProductsModel extends Model {
   }
 
   void setSelectedProductIndex(int index) {
+    if(index > -1) {
     _selectedProductIndex = index;
+    } else {
+    _selectedProductIndex = null;
+    }
   }
 }

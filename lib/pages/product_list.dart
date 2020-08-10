@@ -20,24 +20,25 @@ class ProductListPage extends StatelessWidget {
   }
 
   ListView _buildProductList(
-      BuildContext context, List<Product> products, Function setIndex) {
+      BuildContext context, List<Product> products, Function setIndex, Function delete) {
     return ListView.builder(
       itemCount: products.length,
       itemBuilder: (BuildContext context, int index) {
-        return _buildProductListTile(context, products, index, setIndex);
+        return _buildProductListTile(context, products[index], index, setIndex, delete);
       },
     );
   }
 
   Dismissible _buildProductListTile(
-      context, List<Product> products, int index, Function setIndex) {
-    final Product _product = products[index];
+      context, Product product, int index, Function setIndex, Function delete) {
+    // final Product _product = products[index];
     return Dismissible(
-      key: Key(products[index].title),
+      key: Key(product.title),
       onDismissed: (DismissDirection direction) {
         if (direction == DismissDirection.endToStart ||
             direction == DismissDirection.startToEnd) {
-          // deleteProduct(index);
+          setIndex(index);
+          delete();
         } else {
           print('Other swips directions!');
         }
@@ -50,13 +51,13 @@ class ProductListPage extends StatelessWidget {
           ListTile(
             leading: CircleAvatar(
               backgroundImage: AssetImage(
-                _product.image,
+                product.image,
               ),
             ),
             title: Text(
-              _product.title,
+              product.title,
             ),
-            subtitle: Text('TZS ${_product.price.toString()}'),
+            subtitle: Text('TZS ${product.price.toString()}'),
             trailing: _buildProductEditButton(context, index, setIndex),
           ),
           Divider(),
@@ -75,7 +76,7 @@ class ProductListPage extends StatelessWidget {
         );
         if (model.products.length > 0) {
           center = _buildProductList(
-              context, products, model.setSelectedProductIndex);
+              context, products, model.setSelectedProductIndex, model.deleteProduct);
         }
         return center;
       },

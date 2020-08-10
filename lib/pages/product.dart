@@ -55,7 +55,8 @@ class ProductsDetailsPage extends StatelessWidget {
     );
   }
 
-  RaisedButton _buildDeleteRaisedButton(BuildContext context, Product product) {
+  RaisedButton _buildDeleteRaisedButton(
+      BuildContext context, Product product) {
     return RaisedButton(
       color: Colors.red,
       child: Text('DELETE'),
@@ -92,7 +93,8 @@ class ProductsDetailsPage extends StatelessWidget {
                     child: Text(product.description),
                   ),
                   SizedBox(height: 10.0),
-                  _buildDeleteRaisedButton(context, product),
+                  _buildDeleteRaisedButton(
+                      context, product),
                 ],
               ),
             ),
