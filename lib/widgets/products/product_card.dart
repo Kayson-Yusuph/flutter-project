@@ -17,34 +17,25 @@ class ProductCard extends StatefulWidget {
 }
 
 class _ProductCardState extends State<ProductCard> {
-  int _index = 0;
-  Product _product;
-
-  @override
-  void initState() {
-    _product = widget.product;
-    _index = widget.index;
-    super.initState();
-  }
-
   Row _buildTitleAndPriceRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         TitleDefault(
-          title: _product.title,
+          title: widget.product.title,
         ),
         SizedBox(
           width: 10,
         ),
         PriceTag(
-          _product.price.toString(),
+          widget.product.price.toString(),
         ),
       ],
     );
   }
 
-  ButtonBar _buildButtonBar(int index, Function setIndex, Function delete) {
+  ButtonBar _buildButtonBar(Function setIndex, Function delete) {
+    final int index = widget.index;
     return ButtonBar(
       alignment: MainAxisAlignment.center,
       children: <Widget>[
@@ -53,7 +44,8 @@ class _ProductCardState extends State<ProductCard> {
           color: Theme.of(context).primaryColor,
           onPressed: () {
             setIndex(index);
-            Navigator.pushNamed(context, '/products/$_index').then((value) {
+            print(' Index is $index');
+            Navigator.pushNamed(context, '/products/$index').then((value) {
               if (value != null && value == true) {
                 print(value);
                 delete();
@@ -65,8 +57,9 @@ class _ProductCardState extends State<ProductCard> {
           },
         ),
         IconButton(
-          icon:
-              Icon(_product.favourite ? Icons.favorite : Icons.favorite_border),
+          icon: Icon(widget.product.favourite
+              ? Icons.favorite
+              : Icons.favorite_border),
           color: Colors.red,
           onPressed: () {
             // ...
@@ -84,14 +77,16 @@ class _ProductCardState extends State<ProductCard> {
         return Card(
           child: Column(
             children: <Widget>[
-              Image.asset(_product.image),
+              Image.asset(widget.product.image),
               SizedBox(
                 height: 10,
               ),
               _buildTitleAndPriceRow(),
               AddressTag('Mpanda-Katavi, Tanzania'),
               _buildButtonBar(
-                  _index, model.setSelectedProductIndex, model.deleteProduct),
+                model.setSelectedProductIndex,
+                model.deleteProduct,
+              ),
             ],
           ),
         );
@@ -100,6 +95,6 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   void manageFavourite() {
-    setState(() => _product.favourite = !_product.favourite);
+    setState(() => widget.product.favourite = !widget.product.favourite);
   }
 }
