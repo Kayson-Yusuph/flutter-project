@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class Product {
-  String title;
-  double price;
-  String description;
-  String image;
-  bool favourite;
+  final String title;
+  final double price;
+  final String description;
+  final String image;
+  final bool favourite;
 
   Product({@required this.title, @required this.price, @required this.description, @required this.image, this.favourite = false});
 }

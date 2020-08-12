@@ -47,4 +47,18 @@ class ProductsModel extends Model {
       _selectedProductIndex = null;
     }
   }
+
+  void toggleProductFavourityStatus() {
+    final bool oldFavourity = _products[_selectedProductIndex].favourite;
+    final Product oldProduct = _products[_selectedProductIndex];
+    _products[_selectedProductIndex] = Product(
+      image: oldProduct.image,
+      description: oldProduct.description,
+      title: oldProduct.title,
+      favourite: !oldFavourity,
+      price: oldProduct.price,
+    );
+    _selectedProductIndex = null;
+    notifyListeners();
+  }
 }

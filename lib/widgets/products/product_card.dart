@@ -9,32 +9,32 @@ import '../../scoped-model/products.dart';
 
 class ProductCard extends StatefulWidget {
   final int index;
-  final Product product;
 
-  ProductCard({this.index, this.product});
+  ProductCard({this.index});
   @override
   State<StatefulWidget> createState() => _ProductCardState();
 }
 
 class _ProductCardState extends State<ProductCard> {
-  Row _buildTitleAndPriceRow() {
+  Row _buildTitleAndPriceRow(Product product) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         TitleDefault(
-          title: widget.product.title,
+          title: product.title,
         ),
         SizedBox(
           width: 10,
         ),
         PriceTag(
-          widget.product.price.toString(),
+          product.price.toString(),
         ),
       ],
     );
   }
 
-  ButtonBar _buildButtonBar(Function setIndex, Function delete) {
+  ButtonBar _buildButtonBar(
+      product, Function setIndex, Function delete, Function toggleStatus) {
     final int index = widget.index;
     return ButtonBar(
       alignment: MainAxisAlignment.center,
@@ -57,13 +57,14 @@ class _ProductCardState extends State<ProductCard> {
           },
         ),
         IconButton(
-          icon: Icon(widget.product.favourite
+          icon: Icon(product.favourite
               ? Icons.favorite
               : Icons.favorite_border),
           color: Colors.red,
           onPressed: () {
             // ...
-            manageFavourite();
+            setIndex(index);
+            toggleStatus();
           },
         )
       ],
@@ -74,27 +75,22 @@ class _ProductCardState extends State<ProductCard> {
   ScopedModelDescendant<ProductsModel> build(BuildContext context) {
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, ProductsModel model) {
+        final Product product = model.products[widget.index];
         return Card(
           child: Column(
             children: <Widget>[
-              Image.asset(widget.product.image),
+              Image.asset(product.image),
               SizedBox(
                 height: 10,
               ),
-              _buildTitleAndPriceRow(),
+              _buildTitleAndPriceRow(product),
               AddressTag('Mpanda-Katavi, Tanzania'),
-              _buildButtonBar(
-                model.setSelectedProductIndex,
-                model.deleteProduct,
-              ),
+              _buildButtonBar(product, model.setSelectedProductIndex,
+                  model.deleteProduct, model.toggleProductFavourityStatus),
             ],
           ),
         );
       },
     );
-  }
-
-  void manageFavourite() {
-    setState(() => widget.product.favourite = !widget.product.favourite);
   }
 }
