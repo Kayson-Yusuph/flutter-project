@@ -30,7 +30,7 @@ class ProductsPage extends StatelessWidget {
       IconButton(
         icon: Icon(showFavourite ? Icons.favorite : Icons.favorite_border),
         onPressed: () {
-          return toggleListMode();
+          toggleListMode();
         },
       ),
       IconButton(

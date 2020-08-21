@@ -44,7 +44,6 @@ class _ProductCardState extends State<ProductCard> {
           color: Theme.of(context).primaryColor,
           onPressed: () {
             setIndex(index);
-            print(' Index is $index');
             Navigator.pushNamed(context, '/products/$index').then((value) {
               if (value != null && value == true) {
                 print(value);
@@ -57,9 +56,8 @@ class _ProductCardState extends State<ProductCard> {
           },
         ),
         IconButton(
-          icon: Icon(product.favourite
-              ? Icons.favorite
-              : Icons.favorite_border),
+          icon:
+              Icon(product.favourite ? Icons.favorite : Icons.favorite_border),
           color: Colors.red,
           onPressed: () {
             // ...
@@ -75,7 +73,7 @@ class _ProductCardState extends State<ProductCard> {
   ScopedModelDescendant<ProductsModel> build(BuildContext context) {
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, ProductsModel model) {
-        final Product product = model.products[widget.index];
+        final Product product = model.displayProducts[widget.index];
         return Card(
           child: Column(
             children: <Widget>[

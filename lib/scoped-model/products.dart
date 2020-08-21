@@ -12,10 +12,14 @@ class ProductsModel extends Model {
   }
 
   List<Product> get displayProducts {
+    final List<Product> _theProducts = [];
     if (_showFavourite) {
-      final List<Product> _newProducts =
-          _products.where((product) => product.favourite).toList();
-      return List.from(_newProducts);
+      _products.forEach((Product product) {
+        if (product.favourite) {
+          _theProducts.add(product);
+        }
+      });
+      return List.from(_theProducts);
     }
     return List.from(_products);
   }
