@@ -25,12 +25,12 @@ class ProductsPage extends StatelessWidget {
     );
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(bool showFavourite, Function toggleListMode) {
     return AppBar(title: Text('EasyList'), actions: [
       IconButton(
-        icon: Icon(Icons.favorite),
+        icon: Icon(showFavourite ? Icons.favorite : Icons.favorite_border),
         onPressed: () {
-          // ...
+          return toggleListMode();
         },
       ),
       IconButton(
@@ -57,7 +57,7 @@ class ProductsPage extends StatelessWidget {
       builder: (BuildContext context, Widget child, ProductsModel model) {
         return Scaffold(
           drawer: _buildSideDrawer(context),
-          appBar: _buildAppBar(),
+          appBar: _buildAppBar(model.showFavourite, model.toggleDisplayMode),
           body: ProductsWidget(),
         );
       },

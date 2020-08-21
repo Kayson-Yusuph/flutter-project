@@ -30,8 +30,8 @@ class _ProductsWidgetState extends State<ProductsWidget> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<ProductsModel>(
         builder: (BuildContext context, Widget child, ProductsModel model) {
-      print(model.products.length);
-      return _buildProductCard(context, model.products);
+      // print(model.products.length);
+      return _buildProductCard(context, model.displayProducts);
     });
   }
 }
