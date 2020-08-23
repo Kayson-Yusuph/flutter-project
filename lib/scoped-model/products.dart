@@ -2,7 +2,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../models/product.model.dart';
 
-class ProductsModel extends Model {
+class ProductsModel extends Model{
   List<Product> _products = [];
   int _selectedProductIndex;
   bool _showFavourite = false;

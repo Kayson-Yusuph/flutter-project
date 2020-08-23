@@ -5,7 +5,7 @@ import './price_tag.dart';
 import '../ui_elements/address_tag.dart';
 import '../ui_elements/title_default.dart';
 import '../../models/product.model.dart';
-import '../../scoped-model/products.dart';
+import '../../scoped-model/main.dart';
 
 class ProductCard extends StatefulWidget {
   final int index;
@@ -70,9 +70,9 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   @override
-  ScopedModelDescendant<ProductsModel> build(BuildContext context) {
+  ScopedModelDescendant<MainModel> build(BuildContext context) {
     return ScopedModelDescendant(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
+      builder: (BuildContext context, Widget child, MainModel model) {
         final Product product = model.displayProducts[widget.index];
         return Card(
           child: Column(

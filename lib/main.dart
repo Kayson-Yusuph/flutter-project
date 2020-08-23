@@ -7,7 +7,7 @@ import './pages/products_page.dart';
 import './pages/auth.dart';
 import './pages/product.dart';
 import './pages/page_not_found.dart';
-import './scoped-model/products.dart';
+import './scoped-model/main.dart';
 
 void main() => runApp(MyApp());
 
@@ -24,13 +24,14 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<ProductsModel>(
-      model: ProductsModel(),
+    return ScopedModel<MainModel>(
+      model: MainModel(),
       child: MaterialApp(
         theme: ThemeData(
-            brightness: !true ? Brightness.light : Brightness.dark,
-            primarySwatch: Colors.lightGreen,
-            accentColor: Colors.deepPurple),
+          brightness: !true ? Brightness.light : Brightness.dark,
+          primarySwatch: Colors.lightGreen,
+          accentColor: Colors.deepPurple,
+        ),
         routes: {
           // '/': (BuildContext context) => !isLogin ? AuthPage() : ProductsPage(),
           '/': (BuildContext context) => !true ? AuthPage() : ProductsPage(),
@@ -55,6 +56,5 @@ class _MyAppState extends State<MyApp> {
         },
       ),
     );
-    
   }
 }

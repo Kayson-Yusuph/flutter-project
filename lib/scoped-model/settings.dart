@@ -1,9 +1,13 @@
 import 'package:scoped_model/scoped_model.dart';
 
-class AppSetting extends Model {
-  bool nightMode = false;
+class AppSettingModel extends Model{
+  bool _nightMode = false;
 
-  setMode() {
-    nightMode = !nightMode;
+  void setMode() {
+    _nightMode = !_nightMode;
+  }
+
+  bool get displayMode {
+    return _nightMode;
   }
 }

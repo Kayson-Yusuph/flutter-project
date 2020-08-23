@@ -3,7 +3,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import './product_card.dart';
 import '../../models/product.model.dart';
-import '../../scoped-model/products.dart';
+import '../../scoped-model/main.dart';
 
 class ProductsWidget extends StatefulWidget {
   @override
@@ -27,8 +27,8 @@ class _ProductsWidgetState extends State<ProductsWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ProductsModel>(
-        builder: (BuildContext context, Widget child, ProductsModel model) {
+    return ScopedModelDescendant<MainModel>(
+        builder: (BuildContext context, Widget child, MainModel model) {
       // print(model.products.length);
       return _buildProductCard(context, model.displayProducts);
     });

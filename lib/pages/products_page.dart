@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../widgets/products/products_widget.dart';
-import '../scoped-model/products.dart';
+import '../scoped-model/main.dart';
 
 class ProductsPage extends StatelessWidget {
   Drawer _buildSideDrawer(BuildContext context) {
@@ -53,8 +53,8 @@ class ProductsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ProductsModel>(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
         return Scaffold(
           drawer: _buildSideDrawer(context),
           appBar: _buildAppBar(model.showFavourite, model.toggleDisplayMode),

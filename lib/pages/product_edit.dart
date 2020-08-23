@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../models/product.model.dart';
-import '../scoped-model/products.dart';
+import '../scoped-model/main.dart';
 import '../widgets/helpers/ensure_visible.dart';
 
 class ProductEditPage extends StatefulWidget {
@@ -221,7 +221,7 @@ class _ProductEditPage extends State<ProductEditPage> {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
+      builder: (BuildContext context, Widget child, MainModel model) {
         final deviceWidth = MediaQuery.of(context).size.width;
         bool alignVertical = true;
         if (deviceWidth > 420) {

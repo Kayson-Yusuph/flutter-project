@@ -3,7 +3,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import './product_edit.dart';
 import '../models/product.model.dart';
-import '../scoped-model/products.dart';
+import '../scoped-model/main.dart';
 
 class ProductListPage extends StatelessWidget {
   _buildProductEditButton(context, int index, Function selectProductindex) {
@@ -68,8 +68,8 @@ class ProductListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<ProductsModel>(
-      builder: (BuildContext context, Widget child, ProductsModel model) {
+    return ScopedModelDescendant<MainModel>(
+      builder: (BuildContext context, Widget child, MainModel model) {
         final List<Product> products = model.products;
         Widget center = Center(
           child: Text('Product list is empty!'),
