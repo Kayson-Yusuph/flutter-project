@@ -1,14 +1,20 @@
 import 'package:scoped_model/scoped_model.dart';
+import '../models/user.model.dart';
 
 class AuthModel extends Model {
-  bool _isLogin = false;
+  User _user;
 
-  login() {
-    _isLogin = true;
-    // Navigator.pushReplacementNamed(context, '/');
+  login(String email, String password) {
+    _user = User(id: 'slkfjsldkfs', email: email, password: password);
+    notifyListeners();
+  }
+
+  User get loginUser {
+    return _user;
   }
 
   logout() {
-    _isLogin = false;
+    _user = null;
+    notifyListeners();
   }
 }

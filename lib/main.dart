@@ -33,8 +33,8 @@ class _MyAppState extends State<MyApp> {
           accentColor: Colors.deepPurple,
         ),
         routes: {
-          // '/': (BuildContext context) => !isLogin ? AuthPage() : ProductsPage(),
-          '/': (BuildContext context) => !true ? AuthPage() : ProductsPage(),
+          '/': (BuildContext context) => AuthPage(),
+          // '/': (BuildContext context) => !true ? AuthPage() : ProductsPage(),
           '/admin': (BuildContext context) => ProductAdminPage()
         },
         onGenerateRoute: (RouteSettings settings) {

@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'package:scoped_model/scoped_model.dart';
+
+import '../scoped-model/main.dart';
+import '../pages/products_page.dart';
+
 class AuthPage extends StatefulWidget {
-  final bool mode;
-  final Function setMode;
-  final Function signIn;
-  AuthPage({this.mode, this.setMode, this.signIn});
+  // final bool mode;
+  // final Function setMode;
+  // final Function signIn;
+  // AuthPage({this.mode, this.setMode, this.signIn});
   @override
   State<StatefulWidget> createState() => _AuthPageState();
 }
@@ -89,20 +94,30 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  RaisedButton _buildLoginRaisedButton() {
-    return RaisedButton(
-      color: Theme.of(context).primaryColor,
-      onPressed: !_acceptTerms ? null : _onLogin,
-      child: Text('LOGIN'),
+  Widget _buildLoginRaisedButton() {
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        return RaisedButton(
+          color: Theme.of(context).primaryColor,
+          onPressed: () => _onLogin(model.login),
+          child: Text('LOGIN'),
+        );
+      },
     );
+    // return RaisedButton(
+    //   color: Theme.of(context).primaryColor,
+    //   onPressed: !_acceptTerms ? null : _onLogin,
+    //   child: Text('LOGIN'),
+    // );
   }
 
-  void _onLogin() {
+  void _onLogin(Function login) {
+    print('Form validation is ${_formKey.currentState.validate()}');
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
-    widget.signIn(context);
+    login(_emailValue, _passwordValue);
   }
 
   Form _buildFormWidget(double targetWidth) {
@@ -147,19 +162,27 @@ class _AuthPageState extends State<AuthPage> {
     return targetWidth;
   }
 
+// !isLogin ? AuthPage() : ProductsPage()
+
   @override
   Widget build(BuildContext context) {
     final double targetWidth = _deriveDeviceWidth(context);
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Login'),
-      ),
-      body: Container(
-        decoration: BoxDecoration(
-          image: _buildBackgroundImage(),
-        ),
-        child: _buildFormWidget(targetWidth),
-      ),
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        return model.loginUser == null
+            ? Scaffold(
+                appBar: AppBar(
+                  title: Text('Login'),
+                ),
+                body: Container(
+                  decoration: BoxDecoration(
+                    image: _buildBackgroundImage(),
+                  ),
+                  child: _buildFormWidget(targetWidth),
+                ),
+              )
+            : ProductsPage();
+      },
     );
   }
 }
