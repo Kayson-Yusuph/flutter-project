@@ -3,6 +3,7 @@ import '../models/user.model.dart';
 
 class AuthModel extends Model {
   User _user;
+  bool _termsAndConditions = false;
 
   login(String email, String password) {
     _user = User(id: 'slkfjsldkfs', email: email, password: password);
@@ -11,6 +12,15 @@ class AuthModel extends Model {
 
   User get loginUser {
     return _user;
+  }
+
+  toggleTermAndConditions() {
+    _termsAndConditions = !_termsAndConditions;
+    notifyListeners();
+  }
+
+  bool get acceptedTerms {
+    return _termsAndConditions;
   }
 
   logout() {

@@ -6,10 +6,6 @@ import '../scoped-model/main.dart';
 import '../pages/products_page.dart';
 
 class AuthPage extends StatefulWidget {
-  // final bool mode;
-  // final Function setMode;
-  // final Function signIn;
-  // AuthPage({this.mode, this.setMode, this.signIn});
   @override
   State<StatefulWidget> createState() => _AuthPageState();
 }
@@ -31,18 +27,21 @@ class _AuthPageState extends State<AuthPage> {
 
   TextFormField _buildEmailTextField() {
     return TextFormField(
+      cursorColor: Colors.black,
+      style: TextStyle(color: Colors.black),
       decoration: InputDecoration(
         labelText: 'E-Mail',
         fillColor: Colors.white,
+        labelStyle: TextStyle(color: Colors.black),
+        focusColor: Colors.black,
         filled: true,
-        border: OutlineInputBorder(),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(30),
+          ),
+        ),
       ),
       validator: (String value) {
-        // dynamic rtn;
-        // if(value.isEmpty) {
-        //   rtn = 'Email is required';
-        // }
-        // return rtn;
         Pattern pattern =
             r'^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$';
         RegExp regex = new RegExp(pattern);
@@ -59,12 +58,19 @@ class _AuthPageState extends State<AuthPage> {
 
   TextFormField _buildPasswordTextField() {
     return TextFormField(
+      cursorColor: Colors.black,
       obscureText: true,
+      style: TextStyle(color: Colors.black),
       decoration: InputDecoration(
         labelText: 'Password',
         fillColor: Colors.white,
+        labelStyle: TextStyle(color: Colors.black),
         filled: true,
-        border: OutlineInputBorder(),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(30),
+          ),
+        ),
       ),
       validator: (String value) {
         dynamic rtn;
@@ -79,18 +85,28 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  Container _buildTermsAndConditionSwitch() {
-    return Container(
-      color: Colors.white,
-      child: SwitchListTile(
-        value: _acceptTerms,
-        onChanged: (bool value) {
-          setState(() {
-            _acceptTerms = value;
-          });
-        },
-        title: Text('Accept terms '),
-      ),
+  Widget _buildTermsAndConditionSwitch() {
+    return ScopedModelDescendant(
+      builder: (BuildContext context, Widget child, MainModel model) {
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.all(
+              Radius.circular(30),
+            ),
+          ),
+          child: SwitchListTile(
+            value: model.acceptedTerms,
+            onChanged: (bool value) {
+              model.toggleTermAndConditions();
+            },
+            title: Text(
+              'Accept terms',
+              style: TextStyle(color: Colors.black),
+            ),
+          ),
+        );
+      },
     );
   }
 
@@ -104,11 +120,6 @@ class _AuthPageState extends State<AuthPage> {
         );
       },
     );
-    // return RaisedButton(
-    //   color: Theme.of(context).primaryColor,
-    //   onPressed: !_acceptTerms ? null : _onLogin,
-    //   child: Text('LOGIN'),
-    // );
   }
 
   void _onLogin(Function login) {
