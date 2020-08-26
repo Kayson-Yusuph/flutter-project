@@ -68,7 +68,7 @@ class ProductsDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
-        final List<Product> products = model.products;
+        final List<Product> products = model.displayProducts;
         final Product product = products[productIndex];
         return WillPopScope(
           onWillPop: () {
