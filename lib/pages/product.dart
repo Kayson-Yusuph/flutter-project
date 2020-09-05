@@ -84,7 +84,7 @@ class ProductsDetailsPage extends StatelessWidget {
             body: Center(
               child: ListView(
                 children: <Widget>[
-                  Image.asset(product.image),
+                  Image.network(product.image),
                   SizedBox(height: 10.0),
                   SizedBox(
                     height: 10,
