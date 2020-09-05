@@ -18,7 +18,7 @@ class ProductsDetailsPage extends StatelessWidget {
       builder: (context) {
         return AlertDialog(
           title: Text('Delete ${product.title}'),
-          content: Text('This action can not undo, are you sure?'),
+          content: Text('This action can not undone, are you sure?'),
           actions: [
             RaisedButton(
               color: Theme.of(context).secondaryHeaderColor,
@@ -96,7 +96,7 @@ class ProductsDetailsPage extends StatelessWidget {
                   ),
                   SizedBox(height: 10.0),
                   Center(
-                    child: Text('Created by: ${_user.email}'),
+                    child: Text('Created by: ${product.userEmail}'),
                   ),
                   SizedBox(height: 10.0),
                   _buildDeleteRaisedButton(
