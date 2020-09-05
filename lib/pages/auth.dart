@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../scoped-model/main.dart';
 import '../pages/products_page.dart';
+import '../widgets/shared/app-loader.dart';
 
 class AuthPage extends StatefulWidget {
   @override
@@ -193,7 +194,7 @@ class _AuthPageState extends State<AuthPage> {
                   child: _buildFormWidget(targetWidth),
                 ),
               )
-            : ProductsPage(model);
+            : model.displayLoading? AppLoader(): ProductsPage(model);
       },
     );
   }

@@ -10,6 +10,7 @@ class ConnectedProductsModel extends Model {
   List<Product> _products = [];
   User _user;
   int _selProductIndex;
+  bool _loading = false;
   final String _dbUrl =
       'https://flutter-project-841e3.firebaseio.com/products.json';
 
@@ -27,8 +28,8 @@ class ConnectedProductsModel extends Model {
           'https://vaya.in/recipes/wp-content/uploads/2018/02/Milk-Chocolate-1.jpg',
       'userEmail': _user.email,
       'userId': _user.id,
-
     };
+    setLoadingState(true);
     http
         .post(_dbUrl, body: json.encode(productData))
         .then((http.Response response) {
@@ -44,10 +45,14 @@ class ConnectedProductsModel extends Model {
       );
       // add product
       _products.add(product);
+      setLoadingState(false);
+      notifyListeners();
     });
   }
 
   void fetchProducts() {
+    setLoadingState(true);
+    // notifyListeners();
     http.get(_dbUrl).then((http.Response response) {
       final Map<String, dynamic> _productData = json.decode(response.body);
       final List<Product> _fetchedProductList = [];
@@ -58,7 +63,8 @@ class ConnectedProductsModel extends Model {
           price: product['price'],
           description: product['description'],
           image: product['imageUrl'],
-          favourite: product['favourite'] != null? product['favourite']: false,
+          favourite:
+              product['favourite'] != null ? product['favourite'] : false,
           userId: product['userId'],
           userEmail: product['userEmail'],
         );
@@ -66,6 +72,7 @@ class ConnectedProductsModel extends Model {
         _fetchedProductList.add(_product);
       });
       _products = _fetchedProductList;
+      setLoadingState(false);
       notifyListeners();
     });
   }
@@ -78,6 +85,14 @@ class ConnectedProductsModel extends Model {
   logout() {
     _user = null;
     notifyListeners();
+  }
+
+  bool get displayLoading {
+    return _loading;
+  }
+
+  void setLoadingState(bool loadState) {
+    _loading = loadState;
   }
 }
 
@@ -138,7 +153,7 @@ class ProductsModel extends ConnectedProductsModel {
   }
 
   void setSelectedProductIndex(int index) {
-      _selProductIndex = index;
+    _selProductIndex = index;
   }
 
   void toggleProductFavourityStatus() {
