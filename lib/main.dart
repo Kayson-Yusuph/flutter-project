@@ -23,18 +23,19 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    final model = MainModel();
     return ScopedModel<MainModel>(
-      model: MainModel(),
+      model: model,
       child: MaterialApp(
         theme: ThemeData(
-          brightness: !true ? Brightness.light : Brightness.dark,
+          brightness: !model.displayMode ? Brightness.light : Brightness.dark,
           primarySwatch: Colors.lightGreen,
           accentColor: Colors.deepPurple,
         ),
         routes: {
           '/': (BuildContext context) => AuthPage(),
           // '/': (BuildContext context) => !true ? AuthPage() : ProductsPage(),
-          '/admin': (BuildContext context) => ProductAdminPage()
+          '/admin': (BuildContext context) => ProductAdminPage(model)
         },
         onGenerateRoute: (RouteSettings settings) {
           List<String> route = settings.name.split('/');

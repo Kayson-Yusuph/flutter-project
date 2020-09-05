@@ -144,7 +144,7 @@ class AuthModel extends ConnectedProductsModel {
 }
 
 class AppSettingModel extends Model{
-  bool _nightMode = false;
+  bool _nightMode = true;
 
   void setDisplayMode() {
     _nightMode = !_nightMode;

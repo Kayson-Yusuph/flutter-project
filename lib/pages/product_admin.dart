@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import './product_edit.dart';
 import './product_list.dart';
+import '../scoped-model/main.dart';
 
 class ProductAdminPage extends StatelessWidget {
+  final MainModel model;
+  ProductAdminPage(this.model);
   TabBar _buildTabsBar() {
     return TabBar(
       tabs: [
@@ -39,7 +42,7 @@ class ProductAdminPage extends StatelessWidget {
     );
   }
 
-  AppBar _buildAppBar() {
+  Widget _buildAppBar(BuildContext context) {
     return AppBar(
       bottom: _buildTabsBar(),
       title: Text('Manage products'),
@@ -47,7 +50,8 @@ class ProductAdminPage extends StatelessWidget {
         IconButton(
           icon: Icon(Icons.wb_sunny),
           onPressed: () {
-            // setMode(mode);
+            model.setDisplayMode();
+            print('Display mode is: ${model.displayMode}');
           },
         ),
       ],
@@ -61,7 +65,7 @@ class ProductAdminPage extends StatelessWidget {
       length: tabChildren.length,
       child: Scaffold(
         drawer: _buildDrawer(context),
-        appBar: _buildAppBar(),
+        appBar: _buildAppBar(context),
         body: TabBarView(
           children: tabChildren,
         ),
