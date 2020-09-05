@@ -193,7 +193,7 @@ class _AuthPageState extends State<AuthPage> {
                   child: _buildFormWidget(targetWidth),
                 ),
               )
-            : ProductsPage();
+            : ProductsPage(model);
       },
     );
   }

@@ -1,12 +1,17 @@
+import 'dart:convert';
+
 import 'package:scoped_model/scoped_model.dart';
 
 import '../models/product.model.dart';
 import '../models/user.model.dart';
+import 'package:http/http.dart' as http;
 
 class ConnectedProductsModel extends Model {
   List<Product> _products = [];
   User _user;
   int _selProductIndex;
+  final String _dbUrl =
+      'https://flutter-project-841e3.firebaseio.com/products.json';
 
   void addProduct(
     String title,
@@ -14,16 +19,55 @@ class ConnectedProductsModel extends Model {
     String description,
     String imageUrl,
   ) {
-    final Product product = Product(
-      title: title,
-      price: price,
-      description: description,
-      image: imageUrl,
-      userEmail: _user.email,
-      userId: _user.id,
-    );
-    // add product
-    _products.add(product);
+    final Map<String, dynamic> productData = {
+      'title': title,
+      'price': price,
+      'description': description,
+      'imageUrl':
+          'https://vaya.in/recipes/wp-content/uploads/2018/02/Milk-Chocolate-1.jpg',
+      'userEmail': _user.email,
+      'userId': _user.id,
+
+    };
+    http
+        .post(_dbUrl, body: json.encode(productData))
+        .then((http.Response response) {
+      final Map<String, dynamic> productData = json.decode(response.body);
+      final Product product = Product(
+        id: productData['name'],
+        title: title,
+        price: price,
+        description: description,
+        image: imageUrl,
+        userEmail: _user.email,
+        userId: _user.id,
+      );
+      // add product
+      _products.add(product);
+    });
+  }
+
+  void fetchProducts() {
+    http.get(_dbUrl).then((http.Response response) {
+      final Map<String, dynamic> _productData = json.decode(response.body);
+      final List<Product> _fetchedProductList = [];
+      _productData.forEach((String productId, dynamic product) {
+        final Product _product = Product(
+          id: productId,
+          title: product['title'],
+          price: product['price'],
+          description: product['description'],
+          image: product['imageUrl'],
+          favourite: product['favourite'] != null? product['favourite']: false,
+          userId: product['userId'],
+          userEmail: product['userEmail'],
+        );
+
+        _fetchedProductList.add(_product);
+      });
+      _products = _fetchedProductList;
+      notifyListeners();
+    });
   }
 
   login(String email, String password) {
@@ -94,11 +138,7 @@ class ProductsModel extends ConnectedProductsModel {
   }
 
   void setSelectedProductIndex(int index) {
-    if (index > -1) {
       _selProductIndex = index;
-    } else {
-      _selProductIndex = null;
-    }
   }
 
   void toggleProductFavourityStatus() {
@@ -143,7 +183,7 @@ class AuthModel extends ConnectedProductsModel {
   }
 }
 
-class AppSettingModel extends Model{
+class AppSettingModel extends Model {
   bool _nightMode = true;
 
   void setDisplayMode() {

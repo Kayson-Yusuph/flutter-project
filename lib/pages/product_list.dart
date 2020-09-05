@@ -50,7 +50,7 @@ class ProductListPage extends StatelessWidget {
         children: [
           ListTile(
             leading: CircleAvatar(
-              backgroundImage: AssetImage(
+              backgroundImage: NetworkImage(
                 product.image,
               ),
             ),

@@ -46,11 +46,9 @@ class _ProductCardState extends State<ProductCard> {
             setIndex(index);
             Navigator.pushNamed(context, '/products/$index').then((value) {
               if (value != null && value == true) {
-                print(value);
                 delete();
               } else {
-                print(value);
-                setIndex(-1);
+                setIndex(null);
               }
             });
           },
@@ -77,7 +75,7 @@ class _ProductCardState extends State<ProductCard> {
         return Card(
           child: Column(
             children: <Widget>[
-              Image.asset(product.image),
+              Image.network(product.image),
               SizedBox(
                 height: 10,
               ),
