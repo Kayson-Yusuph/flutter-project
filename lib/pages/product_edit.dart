@@ -98,8 +98,8 @@ class _ProductEditPage extends State<ProductEditPage> {
         ));
   }
 
-  Widget _buildButtonBar(
-      Product product, Function addProduct, Function updateProduct) {
+  Widget _buildButtonBar(Product product, Function addProduct,
+      Function updateProduct, Function setIndex) {
     return ButtonBar(
       children: [
         RaisedButton(
@@ -112,14 +112,15 @@ class _ProductEditPage extends State<ProductEditPage> {
         RaisedButton(
           color: Theme.of(context).primaryColor,
           child: Text('Save'),
-          onPressed: () => onSave(context, product, addProduct, updateProduct),
+          onPressed: () =>
+              onSave(context, product, addProduct, updateProduct, setIndex),
         ),
       ],
     );
   }
 
   void onSave(BuildContext context, Product product, Function addProduct,
-      Function updateProduct) {
+      Function updateProduct, Function setIndex) {
     if (!_formKey.currentState.validate()) {
       return;
     }
@@ -139,11 +140,16 @@ class _ProductEditPage extends State<ProductEditPage> {
         product.image,
       );
     }
-    Navigator.pushReplacementNamed(context, '/');
+    Navigator.pushReplacementNamed(context, '/').then((_) => setIndex(null));
   }
 
-  List<Widget> _buildListViewChildren(BuildContext context, Product product,
-      Function addProduct, Function updateProduct, bool vertical) {
+  List<Widget> _buildListViewChildren(
+      BuildContext context,
+      Product product,
+      Function addProduct,
+      Function updateProduct,
+      Function setIndex,
+      bool vertical) {
     List<Widget> children = <Widget>[
       Container(child: _buildTitleTextField(product)),
       SizedBox(
@@ -158,7 +164,7 @@ class _ProductEditPage extends State<ProductEditPage> {
       Container(
         child: _buildDescriptionTextField(product),
       ),
-      _buildButtonBar(product, addProduct, updateProduct),
+      _buildButtonBar(product, addProduct, updateProduct, setIndex),
     ];
 
     if (!vertical) {
@@ -188,14 +194,14 @@ class _ProductEditPage extends State<ProductEditPage> {
         Container(
           child: _buildDescriptionTextField(product),
         ),
-        _buildButtonBar(product, addProduct, updateProduct),
+        _buildButtonBar(product, addProduct, updateProduct, setIndex),
       ];
     }
     return children;
   }
 
   _buildPageContent(BuildContext context, Product product, Function addProduct,
-      Function updateProduct, bool alignVertical) {
+      Function updateProduct, Function setIndex, bool alignVertical) {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
@@ -205,8 +211,8 @@ class _ProductEditPage extends State<ProductEditPage> {
         child: Form(
           key: _formKey,
           child: ListView(
-            children: _buildListViewChildren(
-                context, product, addProduct, updateProduct, alignVertical),
+            children: _buildListViewChildren(context, product, addProduct,
+                updateProduct, setIndex, alignVertical),
           ),
         ),
       ),
@@ -223,14 +229,24 @@ class _ProductEditPage extends State<ProductEditPage> {
           alignVertical = false;
         }
         return model.selectedProductIndex == null
-            ? _buildPageContent(context, model.selectedProduct,
-                model.addProduct, model.updateProduct, alignVertical)
+            ? _buildPageContent(
+                context,
+                model.selectedProduct,
+                model.addProduct,
+                model.updateProduct,
+                model.setSelectedProductIndex,
+                alignVertical)
             : Scaffold(
                 appBar: AppBar(
                   title: Text('Edit product'),
                 ),
-                body: _buildPageContent(context, model.selectedProduct,
-                    model.addProduct, model.updateProduct, alignVertical),
+                body: _buildPageContent(
+                    context,
+                    model.selectedProduct,
+                    model.addProduct,
+                    model.updateProduct,
+                    model.setSelectedProductIndex,
+                    alignVertical),
               );
       },
     );

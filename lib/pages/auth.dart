@@ -126,7 +126,6 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   void _onLogin(Function login) {
-    print('Form validation is ${_formKey.currentState.validate()}');
     if (!_formKey.currentState.validate()) {
       return;
     }
