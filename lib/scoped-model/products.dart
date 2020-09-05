@@ -1,78 +1,87 @@
-import 'package:scoped_model/scoped_model.dart';
+import 'package:flutter/cupertino.dart';
 
 import '../models/product.model.dart';
+import './connected_products.dart';
 
-class ProductsModel extends Model{
-  List<Product> _products = [];
-  int _selectedProductIndex;
+class ProductsModel extends ConnectedProducts {
   bool _showFavourite = false;
 
-  List<Product> get products {
-    return List.from(_products);
+  List<Product> get allProducts {
+    return List.from(products);
   }
 
   List<Product> get displayProducts {
     final List<Product> _theProducts = [];
     if (_showFavourite) {
-      _products.forEach((Product product) {
+      products.forEach((Product product) {
         if (product.favourite) {
           _theProducts.add(product);
         }
       });
       return List.from(_theProducts);
     }
-    return List.from(_products);
+    return List.from(products);
   }
 
   Product get selectedProduct {
-    if (_selectedProductIndex == null) {
+    if (selectedProductIndex == null) {
       return null;
     }
-    return _products[_selectedProductIndex];
+    return products[selectedProductIndex];
   }
 
   int get selectedProductIndex {
-    return _selectedProductIndex;
-  }
-
-  void addProduct(Product product) {
-    // add product
-    _products.add(product);
-    _selectedProductIndex = null;
+    return selProductIndex;
   }
 
   void deleteProduct() {
     // delete product
-    _products.removeAt(_selectedProductIndex);
-    _selectedProductIndex = null;
+    products.removeAt(selectedProductIndex);
+    selProductIndex = null;
     notifyListeners();
   }
 
-  void updateProduct(Product product) {
+  void updateProduct(
+    String title,
+    double price,
+    String description,
+    String imageUrl,
+  ) {
     // update product
-    _products[_selectedProductIndex] = product;
-    _selectedProductIndex = null;
+    final Product product = Product(
+      title: title,
+      price: price,
+      description: description,
+      image: imageUrl,
+      userEmail: selectedProduct.userEmail,
+      userId: selectedProduct.userId,
+      favourite: selectedProduct.favourite,
+    );
+    products[selProductIndex] = product;
+    selProductIndex = null;
   }
 
   void setSelectedProductIndex(int index) {
     if (index > -1) {
-      _selectedProductIndex = index;
+      selProductIndex = index;
     } else {
-      _selectedProductIndex = null;
+      selProductIndex = null;
     }
   }
 
   void toggleProductFavourityStatus() {
-    final bool oldFavourity = _products[_selectedProductIndex].favourite;
-    final Product oldProduct = _products[_selectedProductIndex];
-    _products[_selectedProductIndex] = Product(
+    final bool oldFavourity = products[selProductIndex].favourite;
+    final Product oldProduct = products[selProductIndex];
+    products[selProductIndex] = Product(
       image: oldProduct.image,
       description: oldProduct.description,
       title: oldProduct.title,
       favourite: !oldFavourity,
       price: oldProduct.price,
+      userId: oldProduct.userId,
+      userEmail: oldProduct.userEmail,
     );
-    _selectedProductIndex = null;
+    selProductIndex = null;
     notifyListeners();
   }
 

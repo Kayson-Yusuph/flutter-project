@@ -6,6 +6,7 @@ import '../ui_elements/address_tag.dart';
 import '../ui_elements/title_default.dart';
 import '../../models/product.model.dart';
 import '../../scoped-model/main.dart';
+import '../../models/user.model.dart';
 
 class ProductCard extends StatefulWidget {
   final int index;
@@ -74,6 +75,7 @@ class _ProductCardState extends State<ProductCard> {
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
         final Product product = model.displayProducts[widget.index];
+        final User _user = model.loginUser;
         return Card(
           child: Column(
             children: <Widget>[
@@ -83,6 +85,7 @@ class _ProductCardState extends State<ProductCard> {
               ),
               _buildTitleAndPriceRow(product),
               AddressTag('Mpanda-Katavi, Tanzania'),
+              Text(product.userEmail),
               _buildButtonBar(product, model.setSelectedProductIndex,
                   model.deleteProduct, model.toggleProductFavourityStatus),
             ],

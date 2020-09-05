@@ -5,6 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../widgets/ui_elements/title_default.dart';
 import '../models/product.model.dart';
 import '../scoped-model/main.dart';
+import '../models/user.model.dart';
 
 class ProductsDetailsPage extends StatelessWidget {
   final int productIndex;
@@ -70,6 +71,7 @@ class ProductsDetailsPage extends StatelessWidget {
       builder: (BuildContext context, Widget child, MainModel model) {
         final List<Product> products = model.displayProducts;
         final Product product = products[productIndex];
+        final User _user = model.loginUser;
         return WillPopScope(
           onWillPop: () {
             Navigator.pop(context, false);
@@ -91,6 +93,10 @@ class ProductsDetailsPage extends StatelessWidget {
                   SizedBox(height: 10.0),
                   Center(
                     child: Text(product.description),
+                  ),
+                  SizedBox(height: 10.0),
+                  Center(
+                    child: Text('Created by: ${_user.email}'),
                   ),
                   SizedBox(height: 10.0),
                   _buildDeleteRaisedButton(

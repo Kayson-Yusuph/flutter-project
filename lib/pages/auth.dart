@@ -77,6 +77,9 @@ class _AuthPageState extends State<AuthPage> {
         if (value.isEmpty) {
           rtn = 'Password is required';
         }
+        if(!value.isEmpty && value.length < 6) {
+          rtn = 'Password must be 6+ characters long';
+        }
         return rtn;
       },
       onSaved: (String value) {

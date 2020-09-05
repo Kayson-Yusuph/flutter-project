@@ -1,17 +1,12 @@
-import 'package:scoped_model/scoped_model.dart';
 import '../models/user.model.dart';
+import './connected_products.dart';
 
-class AuthModel extends Model {
-  User _user;
+class AuthModel extends ConnectedProducts {
   bool _termsAndConditions = false;
 
-  login(String email, String password) {
-    _user = User(id: 'slkfjsldkfs', email: email, password: password);
-    notifyListeners();
-  }
-
   User get loginUser {
-    return _user;
+    print(user);
+    return user;
   }
 
   toggleTermAndConditions() {
@@ -21,10 +16,5 @@ class AuthModel extends Model {
 
   bool get acceptedTerms {
     return _termsAndConditions;
-  }
-
-  logout() {
-    _user = null;
-    notifyListeners();
   }
 }

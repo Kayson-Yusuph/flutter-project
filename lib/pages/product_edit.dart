@@ -100,7 +100,6 @@ class _ProductEditPage extends State<ProductEditPage> {
 
   Widget _buildButtonBar(
       Product product, Function addProduct, Function updateProduct) {
-    // print('build button bar ${product.title}');
     return ButtonBar(
       children: [
         RaisedButton(
@@ -121,34 +120,30 @@ class _ProductEditPage extends State<ProductEditPage> {
 
   void onSave(BuildContext context, Product product, Function addProduct,
       Function updateProduct) {
-    print(_formData);
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
     if (product == null) {
-      final Product newProduct = new Product(
-          title: _formData['title'],
-          price: _formData['price'],
-          favourite: _formData['favourite'],
-          image: _formData['image'],
-          description: _formData['description']);
-      addProduct(newProduct);
+      addProduct(
+        _formData['title'],
+        _formData['price'],
+        _formData['description'],
+        _formData['image'],
+      );
     } else {
-      final Product newProduct = new Product(
-          title: _formData['title'],
-          price: _formData['price'],
-          description: _formData['description'],
-          image: product.image,
-          favourite: product.favourite);
-      updateProduct(newProduct);
+      updateProduct(
+        _formData['title'],
+        _formData['price'],
+        _formData['description'],
+        product.image,
+      );
     }
     Navigator.pushReplacementNamed(context, '/');
   }
 
   List<Widget> _buildListViewChildren(BuildContext context, Product product,
       Function addProduct, Function updateProduct, bool vertical) {
-    // print('build List Viw ${product.title}');
     List<Widget> children = <Widget>[
       Container(child: _buildTitleTextField(product)),
       SizedBox(

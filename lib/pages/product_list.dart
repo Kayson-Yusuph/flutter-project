@@ -70,11 +70,11 @@ class ProductListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        final List<Product> products = model.products;
+        final List<Product> products = model.allProducts;
         Widget center = Center(
           child: Text('Product list is empty!'),
         );
-        if (model.products.length > 0) {
+        if (model.allProducts.length > 0) {
           center = _buildProductList(
               context, products, model.setSelectedProductIndex, model.deleteProduct);
         }
