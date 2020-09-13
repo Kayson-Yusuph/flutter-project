@@ -8,7 +8,7 @@ class Product {
   final String image;
   final String userEmail;
   final String userId;
-  final bool favourite;
+  final bool favorite;
 
   Product({
     @required this.id,
@@ -18,6 +18,6 @@ class Product {
     @required this.image,
     @required this.userEmail,
     @required this.userId,
-    this.favourite = false,
+    this.favorite = false,
   });
 }

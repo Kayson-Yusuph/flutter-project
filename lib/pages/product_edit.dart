@@ -16,8 +16,7 @@ class _ProductEditPage extends State<ProductEditPage> {
     'title': null,
     'price': null,
     'description': null,
-    'image': 'assets/food.jpg',
-    'favourite': false
+    'favorite': false
   };
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -106,7 +105,7 @@ class _ProductEditPage extends State<ProductEditPage> {
           color: Theme.of(context).secondaryHeaderColor,
           child: Text('Cancel'),
           onPressed: () {
-            Navigator.pushReplacementNamed(context, '/');
+            Navigator.of(context).pop();
           },
         ),
         RaisedButton(
@@ -140,7 +139,9 @@ class _ProductEditPage extends State<ProductEditPage> {
         product.image,
       );
     }
-    Navigator.pushReplacementNamed(context, '/').then((_) => setIndex(null));
+    Navigator.pushReplacementNamed(context, '/').then((_) {
+      setIndex(null);
+    });
   }
 
   List<Widget> _buildListViewChildren(

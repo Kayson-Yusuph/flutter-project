@@ -29,6 +29,7 @@ class _AuthPageState extends State<AuthPage> {
     return TextFormField(
       cursorColor: Colors.black,
       style: TextStyle(color: Colors.black),
+      keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         labelText: 'E-Mail',
         fillColor: Colors.white,
@@ -194,7 +195,7 @@ class _AuthPageState extends State<AuthPage> {
                   child: _buildFormWidget(targetWidth),
                 ),
               )
-            : model.displayLoading? AppLoader(): ProductsPage(model);
+            : ProductsPage(model);
       },
     );
   }

@@ -41,10 +41,10 @@ class _MyProductPageState extends State<ProductsPage>{
     );
   }
 
-  AppBar _buildAppBar(bool showFavourite, Function toggleListMode) {
+  AppBar _buildAppBar(bool showFavorite, Function toggleListMode) {
     return AppBar(title: Text('EasyList'), actions: [
       IconButton(
-        icon: Icon(showFavourite ? Icons.favorite : Icons.favorite_border),
+        icon: Icon(showFavorite ? Icons.favorite : Icons.favorite_border),
         onPressed: () {
           toggleListMode();
         },
@@ -73,7 +73,7 @@ class _MyProductPageState extends State<ProductsPage>{
       builder: (BuildContext context, Widget child, MainModel model) {
         return Scaffold(
           drawer: _buildSideDrawer(context),
-          appBar: _buildAppBar(model.showFavourite, model.toggleDisplayMode),
+          appBar: _buildAppBar(model.showFavorite, model.toggleDisplayMode),
           body: ProductsWidget(),
         );
       },

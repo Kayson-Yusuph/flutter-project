@@ -55,7 +55,7 @@ class _ProductCardState extends State<ProductCard> {
         ),
         IconButton(
           icon:
-              Icon(product.favourite ? Icons.favorite : Icons.favorite_border),
+              Icon(product.favorite ? Icons.favorite : Icons.favorite_border),
           color: Colors.red,
           onPressed: () {
             // ...
@@ -83,7 +83,7 @@ class _ProductCardState extends State<ProductCard> {
               AddressTag('Mpanda-Katavi, Tanzania'),
               Text(product.userEmail),
               _buildButtonBar(product, model.setSelectedProductIndex,
-                  model.deleteProduct, model.toggleProductFavourityStatus),
+                  model.deleteProduct, model.toggleProductFavoriteStatus),
             ],
           ),
         );

@@ -51,7 +51,6 @@ class ProductAdminPage extends StatelessWidget {
           icon: Icon(Icons.wb_sunny),
           onPressed: () {
             model.setDisplayMode();
-            print('Display mode is: ${model.displayMode}');
           },
         ),
       ],

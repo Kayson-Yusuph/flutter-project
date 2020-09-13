@@ -10,7 +10,6 @@ class ConnectedProductsModel extends Model {
   List<Product> _products = [];
   User _user;
   int _selProductIndex;
-  bool _loading = false;
   final String _dbUrl =
       'https://flutter-project-841e3.firebaseio.com/products.json';
 
@@ -29,11 +28,14 @@ class ConnectedProductsModel extends Model {
       'userEmail': _user.email,
       'userId': _user.id,
     };
-    setLoadingState(true);
     http
         .post(_dbUrl, body: json.encode(productData))
         .then((http.Response response) {
       final Map<String, dynamic> productData = json.decode(response.body);
+      if (productData == null) {
+        notifyListeners();
+        return;
+      }
       final Product product = Product(
         id: productData['name'],
         title: title,
@@ -45,17 +47,18 @@ class ConnectedProductsModel extends Model {
       );
       // add product
       _products.add(product);
-      setLoadingState(false);
       notifyListeners();
     });
   }
 
   void fetchProducts() {
-    setLoadingState(true);
-    // notifyListeners();
     http.get(_dbUrl).then((http.Response response) {
       final Map<String, dynamic> _productData = json.decode(response.body);
       final List<Product> _fetchedProductList = [];
+      if (_productData == null) {
+        notifyListeners();
+        return;
+      }
       _productData.forEach((String productId, dynamic product) {
         final Product _product = Product(
           id: productId,
@@ -63,8 +66,8 @@ class ConnectedProductsModel extends Model {
           price: product['price'],
           description: product['description'],
           image: product['imageUrl'],
-          favourite:
-              product['favourite'] != null ? product['favourite'] : false,
+          favorite:
+              product['favorite'] != null ? product['favorite'] : false,
           userId: product['userId'],
           userEmail: product['userEmail'],
         );
@@ -72,7 +75,6 @@ class ConnectedProductsModel extends Model {
         _fetchedProductList.add(_product);
       });
       _products = _fetchedProductList;
-      setLoadingState(false);
       notifyListeners();
     });
   }
@@ -86,18 +88,10 @@ class ConnectedProductsModel extends Model {
     _user = null;
     notifyListeners();
   }
-
-  bool get displayLoading {
-    return _loading;
-  }
-
-  void setLoadingState(bool loadState) {
-    _loading = loadState;
-  }
 }
 
 class ProductsModel extends ConnectedProductsModel {
-  bool _showFavourite = false;
+  bool _showFavorite = false;
 
   List<Product> get allProducts {
     return List.from(_products);
@@ -105,9 +99,9 @@ class ProductsModel extends ConnectedProductsModel {
 
   List<Product> get displayProducts {
     final List<Product> _theProducts = [];
-    if (_showFavourite) {
+    if (_showFavorite) {
       _products.forEach((Product product) {
-        if (product.favourite) {
+        if (product.favorite) {
           _theProducts.add(product);
         }
       });
@@ -141,13 +135,14 @@ class ProductsModel extends ConnectedProductsModel {
   ) {
     // update product
     final Product product = Product(
+      id: selectedProduct.id,
       title: title,
       price: price,
       description: description,
       image: imageUrl,
       userEmail: selectedProduct.userEmail,
       userId: selectedProduct.userId,
-      favourite: selectedProduct.favourite,
+      favorite: selectedProduct.favorite,
     );
     _products[_selProductIndex] = product;
   }
@@ -156,14 +151,15 @@ class ProductsModel extends ConnectedProductsModel {
     _selProductIndex = index;
   }
 
-  void toggleProductFavourityStatus() {
-    final bool oldFavourity = _products[_selProductIndex].favourite;
+  void toggleProductFavoriteStatus() {
+    final bool oldFavorite = _products[_selProductIndex].favorite;
     final Product oldProduct = _products[_selProductIndex];
     _products[_selProductIndex] = Product(
       image: oldProduct.image,
       description: oldProduct.description,
+      id: oldProduct.id,
       title: oldProduct.title,
-      favourite: !oldFavourity,
+      favorite: !oldFavorite,
       price: oldProduct.price,
       userId: oldProduct.userId,
       userEmail: oldProduct.userEmail,
@@ -172,12 +168,12 @@ class ProductsModel extends ConnectedProductsModel {
   }
 
   void toggleDisplayMode() {
-    _showFavourite = !_showFavourite;
+    _showFavorite = !_showFavorite;
     notifyListeners();
   }
 
-  bool get showFavourite {
-    return _showFavourite;
+  bool get showFavorite {
+    return _showFavorite;
   }
 }
 

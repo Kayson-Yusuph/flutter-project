@@ -6,12 +6,14 @@ import '../models/product.model.dart';
 import '../scoped-model/main.dart';
 
 class ProductListPage extends StatelessWidget {
-  _buildProductEditButton(context, int index, Function selectProductindex) {
+  _buildProductEditButton(context, int index, Function selectProductIndex) {
     return IconButton(
       onPressed: () {
-        selectProductindex(index);
+        selectProductIndex(index);
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => ProductEditPage()));
+            .push(MaterialPageRoute(builder: (context) => ProductEditPage())).then((_) {
+              selectProductIndex(null);
+            });
       },
       icon: Icon(
         Icons.edit,
@@ -40,7 +42,7 @@ class ProductListPage extends StatelessWidget {
           setIndex(index);
           delete();
         } else {
-          print('Other swips directions!');
+          print('Other swipe directions!');
         }
       },
       background: Container(
