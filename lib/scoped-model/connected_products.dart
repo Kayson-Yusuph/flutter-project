@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_project/scoped-model/main.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../models/product.model.dart';
@@ -10,6 +11,7 @@ class ConnectedProductsModel extends Model {
   List<Product> _products = [];
   User _user;
   int _selProductIndex;
+  bool _loading = false;
   final String _dbUrl =
       'https://flutter-project-841e3.firebaseio.com/products.json';
 
@@ -52,10 +54,12 @@ class ConnectedProductsModel extends Model {
   }
 
   void fetchProducts() {
+    _loading = true;
     http.get(_dbUrl).then((http.Response response) {
       final Map<String, dynamic> _productData = json.decode(response.body);
       final List<Product> _fetchedProductList = [];
       if (_productData == null) {
+        _loading = false;
         notifyListeners();
         return;
       }
@@ -66,8 +70,7 @@ class ConnectedProductsModel extends Model {
           price: product['price'],
           description: product['description'],
           image: product['imageUrl'],
-          favorite:
-              product['favorite'] != null ? product['favorite'] : false,
+          favorite: product['favorite'] != null ? product['favorite'] : false,
           userId: product['userId'],
           userEmail: product['userEmail'],
         );
@@ -75,6 +78,7 @@ class ConnectedProductsModel extends Model {
         _fetchedProductList.add(_product);
       });
       _products = _fetchedProductList;
+      _loading = false;
       notifyListeners();
     });
   }
@@ -204,5 +208,11 @@ class AppSettingModel extends Model {
 
   bool get displayMode {
     return _nightMode;
+  }
+}
+
+class UtilityModel extends ConnectedProductsModel {
+  bool get isLoading {
+    return _loading;
   }
 }
