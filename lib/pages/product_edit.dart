@@ -99,23 +99,28 @@ class _ProductEditPage extends State<ProductEditPage> {
 
   Widget _buildButtonBar(Product product, Function addProduct,
       Function updateProduct, Function setIndex) {
-    return ButtonBar(
-      children: [
-        RaisedButton(
-          color: Theme.of(context).secondaryHeaderColor,
-          child: Text('Cancel'),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-        RaisedButton(
-          color: Theme.of(context).primaryColor,
-          child: Text('Save'),
-          onPressed: () =>
-              onSave(context, product, addProduct, updateProduct, setIndex),
-        ),
-      ],
-    );
+    return ScopedModelDescendant(
+        builder: (BuildContext context, Widget child, MainModel model) {
+      return model.isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ButtonBar(
+              children: [
+                RaisedButton(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                RaisedButton(
+                  color: Theme.of(context).primaryColor,
+                  child: Text('Save'),
+                  onPressed: () => onSave(
+                      context, product, addProduct, updateProduct, setIndex),
+                ),
+              ],
+            );
+    });
   }
 
   void onSave(BuildContext context, Product product, Function addProduct,
@@ -129,19 +134,22 @@ class _ProductEditPage extends State<ProductEditPage> {
         _formData['title'],
         _formData['price'],
         _formData['description'],
-        _formData['image'],
-      );
+      ).then((_) {
+        return Navigator.pushReplacementNamed(context, '/');
+      }).then((_) {
+        setIndex(null);
+      });
     } else {
       updateProduct(
-        _formData['title'],
-        _formData['price'],
-        _formData['description'],
-        product.image,
-      );
+              _formData['title'], _formData['price'], _formData['description'])
+          .then((_) {
+        return Navigator.pushReplacementNamed(context, '/');
+      }).then((_) {
+        setIndex(null);
+      });
     }
-    Navigator.pushReplacementNamed(context, '/').then((_) {
-      setIndex(null);
-    });
+    // Navigator.pushReplacementNamed(context, '/').then((_) {
+    // });
   }
 
   List<Widget> _buildListViewChildren(
@@ -164,6 +172,9 @@ class _ProductEditPage extends State<ProductEditPage> {
       ),
       Container(
         child: _buildDescriptionTextField(product),
+      ),
+      SizedBox(
+        height: 10,
       ),
       _buildButtonBar(product, addProduct, updateProduct, setIndex),
     ];

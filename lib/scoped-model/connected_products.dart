@@ -1,6 +1,6 @@
 import 'dart:convert';
+import 'dart:async';
 
-import 'package:flutter_project/scoped-model/main.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import '../models/product.model.dart';
@@ -15,11 +15,10 @@ class ConnectedProductsModel extends Model {
   final String _dbUrl =
       'https://flutter-project-841e3.firebaseio.com/products.json';
 
-  void addProduct(
+  Future<Null> addProduct(
     String title,
     double price,
     String description,
-    String imageUrl,
   ) {
     final Map<String, dynamic> productData = {
       'title': title,
@@ -30,25 +29,28 @@ class ConnectedProductsModel extends Model {
       'userEmail': _user.email,
       'userId': _user.id,
     };
-    http
+    _loading = true;
+    notifyListeners();
+    return http
         .post(_dbUrl, body: json.encode(productData))
         .then((http.Response response) {
-      final Map<String, dynamic> productData = json.decode(response.body);
-      if (productData == null) {
-        notifyListeners();
-        return;
-      }
+      final Map<String, dynamic> resData = json.decode(response.body);
+      // if (resData == null) {
+      //   notifyListeners();
+      //   return;
+      // }
       final Product product = Product(
-        id: productData['name'],
+        id: resData['name'],
         title: title,
         price: price,
         description: description,
-        image: imageUrl,
+        image: productData['imageUrl'],
         userEmail: _user.email,
         userId: _user.id,
       );
       // add product
       _products.add(product);
+      _loading = false;
       notifyListeners();
     });
   }
@@ -131,24 +133,45 @@ class ProductsModel extends ConnectedProductsModel {
     notifyListeners();
   }
 
-  void updateProduct(
+  Future<Null> updateProduct(
     String title,
     double price,
     String description,
-    String imageUrl,
   ) {
     // update product
-    final Product product = Product(
-      id: selectedProduct.id,
-      title: title,
-      price: price,
-      description: description,
-      image: imageUrl,
-      userEmail: selectedProduct.userEmail,
-      userId: selectedProduct.userId,
-      favorite: selectedProduct.favorite,
-    );
-    _products[_selProductIndex] = product;
+    final Map<String, dynamic> productData = {
+      'id': selectedProduct.id,
+      'title': title,
+      'price': price,
+      'description': description,
+      'imageUrl': selectedProduct.image,
+      'userEmail': selectedProduct.userEmail,
+      'userId': selectedProduct.userId,
+      'favorite': selectedProduct.favorite,
+    };
+    _loading = true;
+    notifyListeners();
+    return http
+        .put(
+      'https://flutter-project-841e3.firebaseio.com/products/${selectedProduct.id}.json',
+      body: json.encode(productData),
+    )
+        .then((http.Response response) {
+      Map<String, dynamic> resData = json.decode(response.body);
+      final Product product = Product(
+        id: selectedProduct.id,
+        title: resData['title'],
+        price: resData['price'],
+        description: description,
+        image: resData['imageUrl'],
+        userEmail: resData['userEmail'],
+        userId: resData['userId'],
+        favorite: resData['favorite'],
+      );
+      _products[_selProductIndex] = product;
+      _loading = false;
+      notifyListeners();
+    });
   }
 
   void setSelectedProductIndex(int index) {
