@@ -11,7 +11,6 @@ class ConnectedProductsModel extends Model {
   List<Product> _products = [];
   User _user;
   int _selProductIndex;
-  bool _loading = false;
   final String _dbUrl =
       'https://flutter-project-841e3.firebaseio.com/products.json';
 
@@ -29,16 +28,10 @@ class ConnectedProductsModel extends Model {
       'userEmail': _user.email,
       'userId': _user.id,
     };
-    _loading = true;
-    notifyListeners();
     return http
         .post(_dbUrl, body: json.encode(productData))
         .then((http.Response response) {
       final Map<String, dynamic> resData = json.decode(response.body);
-      // if (resData == null) {
-      //   notifyListeners();
-      //   return;
-      // }
       final Product product = Product(
         id: resData['name'],
         title: title,
@@ -50,18 +43,15 @@ class ConnectedProductsModel extends Model {
       );
       // add product
       _products.add(product);
-      _loading = false;
       notifyListeners();
     });
   }
 
   void fetchProducts() {
-    _loading = true;
     http.get(_dbUrl).then((http.Response response) {
       final Map<String, dynamic> _productData = json.decode(response.body);
       final List<Product> _fetchedProductList = [];
       if (_productData == null) {
-        _loading = false;
         notifyListeners();
         return;
       }
@@ -80,7 +70,6 @@ class ConnectedProductsModel extends Model {
         _fetchedProductList.add(_product);
       });
       _products = _fetchedProductList;
-      _loading = false;
       notifyListeners();
     });
   }
@@ -149,8 +138,6 @@ class ProductsModel extends ConnectedProductsModel {
       'userId': selectedProduct.userId,
       'favorite': selectedProduct.favorite,
     };
-    _loading = true;
-    notifyListeners();
     return http
         .put(
       'https://flutter-project-841e3.firebaseio.com/products/${selectedProduct.id}.json',
@@ -169,7 +156,6 @@ class ProductsModel extends ConnectedProductsModel {
         favorite: resData['favorite'],
       );
       _products[_selProductIndex] = product;
-      _loading = false;
       notifyListeners();
     });
   }
@@ -231,11 +217,5 @@ class AppSettingModel extends Model {
 
   bool get displayMode {
     return _nightMode;
-  }
-}
-
-class UtilityModel extends ConnectedProductsModel {
-  bool get isLoading {
-    return _loading;
   }
 }

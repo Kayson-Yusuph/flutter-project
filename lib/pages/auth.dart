@@ -78,7 +78,7 @@ class _AuthPageState extends State<AuthPage> {
         if (value.isEmpty) {
           rtn = 'Password is required';
         }
-        if(!value.isEmpty && value.length < 6) {
+        if (!value.isEmpty && value.length < 6) {
           rtn = 'Password must be 6+ characters long';
         }
         return rtn;
@@ -195,7 +195,7 @@ class _AuthPageState extends State<AuthPage> {
                   child: _buildFormWidget(targetWidth),
                 ),
               )
-            : model.isLoading? AppLoader(): ProductsPage(model);
+            : ProductsPage(model);
       },
     );
   }

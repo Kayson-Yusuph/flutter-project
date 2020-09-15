@@ -105,9 +105,7 @@ class _ProductEditPage extends State<ProductEditPage> {
   Widget _buildButtonBar() {
     return ScopedModelDescendant(
         builder: (BuildContext context, Widget child, MainModel model) {
-      return model.isLoading
-          ? Center(child: CircularProgressIndicator())
-          : ButtonBar(
+      return ButtonBar(
               children: [
                 RaisedButton(
                   color: Theme.of(context).secondaryHeaderColor,
