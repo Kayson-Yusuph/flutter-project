@@ -18,18 +18,21 @@ class _ProductEditPage extends State<ProductEditPage> {
     'description': null,
     'favorite': false
   };
+  Product _product;
+  bool _savingData = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _titleFocusNode = FocusNode();
   final _priceFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
 
-  EnsureVisibleWhenFocused _buildTitleTextField(Product product) {
+  EnsureVisibleWhenFocused _buildTitleTextField() {
     return EnsureVisibleWhenFocused(
       focusNode: _titleFocusNode,
       child: Container(
         child: TextFormField(
-          initialValue: product == null ? '' : product.title,
+          enabled: !_savingData,
+          initialValue: _product == null ? '' : _product.title,
           focusNode: _titleFocusNode,
           decoration: InputDecoration(
             labelText: 'Title',
@@ -51,11 +54,12 @@ class _ProductEditPage extends State<ProductEditPage> {
     );
   }
 
-  EnsureVisibleWhenFocused _buildDescriptionTextField(Product product) {
+  EnsureVisibleWhenFocused _buildDescriptionTextField() {
     return EnsureVisibleWhenFocused(
         focusNode: _descriptionFocusNode,
         child: TextFormField(
-          initialValue: product == null ? '' : product.description,
+          enabled: !_savingData,
+          initialValue: _product == null ? '' : _product.description,
           focusNode: _descriptionFocusNode,
           decoration: InputDecoration(
             labelText: 'Description',
@@ -75,11 +79,12 @@ class _ProductEditPage extends State<ProductEditPage> {
         ));
   }
 
-  EnsureVisibleWhenFocused _buildPriceTextField(Product product) {
+  EnsureVisibleWhenFocused _buildPriceTextField() {
     return EnsureVisibleWhenFocused(
         focusNode: _priceFocusNode,
         child: TextFormField(
-          initialValue: product == null ? '' : product.price.toString(),
+          enabled: !_savingData,
+          initialValue: _product == null ? '' : _product.price.toString(),
           focusNode: _priceFocusNode,
           decoration:
               InputDecoration(labelText: 'Price', border: OutlineInputBorder()),
@@ -97,8 +102,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         ));
   }
 
-  Widget _buildButtonBar(Product product, Function addProduct,
-      Function updateProduct, Function setIndex) {
+  Widget _buildButtonBar() {
     return ScopedModelDescendant(
         builder: (BuildContext context, Widget child, MainModel model) {
       return model.isLoading
@@ -116,37 +120,42 @@ class _ProductEditPage extends State<ProductEditPage> {
                   color: Theme.of(context).primaryColor,
                   child: Text('Save'),
                   onPressed: () => onSave(
-                      context, product, addProduct, updateProduct, setIndex),
+                    context,
+                    model.addProduct,
+                    model.updateProduct,
+                    model.setSelectedProductIndex,
+                  ),
                 ),
               ],
             );
     });
   }
 
-  void onSave(BuildContext context, Product product, Function addProduct,
+  void onSave(BuildContext context, Function addProduct,
       Function updateProduct, Function setIndex) {
+        setState(() => _savingData = true);
     if (!_formKey.currentState.validate()) {
+        setState(() => _savingData = false);
       return;
     }
+        setState(() => _savingData = false);
     _formKey.currentState.save();
-    if (product == null) {
+    if (_product == null) {
       addProduct(
         _formData['title'],
         _formData['price'],
         _formData['description'],
-      ).then((_) {
-        return Navigator.pushReplacementNamed(context, '/');
-      }).then((_) {
-        setIndex(null);
-      });
+      )
+          .then((_) => Navigator.pushReplacementNamed(context, '/'))
+          .then((_) => setIndex(null));
     } else {
       updateProduct(
-              _formData['title'], _formData['price'], _formData['description'])
-          .then((_) {
-        return Navigator.pushReplacementNamed(context, '/');
-      }).then((_) {
-        setIndex(null);
-      });
+        _formData['title'],
+        _formData['price'],
+        _formData['description'],
+      )
+          .then((_) => Navigator.pushReplacementNamed(context, '/'))
+          .then((_) => setIndex(null));
     }
     // Navigator.pushReplacementNamed(context, '/').then((_) {
     // });
@@ -154,29 +163,25 @@ class _ProductEditPage extends State<ProductEditPage> {
 
   List<Widget> _buildListViewChildren(
       BuildContext context,
-      Product product,
-      Function addProduct,
-      Function updateProduct,
-      Function setIndex,
       bool vertical) {
     List<Widget> children = <Widget>[
-      Container(child: _buildTitleTextField(product)),
+      Container(child: _buildTitleTextField(),),
       SizedBox(
         height: 10,
       ),
       Container(
-        child: _buildPriceTextField(product),
+        child: _buildPriceTextField(),
       ),
       SizedBox(
         height: 10,
       ),
       Container(
-        child: _buildDescriptionTextField(product),
+        child: _buildDescriptionTextField(),
       ),
       SizedBox(
         height: 10,
       ),
-      _buildButtonBar(product, addProduct, updateProduct, setIndex),
+      _buildButtonBar(),
     ];
 
     if (!vertical) {
@@ -185,7 +190,7 @@ class _ProductEditPage extends State<ProductEditPage> {
           children: [
             Flexible(
               child: Container(
-                child: _buildTitleTextField(product),
+                child: _buildTitleTextField(),
               ),
               flex: 4,
             ),
@@ -194,7 +199,7 @@ class _ProductEditPage extends State<ProductEditPage> {
             ),
             Flexible(
               child: Container(
-                child: _buildPriceTextField(product),
+                child: _buildPriceTextField(),
               ),
               flex: 3,
             ),
@@ -204,16 +209,15 @@ class _ProductEditPage extends State<ProductEditPage> {
           height: 10,
         ),
         Container(
-          child: _buildDescriptionTextField(product),
+          child: _buildDescriptionTextField(),
         ),
-        _buildButtonBar(product, addProduct, updateProduct, setIndex),
+        _buildButtonBar(),
       ];
     }
     return children;
   }
 
-  _buildPageContent(BuildContext context, Product product, Function addProduct,
-      Function updateProduct, Function setIndex, bool alignVertical) {
+  _buildPageContent(BuildContext context, bool alignVertical) {
     return GestureDetector(
       onTap: () {
         FocusScope.of(context).requestFocus(FocusNode());
@@ -223,8 +227,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         child: Form(
           key: _formKey,
           child: ListView(
-            children: _buildListViewChildren(context, product, addProduct,
-                updateProduct, setIndex, alignVertical),
+            children: _buildListViewChildren(context, alignVertical),
           ),
         ),
       ),
@@ -235,6 +238,7 @@ class _ProductEditPage extends State<ProductEditPage> {
   Widget build(BuildContext context) {
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
+        _product = model.selectedProduct;
         final deviceWidth = MediaQuery.of(context).size.width;
         bool alignVertical = true;
         if (deviceWidth > 420) {
@@ -243,10 +247,6 @@ class _ProductEditPage extends State<ProductEditPage> {
         return model.selectedProductIndex == null
             ? _buildPageContent(
                 context,
-                model.selectedProduct,
-                model.addProduct,
-                model.updateProduct,
-                model.setSelectedProductIndex,
                 alignVertical)
             : Scaffold(
                 appBar: AppBar(
@@ -254,10 +254,6 @@ class _ProductEditPage extends State<ProductEditPage> {
                 ),
                 body: _buildPageContent(
                     context,
-                    model.selectedProduct,
-                    model.addProduct,
-                    model.updateProduct,
-                    model.setSelectedProductIndex,
                     alignVertical),
               );
       },
