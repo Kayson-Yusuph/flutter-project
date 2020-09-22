@@ -106,37 +106,37 @@ class _ProductEditPage extends State<ProductEditPage> {
     return ScopedModelDescendant(
         builder: (BuildContext context, Widget child, MainModel model) {
       return ButtonBar(
-              children: [
-                RaisedButton(
-                  color: Theme.of(context).secondaryHeaderColor,
-                  child: Text('Cancel'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-                RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  child: Text('Save'),
-                  onPressed: () => onSave(
-                    context,
-                    model.addProduct,
-                    model.updateProduct,
-                    model.setSelectedProductIndex,
-                  ),
-                ),
-              ],
-            );
+        children: [
+          RaisedButton(
+            color: Theme.of(context).secondaryHeaderColor,
+            child: Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+          ),
+          RaisedButton(
+            color: Theme.of(context).primaryColor,
+            child: Text('Save'),
+            onPressed: () => onSave(
+              context,
+              model.addProduct,
+              model.updateProduct,
+              model.setSelectedProductIndex,
+            ),
+          ),
+        ],
+      );
     });
   }
 
-  void onSave(BuildContext context, Function addProduct,
-      Function updateProduct, Function setIndex) {
-        setState(() => _savingData = true);
+  void onSave(BuildContext context, Function addProduct, Function updateProduct,
+      Function setIndex) {
+    setState(() => _savingData = true);
     if (!_formKey.currentState.validate()) {
-        setState(() => _savingData = false);
+      setState(() => _savingData = false);
       return;
     }
-        setState(() => _savingData = false);
+    setState(() => _savingData = false);
     _formKey.currentState.save();
     if (_product == null) {
       addProduct(
@@ -159,11 +159,11 @@ class _ProductEditPage extends State<ProductEditPage> {
     // });
   }
 
-  List<Widget> _buildListViewChildren(
-      BuildContext context,
-      bool vertical) {
+  List<Widget> _buildListViewChildren(BuildContext context, bool vertical) {
     List<Widget> children = <Widget>[
-      Container(child: _buildTitleTextField(),),
+      Container(
+        child: _buildTitleTextField(),
+      ),
       SizedBox(
         height: 10,
       ),
@@ -243,16 +243,14 @@ class _ProductEditPage extends State<ProductEditPage> {
           alignVertical = false;
         }
         return model.selectedProductIndex == null
-            ? _buildPageContent(
-                context,
-                alignVertical)
+            ? Scaffold(
+                body: _buildPageContent(context, alignVertical),
+              )
             : Scaffold(
                 appBar: AppBar(
                   title: Text('Edit product'),
                 ),
-                body: _buildPageContent(
-                    context,
-                    alignVertical),
+                body: _buildPageContent(context, alignVertical),
               );
       },
     );
