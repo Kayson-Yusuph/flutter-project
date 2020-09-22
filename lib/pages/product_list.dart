@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import '../widgets/shared/app-loader.dart';
 import './product_edit.dart';
 import '../models/product.model.dart';
 import '../scoped-model/main.dart';
@@ -11,9 +12,10 @@ class ProductListPage extends StatelessWidget {
       onPressed: () {
         selectProductIndex(index);
         Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => ProductEditPage())).then((_) {
-              selectProductIndex(null);
-            });
+            .push(MaterialPageRoute(builder: (context) => ProductEditPage()))
+            .then((_) {
+          selectProductIndex(null);
+        });
       },
       icon: Icon(
         Icons.edit,
@@ -21,12 +23,13 @@ class ProductListPage extends StatelessWidget {
     );
   }
 
-  ListView _buildProductList(
-      BuildContext context, List<Product> products, Function setIndex, Function delete) {
+  ListView _buildProductList(BuildContext context, List<Product> products,
+      Function setIndex, Function delete) {
     return ListView.builder(
       itemCount: products.length,
       itemBuilder: (BuildContext context, int index) {
-        return _buildProductListTile(context, products[index], index, setIndex, delete);
+        return _buildProductListTile(
+            context, products[index], index, setIndex, delete);
       },
     );
   }
@@ -77,10 +80,15 @@ class ProductListPage extends StatelessWidget {
           child: Text('Product list is empty!'),
         );
         if (model.allProducts.length > 0) {
-          center = _buildProductList(
-              context, products, model.setSelectedProductIndex, model.deleteProduct);
+          center = _buildProductList(context, products,
+              model.setSelectedProductIndex, model.deleteProduct);
         }
-        return center;
+        return model.loading
+            ? AppSimpleLoader()
+            : RefreshIndicator(
+                onRefresh: model.fetchProducts,
+                child: center,
+              );
       },
     );
   }

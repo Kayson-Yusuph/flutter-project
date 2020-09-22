@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/widgets/shared/app-loader.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 
@@ -105,27 +106,29 @@ class _ProductEditPage extends State<ProductEditPage> {
   Widget _buildButtonBar() {
     return ScopedModelDescendant(
         builder: (BuildContext context, Widget child, MainModel model) {
-      return ButtonBar(
-        children: [
-          RaisedButton(
-            color: Theme.of(context).secondaryHeaderColor,
-            child: Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-          RaisedButton(
-            color: Theme.of(context).primaryColor,
-            child: Text('Save'),
-            onPressed: () => onSave(
-              context,
-              model.addProduct,
-              model.updateProduct,
-              model.setSelectedProductIndex,
-            ),
-          ),
-        ],
-      );
+      return model.loading && _savingData
+          ? AppSimpleLoader()
+          : ButtonBar(
+              children: [
+                RaisedButton(
+                  color: Theme.of(context).secondaryHeaderColor,
+                  child: Text('Cancel'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+                RaisedButton(
+                  color: Theme.of(context).primaryColor,
+                  child: Text('Save'),
+                  onPressed: () => onSave(
+                    context,
+                    model.addProduct,
+                    model.updateProduct,
+                    model.setSelectedProductIndex,
+                  ),
+                ),
+              ],
+            );
     });
   }
 
@@ -136,24 +139,25 @@ class _ProductEditPage extends State<ProductEditPage> {
       setState(() => _savingData = false);
       return;
     }
-    setState(() => _savingData = false);
     _formKey.currentState.save();
     if (_product == null) {
       addProduct(
         _formData['title'],
         _formData['price'],
         _formData['description'],
-      )
-          .then((_) => Navigator.pushReplacementNamed(context, '/'))
-          .then((_) => setIndex(null));
+      ).then((_) => Navigator.pushReplacementNamed(context, '/')).then((_) {
+        setState(() => _savingData = false);
+        return setIndex(null);
+      });
     } else {
       updateProduct(
         _formData['title'],
         _formData['price'],
         _formData['description'],
-      )
-          .then((_) => Navigator.pushReplacementNamed(context, '/'))
-          .then((_) => setIndex(null));
+      ).then((_) => Navigator.pushReplacementNamed(context, '/')).then((_) {
+        setState(() => _savingData = false);
+        return setIndex(null);
+      });
     }
     // Navigator.pushReplacementNamed(context, '/').then((_) {
     // });

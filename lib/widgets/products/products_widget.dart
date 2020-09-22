@@ -11,7 +11,7 @@ class ProductsWidget extends StatefulWidget {
 }
 
 class _ProductsWidgetState extends State<ProductsWidget> {
-  _buildProductCard(BuildContext context, List<Product> products) {
+  _buildProductCards(BuildContext context, List<Product> products) {
     Widget productCards = Center(
       child: Text('No product found, please add some'),
     );
@@ -30,7 +30,7 @@ class _ProductsWidgetState extends State<ProductsWidget> {
     return ScopedModelDescendant<MainModel>(
         builder: (BuildContext context, Widget child, MainModel model) {
       // print(model.products.length);
-      return _buildProductCard(context, model.displayProducts);
+      return _buildProductCards(context, model.displayProducts);
     });
   }
 }

@@ -11,6 +11,7 @@ class ConnectedProductsModel extends Model {
   List<Product> _products = [];
   User _user;
   int _selProductIndex;
+  bool _isLoading = false;
   final String _dbUrl =
       'https://flutter-project-841e3.firebaseio.com/products.json';
 
@@ -28,6 +29,8 @@ class ConnectedProductsModel extends Model {
       'userEmail': _user.email,
       'userId': _user.id,
     };
+    _isLoading = true;
+    notifyListeners();
     return http
         .post(_dbUrl, body: json.encode(productData))
         .then((http.Response response) {
@@ -43,15 +46,19 @@ class ConnectedProductsModel extends Model {
       );
       // add product
       _products.add(product);
+      _isLoading = false;
       notifyListeners();
     });
   }
 
-  void fetchProducts() {
-    http.get(_dbUrl).then((http.Response response) {
+  Future<Null> fetchProducts() {
+    _isLoading = true;
+    notifyListeners();
+    return http.get(_dbUrl).then((http.Response response) {
       final Map<String, dynamic> _productData = json.decode(response.body);
       final List<Product> _fetchedProductList = [];
       if (_productData == null) {
+        _isLoading = false;
         notifyListeners();
         return;
       }
@@ -70,6 +77,7 @@ class ConnectedProductsModel extends Model {
         _fetchedProductList.add(_product);
       });
       _products = _fetchedProductList;
+      _isLoading = false;
       notifyListeners();
     });
   }
@@ -138,6 +146,8 @@ class ProductsModel extends ConnectedProductsModel {
       'userId': selectedProduct.userId,
       'favorite': selectedProduct.favorite,
     };
+    _isLoading = true;
+    notifyListeners();
     return http
         .put(
       'https://flutter-project-841e3.firebaseio.com/products/${selectedProduct.id}.json',
@@ -156,6 +166,7 @@ class ProductsModel extends ConnectedProductsModel {
         favorite: resData['favorite'],
       );
       _products[_selProductIndex] = product;
+      _isLoading = false;
       notifyListeners();
     });
   }
@@ -217,5 +228,11 @@ class AppSettingModel extends Model {
 
   bool get displayMode {
     return _nightMode;
+  }
+}
+
+class UtilityModel extends ConnectedProductsModel {
+  bool get loading {
+    return _isLoading;
   }
 }

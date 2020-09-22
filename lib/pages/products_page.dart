@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+import '../widgets/shared/app-loader.dart';
 import '../widgets/products/products_widget.dart';
 import '../scoped-model/main.dart';
 
@@ -14,13 +15,13 @@ class ProductsPage extends StatefulWidget {
   ProductsPage(this.model);
 }
 
-class _MyProductPageState extends State<ProductsPage>{
-
+class _MyProductPageState extends State<ProductsPage> {
   @override
   initState() {
     widget.model.fetchProducts();
     super.initState();
   }
+
   Drawer _buildSideDrawer(BuildContext context) {
     return Drawer(
       child: Column(
@@ -71,11 +72,17 @@ class _MyProductPageState extends State<ProductsPage>{
   Widget build(BuildContext context) {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
-        return Scaffold(
-          drawer: _buildSideDrawer(context),
-          appBar: _buildAppBar(model.showFavorite, model.toggleDisplayMode),
-          body: ProductsWidget(),
-        );
+        return !model.loading
+            ? Scaffold(
+                drawer: _buildSideDrawer(context),
+                appBar:
+                    _buildAppBar(model.showFavorite, model.toggleDisplayMode),
+                body: RefreshIndicator(
+                  onRefresh: model.fetchProducts,
+                  child: ProductsWidget(),
+                ),
+              )
+            : AppLoader('Loading Products!');
       },
     );
   }

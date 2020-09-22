@@ -21,3 +21,12 @@ class AppLoader extends StatelessWidget {
     );
   }
 }
+
+class AppSimpleLoader extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: CircularProgressIndicator(),
+    );
+  }
+}
