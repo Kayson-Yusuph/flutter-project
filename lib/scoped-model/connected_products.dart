@@ -125,16 +125,19 @@ class ProductsModel extends ConnectedProductsModel {
   }
 
   Future<Null> deleteProduct() {
-    // delete productreturn
+    // delete product
+    final _deletedProductIndex = _selProductIndex;
+    final _deletedProductId = selectedProduct.id;
+    _selProductIndex = null;
     _isLoading = true;
     notifyListeners();
     return http
         .delete(
-            'https://flutter-project-841e3.firebaseio.com/products/${selectedProduct.id}.json')
+            'https://flutter-project-841e3.firebaseio.com/products/$_deletedProductId.json')
         .then((response) {
       final res = json.decode(response.body);
       if (res == null) {
-        _products.removeAt(selectedProductIndex);
+        _products.removeAt(_deletedProductIndex);
         _isLoading = false;
         notifyListeners();
       }
