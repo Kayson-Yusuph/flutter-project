@@ -12,8 +12,13 @@ class ProductsWidget extends StatefulWidget {
 
 class _ProductsWidgetState extends State<ProductsWidget> {
   _buildProductCards(BuildContext context, List<Product> products) {
-    Widget productCards = Center(
-      child: Text('No product found, please add some'),
+    Widget productCards = Stack(
+      children: <Widget>[
+        ListView(),
+        Center(
+          child: Text('No product found, please add some'),
+        ),
+      ],
     );
     if (products.length > 0) {
       productCards = ListView.builder(

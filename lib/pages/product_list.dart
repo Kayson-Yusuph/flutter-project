@@ -76,8 +76,13 @@ class ProductListPage extends StatelessWidget {
     return ScopedModelDescendant<MainModel>(
       builder: (BuildContext context, Widget child, MainModel model) {
         final List<Product> products = model.allProducts;
-        Widget center = Center(
-          child: Text('Product list is empty!'),
+        Widget center = Stack(
+          children: <Widget>[
+            ListView(),
+            Center(
+              child: Text('Product list is empty!'),
+            )
+          ],
         );
         if (model.allProducts.length > 0) {
           center = _buildProductList(context, products,

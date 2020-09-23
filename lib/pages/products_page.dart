@@ -82,7 +82,7 @@ class _MyProductPageState extends State<ProductsPage> {
                   child: ProductsWidget(),
                 ),
               )
-            : AppLoader('Loading Products!');
+            : AppLoader('Loading products!');
       },
     );
   }
