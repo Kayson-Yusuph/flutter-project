@@ -54,8 +54,7 @@ class _ProductCardState extends State<ProductCard> {
           },
         ),
         IconButton(
-          icon:
-              Icon(product.favorite ? Icons.favorite : Icons.favorite_border),
+          icon: Icon(product.favorite ? Icons.favorite : Icons.favorite_border),
           color: Colors.red,
           onPressed: () {
             // ...
@@ -75,7 +74,10 @@ class _ProductCardState extends State<ProductCard> {
         return Card(
           child: Column(
             children: <Widget>[
-              Image.network(product.image),
+              FadeInImage(
+                image: NetworkImage(product.image),
+                placeholder: AssetImage('assets/image-not-found.jpg'),
+              ),
               SizedBox(
                 height: 10,
               ),
