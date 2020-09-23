@@ -7,14 +7,14 @@ import '../models/product.model.dart';
 import '../scoped-model/main.dart';
 
 class ProductListPage extends StatelessWidget {
-  _buildProductEditButton(context, int index, Function selectProductIndex) {
+  _buildProductEditButton(context, Product product, Function setProductId) {
     return IconButton(
       onPressed: () {
-        selectProductIndex(index);
+        setProductId(product.id);
         Navigator.of(context)
             .push(MaterialPageRoute(builder: (context) => ProductEditPage()))
             .then((_) {
-          selectProductIndex(null);
+          setProductId(null);
         });
       },
       icon: Icon(
@@ -24,25 +24,25 @@ class ProductListPage extends StatelessWidget {
   }
 
   ListView _buildProductList(BuildContext context, List<Product> products,
-      Function setIndex, Function delete) {
+      Function setProductId, Function delete) {
     return ListView.builder(
       itemCount: products.length,
       itemBuilder: (BuildContext context, int index) {
         return _buildProductListTile(
-            context, products[index], index, setIndex, delete);
+            context, products[index], index, setProductId, delete);
       },
     );
   }
 
   Dismissible _buildProductListTile(
-      context, Product product, int index, Function setIndex, Function delete) {
+      context, Product product, int index, Function setProductId, Function delete) {
     // final Product _product = products[index];
     return Dismissible(
       key: Key(product.title),
       onDismissed: (DismissDirection direction) {
         if (direction == DismissDirection.endToStart ||
             direction == DismissDirection.startToEnd) {
-          setIndex(index);
+          setProductId(product.id);
           delete();
         } else {
           print('Other swipe directions!');
@@ -63,7 +63,7 @@ class ProductListPage extends StatelessWidget {
               product.title,
             ),
             subtitle: Text('TZS ${product.price.toString()}'),
-            trailing: _buildProductEditButton(context, index, setIndex),
+            trailing: _buildProductEditButton(context, product, setProductId),
           ),
           Divider(),
         ],
@@ -86,7 +86,7 @@ class ProductListPage extends StatelessWidget {
         );
         if (model.allProducts.length > 0) {
           center = _buildProductList(context, products,
-              model.setSelectedProductIndex, model.deleteProduct);
+              model.setSelectedProductId, model.deleteProduct);
         }
         return model.loading
             ? AppSimpleLoader()

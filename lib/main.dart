@@ -43,9 +43,10 @@ class _MyAppState extends State<MyApp> {
             return null;
           }
           if (route[1] == 'products') {
-            final int index = int.parse(route[2]);
+            final String productId = route[2];
+            model.setSelectedProductId(productId);
             return MaterialPageRoute(
-              builder: (BuildContext context) => ProductsDetailsPage(index),
+              builder: (BuildContext context) => ProductsDetailsPage(),
             );
           }
           return null;

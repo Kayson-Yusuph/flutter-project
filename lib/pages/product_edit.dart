@@ -124,7 +124,7 @@ class _ProductEditPage extends State<ProductEditPage> {
                     context,
                     model.addProduct,
                     model.updateProduct,
-                    model.setSelectedProductIndex,
+                    model.setSelectedProductId,
                   ),
                 ),
               ],
@@ -133,7 +133,7 @@ class _ProductEditPage extends State<ProductEditPage> {
   }
 
   void onSave(BuildContext context, Function addProduct, Function updateProduct,
-      Function setIndex) {
+      Function setProductId) {
     setState(() => _savingData = true);
     if (!_formKey.currentState.validate()) {
       setState(() => _savingData = false);
@@ -147,7 +147,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         _formData['description'],
       ).then((_) => Navigator.pushReplacementNamed(context, '/')).then((_) {
         setState(() => _savingData = false);
-        return setIndex(null);
+        return setProductId(null);
       });
     } else {
       updateProduct(
@@ -156,7 +156,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         _formData['description'],
       ).then((_) => Navigator.pushReplacementNamed(context, '/')).then((_) {
         setState(() => _savingData = false);
-        return setIndex(null);
+        return setProductId(null);
       });
     }
     // Navigator.pushReplacementNamed(context, '/').then((_) {

@@ -10,7 +10,7 @@ import '../../scoped-model/main.dart';
 class ProductCard extends StatefulWidget {
   final int index;
 
-  ProductCard({this.index});
+  ProductCard(this.index);
   @override
   State<StatefulWidget> createState() => _ProductCardState();
 }
@@ -34,7 +34,7 @@ class _ProductCardState extends State<ProductCard> {
   }
 
   ButtonBar _buildButtonBar(
-      product, Function setIndex, Function delete, Function toggleStatus) {
+      product, Function setProductId, Function delete, Function toggleStatus) {
     final int index = widget.index;
     return ButtonBar(
       alignment: MainAxisAlignment.center,
@@ -43,12 +43,13 @@ class _ProductCardState extends State<ProductCard> {
           icon: Icon(Icons.info),
           color: Theme.of(context).primaryColor,
           onPressed: () {
-            setIndex(index);
-            Navigator.pushNamed(context, '/products/$index').then((value) {
+            // setIndex(index);
+            // setProductId(product.id);
+            Navigator.pushNamed(context, '/products/${product.id}').then((value) {
               if (value != null && value == true) {
                 delete();
               } else {
-                setIndex(null);
+                setProductId(null);
               }
             });
           },
@@ -58,7 +59,7 @@ class _ProductCardState extends State<ProductCard> {
           color: Colors.red,
           onPressed: () {
             // ...
-            setIndex(index);
+            setProductId(product.id);
             toggleStatus();
           },
         )
@@ -84,7 +85,7 @@ class _ProductCardState extends State<ProductCard> {
               _buildTitleAndPriceRow(product),
               AddressTag('Mpanda-Katavi, Tanzania'),
               Text(product.userEmail),
-              _buildButtonBar(product, model.setSelectedProductIndex,
+              _buildButtonBar(product, model.setSelectedProductId,
                   model.deleteProduct, model.toggleProductFavoriteStatus),
             ],
           ),

@@ -5,12 +5,8 @@ import 'package:scoped_model/scoped_model.dart';
 import '../widgets/ui_elements/title_default.dart';
 import '../models/product.model.dart';
 import '../scoped-model/main.dart';
-import '../models/user.model.dart';
 
 class ProductsDetailsPage extends StatelessWidget {
-  final int productIndex;
-
-  ProductsDetailsPage(this.productIndex);
 
   _showDeleteWarning(BuildContext context, Product product) {
     return showDialog(
@@ -69,9 +65,7 @@ class ProductsDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
-        final List<Product> products = model.displayProducts;
-        final Product product = products[productIndex];
-        final User _user = model.loginUser;
+        final Product product = model.selectedProduct;
         return WillPopScope(
           onWillPop: () {
             Navigator.pop(context, false);

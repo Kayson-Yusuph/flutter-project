@@ -10,7 +10,7 @@ import 'package:http/http.dart' as http;
 class ConnectedProductsModel extends Model {
   List<Product> _products = [];
   User _user;
-  int _selProductIndex;
+  String _selProductId;
   bool _isLoading = false;
   final String _dbUrl =
       'https://flutter-project-841e3.firebaseio.com/products.json';
@@ -114,21 +114,25 @@ class ProductsModel extends ConnectedProductsModel {
   }
 
   Product get selectedProduct {
-    if (selectedProductIndex == null) {
+    if (selectedProductId == null) {
       return null;
     }
-    return _products[selectedProductIndex];
+    return _products.firstWhere((product) => product.id == selectedProductId);
   }
 
   int get selectedProductIndex {
-    return _selProductIndex;
+    return _products.indexWhere((product) => product.id == selectedProductId);
+  }
+
+  String get selectedProductId {
+    return _selProductId;
   }
 
   Future<Null> deleteProduct() {
     // delete product
-    final _deletedProductIndex = _selProductIndex;
+    final _deletedProductIndex = selectedProductIndex;
     final _deletedProductId = selectedProduct.id;
-    _selProductIndex = null;
+    _selProductId = null;
     _isLoading = true;
     notifyListeners();
     return http
@@ -179,20 +183,20 @@ class ProductsModel extends ConnectedProductsModel {
         userId: resData['userId'],
         favorite: resData['favorite'],
       );
-      _products[_selProductIndex] = product;
+      _products[selectedProductIndex] = product;
       _isLoading = false;
       notifyListeners();
     });
   }
 
-  void setSelectedProductIndex(int index) {
-    _selProductIndex = index;
+  void setSelectedProductId(String id) {
+    _selProductId = id;
   }
 
   void toggleProductFavoriteStatus() {
-    final bool oldFavorite = _products[_selProductIndex].favorite;
-    final Product oldProduct = _products[_selProductIndex];
-    _products[_selProductIndex] = Product(
+    final bool oldFavorite = _products[selectedProductIndex].favorite;
+    final Product oldProduct = _products[selectedProductIndex];
+    _products[selectedProductIndex] = Product(
       image: oldProduct.image,
       description: oldProduct.description,
       id: oldProduct.id,
@@ -202,6 +206,7 @@ class ProductsModel extends ConnectedProductsModel {
       userId: oldProduct.userId,
       userEmail: oldProduct.userEmail,
     );
+    _selProductId = null;
     notifyListeners();
   }
 
