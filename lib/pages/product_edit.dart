@@ -146,7 +146,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         _formData['price'],
         _formData['description'],
       ).then((_) => Navigator.pushReplacementNamed(context, '/')).then((_) {
-        setState(() => _savingData = false);
+        // setState(() => _savingData = false);
         return setProductId(null);
       });
     } else {
@@ -155,12 +155,10 @@ class _ProductEditPage extends State<ProductEditPage> {
         _formData['price'],
         _formData['description'],
       ).then((_) => Navigator.pushReplacementNamed(context, '/')).then((_) {
-        setState(() => _savingData = false);
+        // setState(() => _savingData = false);
         return setProductId(null);
       });
     }
-    // Navigator.pushReplacementNamed(context, '/').then((_) {
-    // });
   }
 
   List<Widget> _buildListViewChildren(BuildContext context, bool vertical) {
@@ -246,7 +244,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         if (deviceWidth > 420) {
           alignVertical = false;
         }
-        return model.selectedProductIndex == null
+        return model.selectedProductId == null
             ? Scaffold(
                 body: _buildPageContent(context, alignVertical),
               )
