@@ -12,8 +12,7 @@ class ConnectedProductsModel extends Model {
   User _user;
   String _selProductId;
   bool _isLoading = false;
-  final String _dbUrl =
-      'https://flutter-project-841e3.firebaseio.com/products';
+  final String _dbUrl = 'https://flutter-project-841e3.firebaseio.com/products';
 
   Future<bool> addProduct(
     String title,
@@ -34,11 +33,11 @@ class ConnectedProductsModel extends Model {
     return http
         .post('$_dbUrl', body: json.encode(productData))
         .then((http.Response response) {
-          if(response.statusCode != 200 && response.statusCode != 201) {
-            _isLoading = false;
-            notifyListeners();
-            return false;
-          }
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
       final Map<String, dynamic> resData = json.decode(response.body);
       final Product product = Product(
         id: resData['name'],
@@ -54,19 +53,28 @@ class ConnectedProductsModel extends Model {
       _isLoading = false;
       notifyListeners();
       return true;
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 
-  Future<Null> fetchProducts() {
+  Future<bool> fetchProducts() {
     _isLoading = true;
     notifyListeners();
     return http.get('$_dbUrl.json').then((http.Response response) {
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
       final Map<String, dynamic> _productData = json.decode(response.body);
       final List<Product> _fetchedProductList = [];
       if (_productData == null) {
         _isLoading = false;
         notifyListeners();
-        return;
+        return true;
       }
       _productData.forEach((String productId, dynamic product) {
         final Product _product = Product(
@@ -85,6 +93,11 @@ class ConnectedProductsModel extends Model {
       _products = _fetchedProductList;
       _isLoading = false;
       notifyListeners();
+      return true;
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 
@@ -134,27 +147,34 @@ class ProductsModel extends ConnectedProductsModel {
     return _selProductId;
   }
 
-  Future<Null> deleteProduct() {
+  Future<bool> deleteProduct() {
     // delete product
     final _deletedProductIndex = selectedProductIndex;
     final _deletedProductId = selectedProduct.id;
-    _selProductId = null;
+    // _selProductId = null;
     _isLoading = true;
     notifyListeners();
-    return http
-        .delete(
-            '$_dbUrl/$_deletedProductId.json')
-        .then((response) {
+    return http.delete('$_dbUrl/$_deletedProductId.json').then((response) {
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
       final res = json.decode(response.body);
       if (res == null) {
         _products.removeAt(_deletedProductIndex);
         _isLoading = false;
         notifyListeners();
+        return true;
       }
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 
-  Future<Null> updateProduct(
+  Future<bool> updateProduct(
     String title,
     double price,
     String description,
@@ -178,6 +198,11 @@ class ProductsModel extends ConnectedProductsModel {
       body: json.encode(productData),
     )
         .then((http.Response response) {
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
       Map<String, dynamic> resData = json.decode(response.body);
       final Product product = Product(
         id: selectedProduct.id,
@@ -192,6 +217,11 @@ class ProductsModel extends ConnectedProductsModel {
       _products[selectedProductIndex] = product;
       _isLoading = false;
       notifyListeners();
+      return true;
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
     });
   }
 

@@ -132,6 +132,24 @@ class _ProductEditPage extends State<ProductEditPage> {
     });
   }
 
+  _showErrorDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Something went wrong'),
+            content: Text('Please try again later after sometime.'),
+            actions: [
+              FlatButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('OK'))
+            ],
+          );
+        }).then((_) {
+      setState(() => _savingData = false);
+    });
+  }
+
   void onSave(BuildContext context, Function addProduct, Function updateProduct,
       Function setProductId) {
     setState(() => _savingData = true);
@@ -150,20 +168,7 @@ class _ProductEditPage extends State<ProductEditPage> {
           Navigator.pushReplacementNamed(context, '/');
           setProductId(null);
         } else {
-          showDialog(
-              context: context,
-              builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text('Something went wrong'),
-                  content: Text('Please try again later after sometime.'),
-                  actions: [
-                    FlatButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: Text('OK'))
-                  ],
-                );
-              });
-          setState(() => _savingData = false);
+          _showErrorDialog(context);
         }
       });
     } else {
@@ -171,9 +176,13 @@ class _ProductEditPage extends State<ProductEditPage> {
         _formData['title'],
         _formData['price'],
         _formData['description'],
-      ).then((_) => Navigator.pushReplacementNamed(context, '/')).then((_) {
-        // setState(() => _savingData = false);
-        return setProductId(null);
+      ).then((bool success) {
+        if (success) {
+          Navigator.pushReplacementNamed(context, '/');
+          setProductId(null);
+        } else {
+          _showErrorDialog(context);
+        }
       });
     }
   }

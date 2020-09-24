@@ -34,8 +34,25 @@ class ProductListPage extends StatelessWidget {
     );
   }
 
-  Dismissible _buildProductListTile(
-      context, Product product, int index, Function setProductId, Function delete) {
+  _showErrorDialog(BuildContext context) {
+    final oldContext = context;
+    return showDialog(
+        context: oldContext,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Something went wrong'),
+            content: Text('Please try again later after sometime.'),
+            actions: [
+              FlatButton(
+                  onPressed: () => Navigator.of(oldContext).pop(),
+                  child: Text('OK'))
+            ],
+          );
+        });
+  }
+
+  Dismissible _buildProductListTile(context, Product product, int index,
+      Function setProductId, Function delete) {
     // final Product _product = products[index];
     return Dismissible(
       key: Key(product.title),
@@ -43,7 +60,13 @@ class ProductListPage extends StatelessWidget {
         if (direction == DismissDirection.endToStart ||
             direction == DismissDirection.startToEnd) {
           setProductId(product.id);
-          delete();
+          delete().then((bool success) {
+            if (!success) {
+              _showErrorDialog(context);
+            }
+            setProductId(null);
+
+          });
         } else {
           print('Other swipe directions!');
         }

@@ -33,6 +33,22 @@ class _ProductCardState extends State<ProductCard> {
     );
   }
 
+  _showErrorDialog(BuildContext context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Something went wrong'),
+            content: Text('Please try again later after sometime.'),
+            actions: [
+              FlatButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  child: Text('OK'))
+            ],
+          );
+        });
+  }
+
   ButtonBar _buildButtonBar(
       product, Function setProductId, Function delete, Function toggleStatus) {
     final int index = widget.index;
@@ -45,9 +61,15 @@ class _ProductCardState extends State<ProductCard> {
           onPressed: () {
             // setIndex(index);
             // setProductId(product.id);
-            Navigator.pushNamed(context, '/products/${product.id}').then((value) {
+            Navigator.pushNamed(context, '/products/${product.id}')
+                .then((value) {
               if (value != null && value == true) {
-                delete();
+                delete().then((bool success) {
+                  if (!success) {
+                    _showErrorDialog(context);
+                  }
+                  setProductId(null);
+                });
               } else {
                 setProductId(null);
               }
