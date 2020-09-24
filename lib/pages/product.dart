@@ -11,7 +11,7 @@ class ProductsDetailsPage extends StatelessWidget {
   _showDeleteWarning(BuildContext context, Product product) {
     return showDialog(
       context: context,
-      builder: (context) {
+      builder: (BuildContext context) {
         return AlertDialog(
           title: Text('Delete ${product.title}'),
           content: Text('This action can not undone, are you sure?'),

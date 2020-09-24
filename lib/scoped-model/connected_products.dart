@@ -13,9 +13,9 @@ class ConnectedProductsModel extends Model {
   String _selProductId;
   bool _isLoading = false;
   final String _dbUrl =
-      'https://flutter-project-841e3.firebaseio.com/products.json';
+      'https://flutter-project-841e3.firebaseio.com/products';
 
-  Future<Null> addProduct(
+  Future<bool> addProduct(
     String title,
     double price,
     String description,
@@ -32,8 +32,13 @@ class ConnectedProductsModel extends Model {
     _isLoading = true;
     notifyListeners();
     return http
-        .post(_dbUrl, body: json.encode(productData))
+        .post('$_dbUrl', body: json.encode(productData))
         .then((http.Response response) {
+          if(response.statusCode != 200 && response.statusCode != 201) {
+            _isLoading = false;
+            notifyListeners();
+            return false;
+          }
       final Map<String, dynamic> resData = json.decode(response.body);
       final Product product = Product(
         id: resData['name'],
@@ -48,13 +53,14 @@ class ConnectedProductsModel extends Model {
       _products.add(product);
       _isLoading = false;
       notifyListeners();
+      return true;
     });
   }
 
   Future<Null> fetchProducts() {
     _isLoading = true;
     notifyListeners();
-    return http.get(_dbUrl).then((http.Response response) {
+    return http.get('$_dbUrl.json').then((http.Response response) {
       final Map<String, dynamic> _productData = json.decode(response.body);
       final List<Product> _fetchedProductList = [];
       if (_productData == null) {
@@ -137,7 +143,7 @@ class ProductsModel extends ConnectedProductsModel {
     notifyListeners();
     return http
         .delete(
-            'https://flutter-project-841e3.firebaseio.com/products/$_deletedProductId.json')
+            '$_dbUrl/$_deletedProductId.json')
         .then((response) {
       final res = json.decode(response.body);
       if (res == null) {
@@ -168,7 +174,7 @@ class ProductsModel extends ConnectedProductsModel {
     notifyListeners();
     return http
         .put(
-      'https://flutter-project-841e3.firebaseio.com/products/${selectedProduct.id}.json',
+      '$_dbUrl/${selectedProduct.id}.json',
       body: json.encode(productData),
     )
         .then((http.Response response) {
