@@ -14,93 +14,6 @@ class ConnectedProductsModel extends Model {
   bool _isLoading = false;
   final String _dbUrl = 'https://flutter-project-841e3.firebaseio.com/products';
 
-  Future<bool> addProduct(
-    String title,
-    double price,
-    String description,
-  ) {
-    final Map<String, dynamic> productData = {
-      'title': title,
-      'price': price,
-      'description': description,
-      'imageUrl':
-          'https://vaya.in/recipes/wp-content/uploads/2018/02/Milk-Chocolate-1.jpg',
-      'userEmail': _user.email,
-      'userId': _user.id,
-    };
-    _isLoading = true;
-    notifyListeners();
-    return http
-        .post('$_dbUrl', body: json.encode(productData))
-        .then((http.Response response) {
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        _isLoading = false;
-        notifyListeners();
-        return false;
-      }
-      final Map<String, dynamic> resData = json.decode(response.body);
-      final Product product = Product(
-        id: resData['name'],
-        title: title,
-        price: price,
-        description: description,
-        image: productData['imageUrl'],
-        userEmail: _user.email,
-        userId: _user.id,
-      );
-      // add product
-      _products.add(product);
-      _isLoading = false;
-      notifyListeners();
-      return true;
-    }).catchError((error) {
-      _isLoading = false;
-      notifyListeners();
-      return false;
-    });
-  }
-
-  Future<bool> fetchProducts() {
-    _isLoading = true;
-    notifyListeners();
-    return http.get('$_dbUrl.json').then((http.Response response) {
-      if (response.statusCode != 200 && response.statusCode != 201) {
-        _isLoading = false;
-        notifyListeners();
-        return false;
-      }
-      final Map<String, dynamic> _productData = json.decode(response.body);
-      final List<Product> _fetchedProductList = [];
-      if (_productData == null) {
-        _isLoading = false;
-        notifyListeners();
-        return true;
-      }
-      _productData.forEach((String productId, dynamic product) {
-        final Product _product = Product(
-          id: productId,
-          title: product['title'],
-          price: product['price'],
-          description: product['description'],
-          image: product['imageUrl'],
-          favorite: product['favorite'] != null ? product['favorite'] : false,
-          userId: product['userId'],
-          userEmail: product['userEmail'],
-        );
-
-        _fetchedProductList.add(_product);
-      });
-      _products = _fetchedProductList;
-      _isLoading = false;
-      notifyListeners();
-      return true;
-    }).catchError((error) {
-      _isLoading = false;
-      notifyListeners();
-      return false;
-    });
-  }
-
   login(String email, String password) {
     _user = User(id: 'slkfjsldkfs', email: email, password: password);
     notifyListeners();
@@ -145,6 +58,93 @@ class ProductsModel extends ConnectedProductsModel {
 
   String get selectedProductId {
     return _selProductId;
+  }
+
+  Future<bool> addProduct(
+    String title,
+    double price,
+    String description,
+  ) async {
+    final Map<String, dynamic> productData = {
+      'title': title,
+      'price': price,
+      'description': description,
+      'imageUrl':
+          'https://vaya.in/recipes/wp-content/uploads/2018/02/Milk-Chocolate-1.jpg',
+      'userEmail': _user.email,
+      'userId': _user.id,
+    };
+    _isLoading = true;
+    notifyListeners();
+    try{
+    final http.Response response = await http
+        .post('$_dbUrl.json', body: json.encode(productData));
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+      final Map<String, dynamic> resData = json.decode(response.body);
+      final Product product = Product(
+        id: resData['name'],
+        title: title,
+        price: price,
+        description: description,
+        image: productData['imageUrl'],
+        userEmail: _user.email,
+        userId: _user.id,
+      );
+      // add product
+      _products.add(product);
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    }
+  }
+
+  Future<bool> fetchProducts() {
+    _isLoading = true;
+    notifyListeners();
+    return http.get('$_dbUrl.json').then((http.Response response) {
+      if (response.statusCode != 200 && response.statusCode != 201) {
+        _isLoading = false;
+        notifyListeners();
+        return false;
+      }
+      final Map<String, dynamic> _productData = json.decode(response.body);
+      final List<Product> _fetchedProductList = [];
+      if (_productData == null) {
+        _isLoading = false;
+        notifyListeners();
+        return true;
+      }
+      _productData.forEach((String productId, dynamic product) {
+        final Product _product = Product(
+          id: productId,
+          title: product['title'],
+          price: product['price'],
+          description: product['description'],
+          image: product['imageUrl'],
+          favorite: product['favorite'] != null ? product['favorite'] : false,
+          userId: product['userId'],
+          userEmail: product['userEmail'],
+        );
+
+        _fetchedProductList.add(_product);
+      });
+      _products = _fetchedProductList;
+      _isLoading = false;
+      notifyListeners();
+      return true;
+    }).catchError((error) {
+      _isLoading = false;
+      notifyListeners();
+      return false;
+    });
   }
 
   Future<bool> deleteProduct() {
