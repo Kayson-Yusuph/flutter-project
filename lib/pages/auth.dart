@@ -6,6 +6,11 @@ import '../scoped-model/main.dart';
 import '../pages/products_page.dart';
 import '../widgets/shared/app-loader.dart';
 
+
+enum AuthMode {
+  Login,
+  Signup
+}
 class AuthPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _AuthPageState();
@@ -14,6 +19,8 @@ class AuthPage extends StatefulWidget {
 class _AuthPageState extends State<AuthPage> {
   String _emailValue;
   String _passwordValue;
+  String _passwordConfirmValue;
+  AuthMode _authMode = AuthMode.Login;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   DecorationImage _buildBackgroundImage() {
@@ -83,8 +90,42 @@ class _AuthPageState extends State<AuthPage> {
         }
         return rtn;
       },
-      onSaved: (String value) {
+      onChanged: (String value) {
+        setState(() {
         _passwordValue = value;
+        });
+      },
+    );
+  }
+
+  TextFormField _buildConfirmPasswordTextField() {
+    return TextFormField(
+      cursorColor: Colors.black,
+      obscureText: true,
+      style: TextStyle(color: Colors.black),
+      decoration: InputDecoration(
+        labelText: 'Confirm Password',
+        fillColor: Colors.white,
+        labelStyle: TextStyle(color: Colors.black),
+        filled: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(30),
+          ),
+        ),
+      ),
+      validator: (String value) {
+        print('password is $_passwordValue and confirm is $value');
+        dynamic rtn;
+        if (_passwordValue != value) {
+          rtn = 'Password mismatch';
+        }
+        return rtn;
+      },
+      onSaved: (String value) {
+        // setState(() {
+        // });
+        _passwordConfirmValue = value;
       },
     );
   }
@@ -114,24 +155,45 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  Widget _buildLoginRaisedButton() {
+  Widget _buildSignUpLoginRaisedButton() {
+    final _buttonText = _authMode == AuthMode.Login? 'LOGIN': 'SIGN UP';
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
         return RaisedButton(
           color: Theme.of(context).primaryColor,
-          onPressed: () => _onLogin(model.login),
-          child: Text('LOGIN'),
+          onPressed: () => _onLogin(model.login, model.register),
+          child: Text('$_buttonText'),
         );
       },
     );
   }
 
-  void _onLogin(Function login) {
+  _buildSwitchAuthStateFlatButton() {
+    final _buttonText = _authMode == AuthMode.Login? AuthMode.Signup: AuthMode.Login;
+    return FlatButton(onPressed: () {
+      setState(() {
+        final condition = _authMode == AuthMode.Login;
+        if(condition) {
+          _authMode = AuthMode.Signup;
+          return;
+        }
+        _authMode =  AuthMode.Login;
+      });
+    }, child: Text('Switch to $_buttonText'));
+  }
+
+  void _onLogin(Function login, Function register) {
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
+    if(_authMode == AuthMode.Login) {
+      print('Logging in');
     login(_emailValue, _passwordValue);
+    return;
+    }
+    print('Signing up');
+    register(_emailValue, _passwordValue);
   }
 
   Form _buildFormWidget(double targetWidth) {
@@ -152,11 +214,16 @@ class _AuthPageState extends State<AuthPage> {
                 SizedBox(
                   height: 10,
                 ),
+                _authMode == AuthMode.Login? Container(): Column(children: [SizedBox(height: 10), _buildConfirmPasswordTextField(),SizedBox(height: 10),],),
                 _buildTermsAndConditionSwitch(),
                 SizedBox(
                   height: 10,
                 ),
-                _buildLoginRaisedButton(),
+                _buildSignUpLoginRaisedButton(),
+                SizedBox(
+                  height: 10,
+                ),
+                _buildSwitchAuthStateFlatButton(),
               ],
             ),
           ),

@@ -2,10 +2,10 @@ import 'dart:convert';
 import 'dart:async';
 
 import 'package:scoped_model/scoped_model.dart';
+import 'package:http/http.dart' as http;
 
 import '../models/product.model.dart';
 import '../models/user.model.dart';
-import 'package:http/http.dart' as http;
 
 class ConnectedProductsModel extends Model {
   List<Product> _products = [];
@@ -14,9 +14,45 @@ class ConnectedProductsModel extends Model {
   bool _isLoading = false;
   final String _dbUrl = 'https://flutter-project-841e3.firebaseio.com/products';
 
-  login(String email, String password) {
-    _user = User(id: 'slkfjsldkfs', email: email, password: password);
+  register(String email, String password) async {
+   try{
+      final Map<String, dynamic> _authData = {
+      "email": email,
+      "password": password,
+      "returnSecureToken": true,
+    };
+    final http.Response response = await http.post('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDArO1uM71y8qfQUC2PaAKiVZjfCLx9ERM', body: json.encode(_authData));
+    if(response.body != null) {
+      final Map<String, dynamic> _userData = json.decode(response.body);
+    _user = User(id: _userData['localId'], email: email, token: _userData['idToken']);
     notifyListeners();
+    return;
+    }
+    notifyListeners();
+   } catch (e) {
+     print('Something went wrong, try again after sometime');
+     notifyListeners();
+   }
+  }
+
+  login(String email, String password) async{
+    try{
+      final Map<String, dynamic> _authData = {
+      "email": email,
+      "password": password,
+      "returnSecureToken": true
+    };
+    final http.Response response = await http.post('https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDArO1uM71y8qfQUC2PaAKiVZjfCLx9ERM', body: json.encode(_authData));
+    if(response.body != null) {
+    final Map<String, dynamic> _userData = json.decode(response.body);
+    _user = User(id: _userData['localId'], email: email, token: _userData['idToken']);
+    notifyListeners();
+    }
+    notifyListeners();
+    } catch (e) {
+      print('Some thing went wrong, try again after sometime');
+      notifyListeners();
+    }
   }
 
   logout() {
