@@ -161,7 +161,7 @@ class _AuthPageState extends State<AuthPage> {
       builder: (BuildContext context, Widget child, MainModel model) {
         return RaisedButton(
           color: Theme.of(context).primaryColor,
-          onPressed: () => _onLogin(model.login, model.register),
+          onPressed: !model.acceptedTerms? null:() => _onLogin(model.login, model.signUp),
           child: Text('$_buttonText'),
         );
       },
@@ -182,7 +182,7 @@ class _AuthPageState extends State<AuthPage> {
     }, child: Text('Switch to $_buttonText'));
   }
 
-  void _onLogin(Function login, Function register) {
+  void _onLogin(Function login, Function signUp) {
     if (!_formKey.currentState.validate()) {
       return;
     }
@@ -193,7 +193,14 @@ class _AuthPageState extends State<AuthPage> {
     return;
     }
     print('Signing up');
-    register(_emailValue, _passwordValue);
+    signUp(_emailValue, _passwordValue)
+    .then((data) {
+      if(data['success']) {
+        print('Registration done');
+      } else {
+        print('Registration failed: ${data['message']}');
+      }
+    });
   }
 
   Form _buildFormWidget(double targetWidth) {
@@ -214,16 +221,16 @@ class _AuthPageState extends State<AuthPage> {
                 SizedBox(
                   height: 10,
                 ),
-                _authMode == AuthMode.Login? Container(): Column(children: [SizedBox(height: 10), _buildConfirmPasswordTextField(),SizedBox(height: 10),],),
+                _authMode == AuthMode.Login? Container(): Column(children: [ _buildConfirmPasswordTextField(),SizedBox(height: 10),],),
                 _buildTermsAndConditionSwitch(),
                 SizedBox(
                   height: 10,
                 ),
-                _buildSignUpLoginRaisedButton(),
+                _buildSwitchAuthStateFlatButton(),
                 SizedBox(
                   height: 10,
                 ),
-                _buildSwitchAuthStateFlatButton(),
+                _buildSignUpLoginRaisedButton(),
               ],
             ),
           ),
