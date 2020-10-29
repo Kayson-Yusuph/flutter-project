@@ -6,11 +6,8 @@ import '../scoped-model/main.dart';
 import '../pages/products_page.dart';
 import '../widgets/shared/app-loader.dart';
 
+enum AuthMode { Login, Signup }
 
-enum AuthMode {
-  Login,
-  Signup
-}
 class AuthPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _AuthPageState();
@@ -39,15 +36,11 @@ class _AuthPageState extends State<AuthPage> {
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         labelText: 'E-Mail',
+        errorStyle: TextStyle(color: Colors.black,),
         fillColor: Colors.white,
-        labelStyle: TextStyle(color: Colors.black),
+        labelStyle: TextStyle(color: Colors.black,),
         focusColor: Colors.black,
         filled: true,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(30),
-          ),
-        ),
       ),
       validator: (String value) {
         Pattern pattern =
@@ -71,14 +64,10 @@ class _AuthPageState extends State<AuthPage> {
       style: TextStyle(color: Colors.black),
       decoration: InputDecoration(
         labelText: 'Password',
+        errorStyle: TextStyle(color: Colors.black,),
         fillColor: Colors.white,
-        labelStyle: TextStyle(color: Colors.black),
+        labelStyle: TextStyle(color: Colors.black,),
         filled: true,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(30),
-          ),
-        ),
       ),
       validator: (String value) {
         dynamic rtn;
@@ -92,7 +81,7 @@ class _AuthPageState extends State<AuthPage> {
       },
       onChanged: (String value) {
         setState(() {
-        _passwordValue = value;
+          _passwordValue = value;
         });
       },
     );
@@ -105,14 +94,10 @@ class _AuthPageState extends State<AuthPage> {
       style: TextStyle(color: Colors.black),
       decoration: InputDecoration(
         labelText: 'Confirm Password',
+        errorStyle: TextStyle(color: Colors.black,),
         fillColor: Colors.white,
-        labelStyle: TextStyle(color: Colors.black),
+        labelStyle: TextStyle(color: Colors.black,),
         filled: true,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.all(
-            Radius.circular(30),
-          ),
-        ),
       ),
       validator: (String value) {
         print('password is $_passwordValue and confirm is $value');
@@ -134,12 +119,6 @@ class _AuthPageState extends State<AuthPage> {
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
         return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(
-              Radius.circular(30),
-            ),
-          ),
           child: SwitchListTile(
             value: model.acceptedTerms,
             onChanged: (bool value) {
@@ -147,7 +126,7 @@ class _AuthPageState extends State<AuthPage> {
             },
             title: Text(
               'Accept terms',
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.white),
             ),
           ),
         );
@@ -156,30 +135,45 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Widget _buildSignUpLoginRaisedButton() {
-    final _buttonText = _authMode == AuthMode.Login? 'LOGIN': 'SIGN UP';
+    final _buttonText = _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP';
     return ScopedModelDescendant(
-      builder: (BuildContext context, Widget child, MainModel model) {
-        return RaisedButton(
-          color: Theme.of(context).primaryColor,
-          onPressed: !model.acceptedTerms? null:() => _onLogin(model.login, model.signUp),
-          child: Text('$_buttonText'),
+      builder: (
+        BuildContext context,
+        Widget child,
+        MainModel model,
+      ) {
+        return SizedBox(
+          width: double.infinity,
+          child: RaisedButton(
+            color: Theme.of(context).primaryColor,
+            onPressed: (_authMode == AuthMode.Signup && !model.acceptedTerms)
+                ? null
+                : () => _onLogin(model.login, model.signUp),
+            child: Text(_buttonText),
+          ),
         );
       },
     );
   }
 
   _buildSwitchAuthStateFlatButton() {
-    final _buttonText = _authMode == AuthMode.Login? AuthMode.Signup: AuthMode.Login;
-    return FlatButton(onPressed: () {
-      setState(() {
-        final condition = _authMode == AuthMode.Login;
-        if(condition) {
-          _authMode = AuthMode.Signup;
-          return;
-        }
-        _authMode =  AuthMode.Login;
-      });
-    }, child: Text('Switch to $_buttonText'));
+    final _buttonText = _authMode == AuthMode.Login ? 'signup' : 'login';
+    return FlatButton(
+      onPressed: () {
+        setState(() {
+          final condition = _authMode == AuthMode.Login;
+          if (condition) {
+            _authMode = AuthMode.Signup;
+            return;
+          }
+          _authMode = AuthMode.Login;
+        });
+      },
+      child: Text(
+        'Switch to $_buttonText',
+        style: TextStyle(decoration: TextDecoration.underline),
+      ),
+    );
   }
 
   void _onLogin(Function login, Function signUp) {
@@ -187,15 +181,14 @@ class _AuthPageState extends State<AuthPage> {
       return;
     }
     _formKey.currentState.save();
-    if(_authMode == AuthMode.Login) {
+    if (_authMode == AuthMode.Login) {
       print('Logging in');
-    login(_emailValue, _passwordValue);
-    return;
+      login(_emailValue, _passwordValue);
+      return;
     }
     print('Signing up');
-    signUp(_emailValue, _passwordValue)
-    .then((data) {
-      if(data['success']) {
+    signUp(_emailValue, _passwordValue).then((data) {
+      if (data['success']) {
         print('Registration done');
       } else {
         print('Registration failed: ${data['message']}');
@@ -210,6 +203,7 @@ class _AuthPageState extends State<AuthPage> {
         child: SingleChildScrollView(
           child: Container(
             width: targetWidth,
+            margin: EdgeInsets.symmetric(horizontal: 20),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -221,16 +215,31 @@ class _AuthPageState extends State<AuthPage> {
                 SizedBox(
                   height: 10,
                 ),
-                _authMode == AuthMode.Login? Container(): Column(children: [ _buildConfirmPasswordTextField(),SizedBox(height: 10),],),
-                _buildTermsAndConditionSwitch(),
+                _authMode == AuthMode.Login
+                    ? Container()
+                    : Column(
+                        children: [
+                          _buildConfirmPasswordTextField(),
+                          SizedBox(height: 10),
+                        ],
+                      ),
+                _authMode == AuthMode.Login
+                    ? Container()
+                    : Column(
+                        children: [
+                          _buildTermsAndConditionSwitch(),
+                          SizedBox(height: 10),
+                        ],
+                      ),
+                // _buildTermsAndConditionSwitch(),
+                // SizedBox(
+                //   height: 10,
+                // ),
+                _buildSignUpLoginRaisedButton(),
                 SizedBox(
                   height: 10,
                 ),
                 _buildSwitchAuthStateFlatButton(),
-                SizedBox(
-                  height: 10,
-                ),
-                _buildSignUpLoginRaisedButton(),
               ],
             ),
           ),
@@ -255,12 +264,13 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     final double targetWidth = _deriveDeviceWidth(context);
+    final _pageTitle = _authMode == AuthMode.Signup ? 'Sign-up' : 'Login';
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
         return model.loginUser == null
             ? Scaffold(
                 appBar: AppBar(
-                  title: Text('Login'),
+                  title: Text(_pageTitle),
                 ),
                 body: Container(
                   decoration: BoxDecoration(
