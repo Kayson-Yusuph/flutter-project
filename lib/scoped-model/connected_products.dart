@@ -99,6 +99,8 @@ class ConnectedProductsModel extends Model {
         "password": password,
         "returnSecureToken": true
       };
+      _isLoading = true;
+      notifyListeners();
       final http.Response response = await http.post(
           'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDArO1uM71y8qfQUC2PaAKiVZjfCLx9ERM',
           body: json.encode(_authData));
@@ -112,17 +114,19 @@ class ConnectedProductsModel extends Model {
           } else if (error['message'] == 'INVALID_PASSWORD') {
             _returnData['message'] = 'Invalid password';
           } else if (error['message'].contains('TOO_MANY_ATTEMPTS_TRY_LATER')) {
-            _returnData['message'] = 'Account is temporarily disabled due to too many attemps, reset your password to restore it or try again after sometime.';
+            _returnData['message'] =
+                'Account is temporarily disabled due to too many attemps, reset your password to restore it or try again after sometime.';
           } else {
             _returnData['message'] =
                 'Some thing went wrong, try again after sometime';
           }
-          return _returnData;
+          // return _returnData;
+        } else {
+          _user = User(
+              id: _userData['localId'],
+              email: email,
+              token: _userData['idToken']);
         }
-        _user = User(
-            id: _userData['localId'],
-            email: email,
-            token: _userData['idToken']);
         // notifyListeners();
       } else {
         _returnData['success'] = false;
@@ -138,6 +142,8 @@ class ConnectedProductsModel extends Model {
       print('Some thing went wrong, try again after sometime');
       // notifyListeners();
     }
+    _isLoading = false;
+    notifyListeners();
     return _returnData;
   }
 

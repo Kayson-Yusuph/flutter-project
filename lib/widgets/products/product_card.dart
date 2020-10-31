@@ -63,16 +63,7 @@ class _ProductCardState extends State<ProductCard> {
             // setProductId(product.id);
             Navigator.pushNamed(context, '/products/${product.id}')
                 .then((value) {
-              if (value != null && value == true) {
-                delete().then((bool success) {
-                  if (!success) {
-                    _showErrorDialog(context);
-                  }
-                  setProductId(null);
-                });
-              } else {
                 setProductId(null);
-              }
             });
           },
         ),

@@ -135,7 +135,7 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  Widget _buildSignUpLoginRaisedButton() {
+  Widget _buildAuthRaisedButton() {
     final _buttonText = _authMode == AuthMode.Login ? 'LOGIN' : 'SIGN UP';
     return ScopedModelDescendant(
       builder: (
@@ -143,16 +143,18 @@ class _AuthPageState extends State<AuthPage> {
         Widget child,
         MainModel model,
       ) {
-        return SizedBox(
+        return ScopedModelDescendant(builder: (BuildContext context, Widget child, MainModel model) {
+          return SizedBox(
           width: double.infinity,
           child: RaisedButton(
             color: Theme.of(context).primaryColor,
             onPressed: (_authMode == AuthMode.Signup && !model.acceptedTerms)
                 ? null
                 : () => _onAuthenticate(model.login, model.signUp),
-            child: Text(_buttonText),
+            child: model.loading? Center(child: CircularProgressIndicator(),): Text(_buttonText),
           ),
         );
+        });
       },
     );
   }
@@ -236,7 +238,7 @@ class _AuthPageState extends State<AuthPage> {
                           SizedBox(height: 10),
                         ],
                       ),
-                _buildSignUpLoginRaisedButton(),
+                _buildAuthRaisedButton(),
                 SizedBox(
                   height: 10,
                 ),
