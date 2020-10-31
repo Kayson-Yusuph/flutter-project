@@ -15,7 +15,7 @@ class ConnectedProductsModel extends Model {
   final String _dbUrl = 'https://flutter-project-841e3.firebaseio.com/products';
   final String apiKey = 'AIzaSyDArO1uM71y8qfQUC2PaAKiVZjfCLx9ERM';
 
-  Future<Map<String, dynamic>> signUp(String email, String password) async{
+  Future<Map<String, dynamic>> signUp(String email, String password) async {
     bool _hasError = true;
     String _message = 'Something went wrong, try again after sometime';
     _isLoading = true;
@@ -25,24 +25,24 @@ class ConnectedProductsModel extends Model {
       'password': password,
       'returnSecureToken': true,
     };
-    try{
+    try {
       final http.Response response = await http.post(
           'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey',
           body: json.encode(_authData));
-        final Map<String, dynamic> _userData = json.decode(response.body);
-        if(_userData['error'] != null) {
-          _hasError = true;
-          if (_userData['error']['message'] == 'EMAIL_EXISTS') {
-            _message = 'Email already exists';
-          }
-        } else {
-          _user = User(
-              id: _userData['localId'],
-              email: email,
-              token: _userData['idToken']);
-              _hasError = false;
-              _message = null;
+      final Map<String, dynamic> _userData = json.decode(response.body);
+      if (_userData['error'] != null) {
+        _hasError = true;
+        if (_userData['error']['message'] == 'EMAIL_EXISTS') {
+          _message = 'Email already exists';
         }
+      } else {
+        _user = User(
+            id: _userData['localId'],
+            email: email,
+            token: _userData['idToken']);
+        _hasError = false;
+        _message = null;
+      }
     } catch (e) {
       print(json.decode(e));
     }
@@ -91,7 +91,8 @@ class ConnectedProductsModel extends Model {
   //   return {'success': !_hasError, 'message': _message};
   // }
 
-  login(String email, String password) async {
+  Future<Map<String, dynamic>> login(String email, String password) async {
+    final Map<String, dynamic> _returnData = {'success': true, 'message': null};
     try {
       final Map<String, dynamic> _authData = {
         "email": email,
@@ -103,17 +104,41 @@ class ConnectedProductsModel extends Model {
           body: json.encode(_authData));
       if (response.body != null) {
         final Map<String, dynamic> _userData = json.decode(response.body);
+        if (_userData['error'] != null) {
+          _returnData['success'] = false;
+          final Map<String, dynamic> error = _userData['error'];
+          if (error['message'] == 'EMAIL_NOT_FOUND') {
+            _returnData['message'] = 'Email does not exist';
+          } else if (error['message'] == 'INVALID_PASSWORD') {
+            _returnData['message'] = 'Invalid password';
+          } else if (error['message'].contains('TOO_MANY_ATTEMPTS_TRY_LATER')) {
+            _returnData['message'] = 'Account is temporarily disabled due to too many attemps, reset your password to restore it or try again after sometime.';
+          } else {
+            _returnData['message'] =
+                'Some thing went wrong, try again after sometime';
+          }
+          return _returnData;
+        }
         _user = User(
             id: _userData['localId'],
             email: email,
             token: _userData['idToken']);
-        notifyListeners();
+        // notifyListeners();
+      } else {
+        _returnData['success'] = false;
+        _returnData['message'] =
+            'Some thing went wrong, try again after sometime';
       }
-      notifyListeners();
+      // notifyListeners();
     } catch (e) {
+      print(e);
+      _returnData['success'] = false;
+      _returnData['message'] =
+          'Some thing went wrong, try again after sometime';
       print('Some thing went wrong, try again after sometime');
-      notifyListeners();
+      // notifyListeners();
     }
+    return _returnData;
   }
 
   logout() {

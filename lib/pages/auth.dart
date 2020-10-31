@@ -4,7 +4,6 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../scoped-model/main.dart';
 import '../pages/products_page.dart';
-import '../widgets/shared/app-loader.dart';
 
 enum AuthMode { Login, Signup }
 
@@ -15,10 +14,9 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   String _emailValue;
-  String _passwordValue;
-  String _passwordConfirmValue;
   AuthMode _authMode = AuthMode.Login;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final TextEditingController _passwordController = TextEditingController();
 
   DecorationImage _buildBackgroundImage() {
     return DecorationImage(
@@ -36,9 +34,13 @@ class _AuthPageState extends State<AuthPage> {
       keyboardType: TextInputType.emailAddress,
       decoration: InputDecoration(
         labelText: 'E-Mail',
-        errorStyle: TextStyle(color: Colors.black,),
+        errorStyle: TextStyle(
+          color: Colors.black,
+        ),
         fillColor: Colors.white,
-        labelStyle: TextStyle(color: Colors.black,),
+        labelStyle: TextStyle(
+          color: Colors.black,
+        ),
         focusColor: Colors.black,
         filled: true,
       ),
@@ -60,13 +62,18 @@ class _AuthPageState extends State<AuthPage> {
   TextFormField _buildPasswordTextField() {
     return TextFormField(
       cursorColor: Colors.black,
+      controller: _passwordController,
       obscureText: true,
       style: TextStyle(color: Colors.black),
       decoration: InputDecoration(
         labelText: 'Password',
-        errorStyle: TextStyle(color: Colors.black,),
+        errorStyle: TextStyle(
+          color: Colors.black,
+        ),
         fillColor: Colors.white,
-        labelStyle: TextStyle(color: Colors.black,),
+        labelStyle: TextStyle(
+          color: Colors.black,
+        ),
         filled: true,
       ),
       validator: (String value) {
@@ -79,11 +86,6 @@ class _AuthPageState extends State<AuthPage> {
         }
         return rtn;
       },
-      onChanged: (String value) {
-        setState(() {
-          _passwordValue = value;
-        });
-      },
     );
   }
 
@@ -94,23 +96,22 @@ class _AuthPageState extends State<AuthPage> {
       style: TextStyle(color: Colors.black),
       decoration: InputDecoration(
         labelText: 'Confirm Password',
-        errorStyle: TextStyle(color: Colors.black,),
+        errorStyle: TextStyle(
+          color: Colors.black,
+        ),
         fillColor: Colors.white,
-        labelStyle: TextStyle(color: Colors.black,),
+        labelStyle: TextStyle(
+          color: Colors.black,
+        ),
         filled: true,
       ),
       validator: (String value) {
-        print('password is $_passwordValue and confirm is $value');
+        print('password is ${_passwordController.text} and confirm is $value');
         dynamic rtn;
-        if (_passwordValue != value) {
+        if (_passwordController.text != value) {
           rtn = 'Password mismatch';
         }
         return rtn;
-      },
-      onSaved: (String value) {
-        // setState(() {
-        // });
-        _passwordConfirmValue = value;
       },
     );
   }
@@ -148,7 +149,7 @@ class _AuthPageState extends State<AuthPage> {
             color: Theme.of(context).primaryColor,
             onPressed: (_authMode == AuthMode.Signup && !model.acceptedTerms)
                 ? null
-                : () => _onLogin(model.login, model.signUp),
+                : () => _onAuthenticate(model.login, model.signUp),
             child: Text(_buttonText),
           ),
         );
@@ -176,18 +177,22 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  void _onLogin(Function login, Function signUp) {
+  void _onAuthenticate(Function login, Function signUp) async{
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
     if (_authMode == AuthMode.Login) {
       print('Logging in');
-      login(_emailValue, _passwordValue);
+      final Map<String, dynamic> _response = await login(_emailValue, _passwordController.text);
+      print('Response in login is $_response');
+      if(!_response['success']) {
+        _showDialog(context, _response['message']);
+      }
       return;
     }
     print('Signing up');
-    signUp(_emailValue, _passwordValue).then((data) {
+    signUp(_emailValue, _passwordController.text).then((data) {
       if (data['success']) {
         print('Registration done');
       } else {
@@ -231,10 +236,6 @@ class _AuthPageState extends State<AuthPage> {
                           SizedBox(height: 10),
                         ],
                       ),
-                // _buildTermsAndConditionSwitch(),
-                // SizedBox(
-                //   height: 10,
-                // ),
                 _buildSignUpLoginRaisedButton(),
                 SizedBox(
                   height: 10,
@@ -258,8 +259,63 @@ class _AuthPageState extends State<AuthPage> {
     }
     return targetWidth;
   }
+  
+  void _showDialog(BuildContext context, String message) {
+    final BuildContext theContext = context;
+    showDialog(
+      context: theContext,
+      builder: (BuildContext context) => _buildAlertDialog(theContext, message),
+      barrierDismissible: true,
+    );
+  }
 
-// !isLogin ? AuthPage() : ProductsPage()
+  Dialog _buildAlertDialog(BuildContext context, String message) {
+    final String _messageToDisplay = message != null? message: 'Something went wrong!';
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20.0),
+      ),
+      child: Container(
+        height: 200,
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              Column(
+                children: [
+                  Icon(
+                    Icons.error_outline,
+                    size: 50,
+                  ),
+                  Text(_messageToDisplay),
+                ],
+              ),
+              _buildCloseDialogButton(context),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Container _buildCloseDialogButton(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 20),
+      child: SizedBox(
+        width: double.infinity,
+        child: RaisedButton(
+          color: Colors.white,
+          onPressed: () {
+            print('Closing Dialog now');
+            Navigator.of(context).pop();
+          },
+          child: Text('OK', style: TextStyle(color: Colors.black),),
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
