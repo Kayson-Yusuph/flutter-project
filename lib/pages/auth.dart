@@ -147,17 +147,18 @@ class _AuthPageState extends State<AuthPage> {
             builder: (BuildContext context, Widget child, MainModel model) {
           return SizedBox(
             width: double.infinity,
-            child: RaisedButton(
-              color: Theme.of(context).primaryColor,
-              onPressed: (_authMode == AuthMode.Signup && !model.acceptedTerms)
-                  ? null
-                  : () => _onAuthenticate(model.login, model.signUp),
-              child: model.loading
-                  ? Center(
-                      child: CircularProgressIndicator(),
-                    )
-                  : Text(_buttonText),
-            ),
+            child: model.loading
+                ? Center(
+                    child: CircularProgressIndicator(),
+                  )
+                : RaisedButton(
+                    color: Theme.of(context).primaryColor,
+                    onPressed:
+                        (_authMode == AuthMode.Signup && !model.acceptedTerms)
+                            ? null
+                            : () => _onAuthenticate(model.login, model.signUp),
+                    child: Text(_buttonText),
+                  ),
           );
         });
       },

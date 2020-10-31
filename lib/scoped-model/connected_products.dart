@@ -43,7 +43,7 @@ class ConnectedProductsModel extends Model {
             email: email,
             token: _userData['idToken']);
         _hasError = false;
-        _message = null;
+        _message = 'Registration successed!';
       }
     } catch (e) {
       print(json.decode(e));
@@ -94,7 +94,7 @@ class ConnectedProductsModel extends Model {
   // }
 
   Future<Map<String, dynamic>> login(String email, String password) async {
-    final Map<String, dynamic> _returnData = {'success': true, 'message': null};
+    final Map<String, dynamic> _returnData = {'success': true, 'message': 'Login succeded'};
     try {
       final Map<String, dynamic> _authData = {
         "email": email,
