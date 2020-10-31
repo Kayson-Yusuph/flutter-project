@@ -27,12 +27,14 @@ class ConnectedProductsModel extends Model {
     };
     try {
       final http.Response response = await http.post(
-          'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey',
-          body: json.encode(_authData));
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey',
+        body: json.encode(_authData),
+      );
       final Map<String, dynamic> _userData = json.decode(response.body);
-      if (_userData['error'] != null) {
+      final Map<String, dynamic> _error = _userData['error'];
+      if (_error != null) {
         _hasError = true;
-        if (_userData['error']['message'] == 'EMAIL_EXISTS') {
+        if (_error['message'] == 'EMAIL_EXISTS') {
           _message = 'Email already exists';
         }
       } else {
@@ -49,7 +51,7 @@ class ConnectedProductsModel extends Model {
     _isLoading = false;
     notifyListeners();
 
-    return {'success': !_hasError, 'message': null};
+    return {'success': !_hasError, 'message': _message};
   }
 
   // Future<Map<String, dynamic>> register(String email, String password) async {

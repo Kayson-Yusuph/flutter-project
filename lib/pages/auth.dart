@@ -143,17 +143,22 @@ class _AuthPageState extends State<AuthPage> {
         Widget child,
         MainModel model,
       ) {
-        return ScopedModelDescendant(builder: (BuildContext context, Widget child, MainModel model) {
+        return ScopedModelDescendant(
+            builder: (BuildContext context, Widget child, MainModel model) {
           return SizedBox(
-          width: double.infinity,
-          child: RaisedButton(
-            color: Theme.of(context).primaryColor,
-            onPressed: (_authMode == AuthMode.Signup && !model.acceptedTerms)
-                ? null
-                : () => _onAuthenticate(model.login, model.signUp),
-            child: model.loading? Center(child: CircularProgressIndicator(),): Text(_buttonText),
-          ),
-        );
+            width: double.infinity,
+            child: RaisedButton(
+              color: Theme.of(context).primaryColor,
+              onPressed: (_authMode == AuthMode.Signup && !model.acceptedTerms)
+                  ? null
+                  : () => _onAuthenticate(model.login, model.signUp),
+              child: model.loading
+                  ? Center(
+                      child: CircularProgressIndicator(),
+                    )
+                  : Text(_buttonText),
+            ),
+          );
         });
       },
     );
@@ -179,28 +184,29 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  void _onAuthenticate(Function login, Function signUp) async{
+  void _onAuthenticate(Function login, Function signUp) async {
     if (!_formKey.currentState.validate()) {
       return;
     }
     _formKey.currentState.save();
     if (_authMode == AuthMode.Login) {
       print('Logging in');
-      final Map<String, dynamic> _response = await login(_emailValue, _passwordController.text);
+      final Map<String, dynamic> _response =
+          await login(_emailValue, _passwordController.text);
       print('Response in login is $_response');
-      if(!_response['success']) {
+      if (!_response['success']) {
         _showDialog(context, _response['message']);
       }
       return;
     }
     print('Signing up');
-    signUp(_emailValue, _passwordController.text).then((data) {
-      if (data['success']) {
-        print('Registration done');
-      } else {
-        print('Registration failed: ${data['message']}');
-      }
-    });
+    final Map<String, dynamic> _response =
+        await signUp(_emailValue, _passwordController.text);
+    if (_response['success']) {
+      print('Registration done');
+    } else {
+      _showDialog(context, _response['message']);
+    }
   }
 
   Form _buildFormWidget(double targetWidth) {
@@ -261,7 +267,7 @@ class _AuthPageState extends State<AuthPage> {
     }
     return targetWidth;
   }
-  
+
   void _showDialog(BuildContext context, String message) {
     final BuildContext theContext = context;
     showDialog(
@@ -272,7 +278,8 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   Dialog _buildAlertDialog(BuildContext context, String message) {
-    final String _messageToDisplay = message != null? message: 'Something went wrong!';
+    final String _messageToDisplay =
+        message != null ? message : 'Something went wrong!';
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20.0),
@@ -313,7 +320,10 @@ class _AuthPageState extends State<AuthPage> {
             print('Closing Dialog now');
             Navigator.of(context).pop();
           },
-          child: Text('OK', style: TextStyle(color: Colors.black),),
+          child: Text(
+            'OK',
+            style: TextStyle(color: Colors.black),
+          ),
         ),
       ),
     );
