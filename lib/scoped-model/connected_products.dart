@@ -138,7 +138,7 @@ class ProductsModel extends ConnectedProductsModel {
     notifyListeners();
     try {
       final http.Response response =
-          await http.post('$_dbUrl.json', body: json.encode(productData));
+          await http.post('$_dbUrl.json?auth=${_user.token}', body: json.encode(productData));
       if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
         print(json.decode(response.body));
@@ -171,7 +171,7 @@ class ProductsModel extends ConnectedProductsModel {
   Future<bool> fetchProducts() {
     _isLoading = true;
     notifyListeners();
-    return http.get('$_dbUrl.json').then((http.Response response) {
+    return http.get('$_dbUrl.json?auth=${_user.token}').then((http.Response response) {
       if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
         notifyListeners();
@@ -216,7 +216,7 @@ class ProductsModel extends ConnectedProductsModel {
     // _selProductId = null;
     _isLoading = true;
     notifyListeners();
-    return http.delete('$_dbUrl/$_deletedProductId.json').then((response) {
+    return http.delete('$_dbUrl/$_deletedProductId.json?auth=${_user.token}').then((response) {
       if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
         notifyListeners();
@@ -256,7 +256,7 @@ class ProductsModel extends ConnectedProductsModel {
     notifyListeners();
     return http
         .put(
-      '$_dbUrl/${selectedProduct.id}.json',
+      '$_dbUrl/${selectedProduct.id}.json?auth=${_user.token}',
       body: json.encode(productData),
     )
         .then((http.Response response) {
