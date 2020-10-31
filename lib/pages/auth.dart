@@ -4,8 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 
 import '../scoped-model/main.dart';
 import '../pages/products_page.dart';
-
-enum AuthMode { Login, Signup }
+import '../models/auth.dart';
 
 class AuthPage extends StatefulWidget {
   @override
@@ -156,7 +155,7 @@ class _AuthPageState extends State<AuthPage> {
                     onPressed:
                         (_authMode == AuthMode.Signup && !model.acceptedTerms)
                             ? null
-                            : () => _onAuthenticate(model.login, model.signUp),
+                            : () => _onAuthenticate(model.authenticate),
                     child: Text(_buttonText),
                   ),
           );
@@ -185,7 +184,7 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
-  void _onAuthenticate(Function login, Function signUp) async {
+  void _onAuthenticate(Function authenticate) async {
     if (!_formKey.currentState.validate()) {
       return;
     }
@@ -193,7 +192,7 @@ class _AuthPageState extends State<AuthPage> {
     if (_authMode == AuthMode.Login) {
       print('Logging in');
       final Map<String, dynamic> _response =
-          await login(_emailValue, _passwordController.text);
+          await authenticate(_emailValue, _passwordController.text);
       print('Response in login is $_response');
       if (!_response['success']) {
         _showDialog(context, _response['message']);
@@ -202,7 +201,7 @@ class _AuthPageState extends State<AuthPage> {
     }
     print('Signing up');
     final Map<String, dynamic> _response =
-        await signUp(_emailValue, _passwordController.text);
+        await authenticate(_emailValue, _passwordController.text, AuthMode.Signup);
     if (_response['success']) {
       print('Registration done');
     } else {

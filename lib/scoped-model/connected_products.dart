@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 
 import '../models/product.model.dart';
 import '../models/user.model.dart';
+import '../models/auth.dart';
 
 class ConnectedProductsModel extends Model {
   List<Product> _products = [];
@@ -15,85 +16,7 @@ class ConnectedProductsModel extends Model {
   final String _dbUrl = 'https://flutter-project-841e3.firebaseio.com/products';
   final String apiKey = 'AIzaSyDArO1uM71y8qfQUC2PaAKiVZjfCLx9ERM';
 
-  Future<Map<String, dynamic>> signUp(String email, String password) async {
-    bool _hasError = true;
-    String _message = 'Something went wrong, try again after sometime';
-    _isLoading = true;
-    notifyListeners();
-    final Map<String, dynamic> _authData = {
-      'email': email,
-      'password': password,
-      'returnSecureToken': true,
-    };
-    try {
-      final http.Response response = await http.post(
-        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey',
-        body: json.encode(_authData),
-      );
-      final Map<String, dynamic> _userData = json.decode(response.body);
-      final Map<String, dynamic> _error = _userData['error'];
-      if (_error != null) {
-        _hasError = true;
-        if (_error['message'] == 'EMAIL_EXISTS') {
-          _message = 'Email already exists';
-        }
-      } else {
-        _user = User(
-            id: _userData['localId'],
-            email: email,
-            token: _userData['idToken']);
-        _hasError = false;
-        _message = 'Registration successed!';
-      }
-    } catch (e) {
-      print(json.decode(e));
-    }
-    _isLoading = false;
-    notifyListeners();
-
-    return {'success': !_hasError, 'message': _message};
-  }
-
-  // Future<Map<String, dynamic>> register(String email, String password) async {
-  //   bool _hasError = true;
-  //   String _message = 'Something went wrong, try again after sometime';
-  //   _isLoading = true;
-  //   notifyListeners();
-  //   try {
-  //     final Map<String, dynamic> _authData = {
-  //       "email": email,
-  //       "password": password,
-  //       "returnSecureToken": true,
-  //     };
-  //     final http.Response response = await http.post(
-  //         'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey',
-  //         body: json.encode(_authData));
-  //     if (response.body != null) {
-  //       final Map<String, dynamic> _userData = json.decode(response.body);
-  //       print(_userData['errors']);
-  //       if (_userData['errors'] != null) {
-  //         print('nafika mkaka');
-  //         _hasError = true;
-  //         if (_userData['message'] == 'EMAIL_EXISTS') {
-  //           _message = 'Email already exists';
-  //         }
-  //       } else {
-  //         _user = User(
-  //             id: _userData['localId'],
-  //             email: email,
-  //             token: _userData['idToken']);
-  //         _hasError = false;
-  //       }
-  //     }
-  //   } catch (e) {
-  //     _hasError = true;
-  //   }
-  //   _isLoading = false;
-  //   notifyListeners();
-  //   return {'success': !_hasError, 'message': _message};
-  // }
-
-  Future<Map<String, dynamic>> login(String email, String password) async {
+  Future<Map<String, dynamic>> authenticate(String email, String password, [AuthMode mode = AuthMode.Login]) async {
     final Map<String, dynamic> _returnData = {'success': true, 'message': 'Login succeded'};
     try {
       final Map<String, dynamic> _authData = {
@@ -103,26 +26,35 @@ class ConnectedProductsModel extends Model {
       };
       _isLoading = true;
       notifyListeners();
-      final http.Response response = await http.post(
-          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDArO1uM71y8qfQUC2PaAKiVZjfCLx9ERM',
+      http.Response response;
+      if(mode == AuthMode.Login) {
+      response = await http.post(
+          'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$apiKey',
           body: json.encode(_authData));
+      } else {
+        response = await http.post(
+        'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey',
+        body: json.encode(_authData),
+      );
+      }
       if (response.body != null) {
         final Map<String, dynamic> _userData = json.decode(response.body);
         if (_userData['error'] != null) {
           _returnData['success'] = false;
-          final Map<String, dynamic> error = _userData['error'];
-          if (error['message'] == 'EMAIL_NOT_FOUND') {
+          final Map<String, dynamic> _error = _userData['error'];
+          if (_error['message'] == 'EMAIL_NOT_FOUND') {
             _returnData['message'] = 'Email does not exist';
-          } else if (error['message'] == 'INVALID_PASSWORD') {
+          } else if (_error['message'] == 'INVALID_PASSWORD') {
             _returnData['message'] = 'Invalid password';
-          } else if (error['message'].contains('TOO_MANY_ATTEMPTS_TRY_LATER')) {
+          } else if (_error['message'].contains('TOO_MANY_ATTEMPTS_TRY_LATER')) {
             _returnData['message'] =
                 'Account is temporarily disabled due to too many attemps, reset your password to restore it or try again after sometime.';
-          } else {
+          } else if (_error['message'] == 'EMAIL_EXISTS') {
+          _returnData['message'] = 'Email already exists';
+        }else {
             _returnData['message'] =
                 'Some thing went wrong, try again after sometime';
           }
-          // return _returnData;
         } else {
           _user = User(
               id: _userData['localId'],
@@ -141,8 +73,6 @@ class ConnectedProductsModel extends Model {
       _returnData['success'] = false;
       _returnData['message'] =
           'Some thing went wrong, try again after sometime';
-      print('Some thing went wrong, try again after sometime');
-      // notifyListeners();
     }
     _isLoading = false;
     notifyListeners();
