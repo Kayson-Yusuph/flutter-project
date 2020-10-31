@@ -23,19 +23,20 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final model = MainModel();
+    final _model = MainModel();
     return ScopedModel<MainModel>(
-      model: model,
-      child: MaterialApp(
+      model: _model,
+      child: ScopedModelDescendant(builder: (BuildContext context, Widget child, MainModel model ) {
+        return MaterialApp(
         theme: ThemeData(
-          brightness: !model.displayMode ? Brightness.light : Brightness.dark,
+          brightness: _model.displayMode ? Brightness.light : Brightness.dark,
           primarySwatch: Colors.lightGreen,
           accentColor: Colors.deepPurple,
         ),
         routes: {
           '/': (BuildContext context) => AuthPage(),
           // '/': (BuildContext context) => !true ? AuthPage() : ProductsPage(),
-          '/admin': (BuildContext context) => ProductAdminPage(model)
+          '/admin': (BuildContext context) => ProductAdminPage(_model)
         },
         onGenerateRoute: (RouteSettings settings) {
           List<String> route = settings.name.split('/');
@@ -44,7 +45,7 @@ class _MyAppState extends State<MyApp> {
           }
           if (route[1] == 'products') {
             final String productId = route[2];
-            model.setSelectedProductId(productId);
+            _model.setSelectedProductId(productId);
             return MaterialPageRoute(
               builder: (BuildContext context) => ProductsDetailsPage(),
             );
@@ -55,7 +56,7 @@ class _MyAppState extends State<MyApp> {
           return MaterialPageRoute(
               builder: (BuildContext context) => PageNotFound());
         },
-      ),
+      ); }),
     );
   }
 }
