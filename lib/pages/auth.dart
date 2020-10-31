@@ -189,22 +189,9 @@ class _AuthPageState extends State<AuthPage> {
       return;
     }
     _formKey.currentState.save();
-    if (_authMode == AuthMode.Login) {
-      print('Logging in');
-      final Map<String, dynamic> _response =
-          await authenticate(_emailValue, _passwordController.text);
-      print('Response in login is $_response');
-      if (!_response['success']) {
-        _showDialog(context, _response['message']);
-      }
-      return;
-    }
-    print('Signing up');
     final Map<String, dynamic> _response =
-        await authenticate(_emailValue, _passwordController.text, AuthMode.Signup);
-    if (_response['success']) {
-      print('Registration done');
-    } else {
+        await authenticate(_emailValue, _passwordController.text, _authMode);
+    if (!_response['success']) {
       _showDialog(context, _response['message']);
     }
   }
