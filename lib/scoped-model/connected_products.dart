@@ -82,7 +82,11 @@ class ConnectedProductsModel extends Model {
     return _returnData;
   }
 
-  logout() {
+  Future<void> logout() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.remove('auth-id');
+    await prefs.remove('auth-email');
+    await prefs.remove('auth-token');
     _user = null;
     notifyListeners();
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import './product_edit.dart';
 import './product_list.dart';
 import '../scoped-model/main.dart';
+import '../widgets/ui_elements/logout.dart';
 
 class ProductAdminPage extends StatelessWidget {
   final MainModel model;
@@ -37,6 +38,7 @@ class ProductAdminPage extends StatelessWidget {
               Navigator.pushReplacementNamed(context, '/');
             },
           ),
+          LogoutTile(),
         ],
       ),
     );

@@ -4,6 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 import '../widgets/shared/app-loader.dart';
 import '../widgets/products/products_widget.dart';
 import '../scoped-model/main.dart';
+import '../widgets/ui_elements/logout.dart';
 
 class ProductsPage extends StatefulWidget {
   final MainModel model;
@@ -37,6 +38,7 @@ class _MyProductPageState extends State<ProductsPage> {
               Navigator.pushReplacementNamed(context, '/admin');
             },
           ),
+          LogoutTile(),
         ],
       ),
     );
@@ -47,7 +49,6 @@ class _MyProductPageState extends State<ProductsPage> {
       IconButton(
         icon: Icon(_model.showFavorite ? Icons.favorite : Icons.favorite_border),
         onPressed: () {
-          print('toggled now');
           _model.toggleDisplayMode();
         },
       ),
