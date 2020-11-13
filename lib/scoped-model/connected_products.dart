@@ -13,6 +13,7 @@ class ConnectedProductsModel extends Model {
   List<Product> _products = [];
   User _user;
   String _selProductId;
+  Timer _authTimer;
   bool _isLoading = false;
   final String _dbUrl = 'https://flutter-project-841e3.firebaseio.com/products';
   final String apiKey = 'AIzaSyDArO1uM71y8qfQUC2PaAKiVZjfCLx9ERM';
@@ -62,6 +63,10 @@ class ConnectedProductsModel extends Model {
       } else {
         final String _token = _userData['idToken'];
         final String _id = _userData['localId'];
+        final int _time = int.parse(_userData['expiresIn']);
+        final DateTime now = DateTime.now();
+        final String _expireTime = now.add(Duration(seconds: _time)).toIso8601String();
+        setAuthTimer(_time);
         _user = User(
           id: _id,
           email: email,
@@ -71,6 +76,7 @@ class ConnectedProductsModel extends Model {
         await prefs.setString('auth-id', _id);
         await prefs.setString('auth-email', email);
         await prefs.setString('auth-token', _token);
+        await prefs.setString('auth-expire-time', _expireTime);
       }
     } else {
       _returnData['success'] = false;
@@ -88,13 +94,28 @@ class ConnectedProductsModel extends Model {
     await prefs.remove('auth-email');
     await prefs.remove('auth-token');
     _user = null;
+    if(_authTimer != null) {
+      _authTimer.cancel();
+    }
     notifyListeners();
+  }
+
+  void setAuthTimer(int expireTime) {
+    _authTimer = Timer(Duration(seconds: expireTime), logout);
   }
 
   void autoAuthenticate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final _token = prefs.getString('auth-token');
     if(_token != null) {
+      final _time = prefs.getString('auth-expire-time');
+      final DateTime now = DateTime.now();
+      final expireDate = DateTime.parse(_time);
+      if(now.isBefore(expireDate)) {
+        notifyListeners();
+        return;
+      }
+      final int tokenLifeSpan = expireDate.difference(now).inSeconds;
       final _email = prefs.getString('auth-email');
       final _id = prefs.getString('auth-id');
       _user = User(
@@ -102,6 +123,7 @@ class ConnectedProductsModel extends Model {
         email: _email,
         token: _token,
       );
+      setAuthTimer(tokenLifeSpan);
       notifyListeners();
     }
   }
