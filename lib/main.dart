@@ -20,10 +20,16 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   IconData mode = Icons.wb_sunny;
   bool isLogin = false;
+    final MainModel _model = MainModel();
+
+  @override
+  void initState() {
+    _model.autoAuthenticate();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final _model = MainModel();
     return ScopedModel<MainModel>(
       model: _model,
       child: ScopedModelDescendant(builder: (BuildContext context, Widget child, MainModel model ) {

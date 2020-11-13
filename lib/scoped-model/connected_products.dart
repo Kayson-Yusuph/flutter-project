@@ -3,6 +3,7 @@ import 'dart:async';
 
 import 'package:scoped_model/scoped_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/product.model.dart';
 import '../models/user.model.dart';
@@ -16,60 +17,62 @@ class ConnectedProductsModel extends Model {
   final String _dbUrl = 'https://flutter-project-841e3.firebaseio.com/products';
   final String apiKey = 'AIzaSyDArO1uM71y8qfQUC2PaAKiVZjfCLx9ERM';
 
-  Future<Map<String, dynamic>> authenticate(String email, String password, [AuthMode mode = AuthMode.Login]) async {
-    final Map<String, dynamic> _returnData = {'success': true, 'message': 'Login succeded'};
-    try {
-      final Map<String, dynamic> _authData = {
-        "email": email,
-        "password": password,
-        "returnSecureToken": true
-      };
-      _isLoading = true;
-      notifyListeners();
-      http.Response response;
-      if(mode == AuthMode.Login) {
+  Future<Map<String, dynamic>> authenticate(String email, String password,
+      [AuthMode mode = AuthMode.Login]) async {
+    final Map<String, dynamic> _returnData = {
+      'success': true,
+      'message': 'Login succeded'
+    };
+    final Map<String, dynamic> _authData = {
+      "email": email,
+      "password": password,
+      "returnSecureToken": true
+    };
+    _isLoading = true;
+    notifyListeners();
+    http.Response response;
+    if (mode == AuthMode.Login) {
       response = await http.post(
           'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=$apiKey',
           body: json.encode(_authData));
-      } else {
-        response = await http.post(
+    } else {
+      response = await http.post(
         'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=$apiKey',
         body: json.encode(_authData),
       );
-      }
-      if (response.body != null) {
-        final Map<String, dynamic> _userData = json.decode(response.body);
-        if (_userData['error'] != null) {
-          _returnData['success'] = false;
-          final Map<String, dynamic> _error = _userData['error'];
-          if (_error['message'] == 'EMAIL_NOT_FOUND') {
-            _returnData['message'] = 'Email does not exist';
-          } else if (_error['message'] == 'INVALID_PASSWORD') {
-            _returnData['message'] = 'Invalid password';
-          } else if (_error['message'].contains('TOO_MANY_ATTEMPTS_TRY_LATER')) {
-            _returnData['message'] =
-                'Account is temporarily disabled due to too many attemps, reset your password to restore it or try again after sometime.';
-          } else if (_error['message'] == 'EMAIL_EXISTS') {
-          _returnData['message'] = 'Email already exists';
-        }else {
-            _returnData['message'] =
-                'Some thing went wrong, try again after sometime';
-          }
-        } else {
-          _user = User(
-              id: _userData['localId'],
-              email: email,
-              token: _userData['idToken']);
-        }
-        // notifyListeners();
-      } else {
+    }
+    if (response.body != null) {
+      final Map<String, dynamic> _userData = json.decode(response.body);
+      if (_userData['error'] != null) {
         _returnData['success'] = false;
-        _returnData['message'] =
-            'Some thing went wrong, try again after sometime';
+        final Map<String, dynamic> _error = _userData['error'];
+        if (_error['message'] == 'EMAIL_NOT_FOUND') {
+          _returnData['message'] = 'Email does not exist';
+        } else if (_error['message'] == 'INVALID_PASSWORD') {
+          _returnData['message'] = 'Invalid password';
+        } else if (_error['message'].contains('TOO_MANY_ATTEMPTS_TRY_LATER')) {
+          _returnData['message'] =
+              'Account is temporarily disabled due to too many attemps, reset your password to restore it or try again after sometime.';
+        } else if (_error['message'] == 'EMAIL_EXISTS') {
+          _returnData['message'] = 'Email already exists';
+        } else {
+          _returnData['message'] =
+              'Some thing went wrong, try again after sometime';
+        }
+      } else {
+        final String _token = _userData['idToken'];
+        final String _id = _userData['localId'];
+        _user = User(
+          id: _id,
+          email: email,
+          token: _token,
+        );
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        await prefs.setString('auth-id', _id);
+        await prefs.setString('auth-email', email);
+        await prefs.setString('auth-token', _token);
       }
-      // notifyListeners();
-    } catch (e) {
-      print(e);
+    } else {
       _returnData['success'] = false;
       _returnData['message'] =
           'Some thing went wrong, try again after sometime';
@@ -82,6 +85,21 @@ class ConnectedProductsModel extends Model {
   logout() {
     _user = null;
     notifyListeners();
+  }
+
+  void autoAuthenticate() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final _token = prefs.getString('auth-token');
+    if(_token != null) {
+      final _email = prefs.getString('auth-email');
+      final _id = prefs.getString('auth-id');
+      _user = User(
+        id: _id,
+        email: _email,
+        token: _token,
+      );
+      notifyListeners();
+    }
   }
 }
 
@@ -137,8 +155,9 @@ class ProductsModel extends ConnectedProductsModel {
     _isLoading = true;
     notifyListeners();
     try {
-      final http.Response response =
-          await http.post('$_dbUrl.json?auth=${_user.token}', body: json.encode(productData));
+      final http.Response response = await http.post(
+          '$_dbUrl.json?auth=${_user.token}',
+          body: json.encode(productData));
       if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
         print(json.decode(response.body));
@@ -171,7 +190,9 @@ class ProductsModel extends ConnectedProductsModel {
   Future<bool> fetchProducts() {
     _isLoading = true;
     notifyListeners();
-    return http.get('$_dbUrl.json?auth=${_user.token}').then((http.Response response) {
+    return http
+        .get('$_dbUrl.json?auth=${_user.token}')
+        .then((http.Response response) {
       if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
         notifyListeners();
@@ -216,7 +237,9 @@ class ProductsModel extends ConnectedProductsModel {
     // _selProductId = null;
     _isLoading = true;
     notifyListeners();
-    return http.delete('$_dbUrl/$_deletedProductId.json?auth=${_user.token}').then((response) {
+    return http
+        .delete('$_dbUrl/$_deletedProductId.json?auth=${_user.token}')
+        .then((response) {
       if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
         notifyListeners();
