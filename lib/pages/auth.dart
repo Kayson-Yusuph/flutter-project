@@ -121,7 +121,7 @@ class _AuthPageState extends State<AuthPage> {
         return Container(
           child: SwitchListTile(
             value: model.acceptedTerms,
-            onChanged: (bool value) {
+            onChanged: model.loading? null: (bool value) {
               model.toggleTermAndConditions();
             },
             title: Text(
@@ -165,23 +165,30 @@ class _AuthPageState extends State<AuthPage> {
   }
 
   _buildSwitchAuthStateFlatButton() {
-    final _buttonText = _authMode == AuthMode.Login ? 'signup' : 'login';
-    return FlatButton(
-      onPressed: () {
-        setState(() {
-          final condition = _authMode == AuthMode.Login;
-          if (condition) {
-            _authMode = AuthMode.Signup;
-            return;
-          }
-          _authMode = AuthMode.Login;
-        });
-      },
-      child: Text(
-        'Switch to $_buttonText',
-        style: TextStyle(decoration: TextDecoration.underline),
-      ),
-    );
+    return ScopedModelDescendant(
+        builder: (BuildContext context, Widget child, MainModel model) {
+      final _buttonText = _authMode == AuthMode.Login ? 'signup' : 'login';
+      Widget rtnWidget = SizedBox();
+      if (!model.loading) {
+        rtnWidget = FlatButton(
+          onPressed: () {
+            setState(() {
+              final condition = _authMode == AuthMode.Login;
+              if (condition) {
+                _authMode = AuthMode.Signup;
+                return;
+              }
+              _authMode = AuthMode.Login;
+            });
+          },
+          child: Text(
+            'Switch to $_buttonText',
+            style: TextStyle(decoration: TextDecoration.underline),
+          ),
+        );
+      }
+      return rtnWidget;
+    });
   }
 
   void _onAuthenticate(Function authenticate) async {
