@@ -50,7 +50,7 @@ class ProductAdminPage extends StatelessWidget {
       title: Text('Manage products'),
       actions: [
         IconButton(
-          icon: Icon(Icons.wb_sunny),
+          icon: !model.displayMode? Icon(Icons.wb_sunny): Icon(Icons.brightness_2_rounded),
           onPressed: () {
             model.setDisplayMode();
           },
