@@ -326,14 +326,14 @@ class _AuthPageState extends State<AuthPage> {
   @override
   Widget build(BuildContext context) {
     final double targetWidth = _deriveDeviceWidth(context);
-    final _pageTitle = _authMode == AuthMode.Signup ? 'Sign-up' : 'Login';
+    // final _pageTitle = _authMode == AuthMode.Signup ? 'Sign-up' : 'Login';
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
         return model.loginUser == null
             ? Scaffold(
-                appBar: AppBar(
-                  title: Text(_pageTitle),
-                ),
+                // appBar: AppBar(
+                //   title: Text(_pageTitle),
+                // ),
                 body: Container(
                   decoration: BoxDecoration(
                     image: _buildBackgroundImage(),
