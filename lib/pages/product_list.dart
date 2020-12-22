@@ -6,7 +6,23 @@ import './product_edit.dart';
 import '../models/product.model.dart';
 import '../scoped-model/main.dart';
 
-class ProductListPage extends StatelessWidget {
+class ProductListPage extends StatefulWidget {
+  final MainModel model;
+  @override
+  State<StatefulWidget> createState() {
+    return _ProductListState();
+  }
+
+  ProductListPage(this.model);
+}
+
+class _ProductListState extends State<ProductListPage> {
+  @override
+  initState() {
+    widget.model.fetchProducts(onlyForUser: true);
+    super.initState();
+  }
+
   _buildProductEditButton(context, Product product, Function setProductId) {
     return IconButton(
       onPressed: () {
@@ -114,7 +130,9 @@ class ProductListPage extends StatelessWidget {
         return model.loading
             ? AppSimpleLoader()
             : RefreshIndicator(
-                onRefresh: model.fetchProducts,
+                onRefresh: () {
+                  return model.fetchProducts(onlyForUser: true);
+                },
                 child: center,
               );
       },

@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
         routes: {
           '/': (BuildContext context) => AuthPage(),
           // '/': (BuildContext context) => !true ? AuthPage() : ProductsPage(),
-          '/admin': (BuildContext context) => ProductAdminPage(_model)
+          '/admin': (BuildContext context) => _model.loginUser == null? AuthPage():ProductAdminPage(_model)
         },
         onGenerateRoute: (RouteSettings settings) {
           List<String> route = settings.name.split('/');
@@ -53,14 +53,14 @@ class _MyAppState extends State<MyApp> {
             final String productId = route[2];
             _model.setSelectedProductId(productId);
             return MaterialPageRoute(
-              builder: (BuildContext context) => ProductsDetailsPage(),
+              builder: (BuildContext context) => _model.loginUser == null? AuthPage(): ProductsDetailsPage(),
             );
           }
           return null;
         },
         onUnknownRoute: (RouteSettings settings) {
           return MaterialPageRoute(
-              builder: (BuildContext context) => PageNotFound());
+              builder: (BuildContext context) => _model.loginUser == null? AuthPage(): PageNotFound());
         },
       ); }),
     );

@@ -213,7 +213,7 @@ class ProductsModel extends ConnectedProductsModel {
     }
   }
 
-  Future<bool> fetchProducts() {
+  Future<bool> fetchProducts({onlyForUser: false}) {
     _isLoading = true;
     notifyListeners();
     return http
@@ -248,7 +248,7 @@ class ProductsModel extends ConnectedProductsModel {
 
         _fetchedProductList.add(_product);
       });
-      _products = _fetchedProductList;
+      _products = onlyForUser? _fetchedProductList.where((Product p) => p.userId == _user.id).toList(): _fetchedProductList;
       _isLoading = false;
       notifyListeners();
       return true;

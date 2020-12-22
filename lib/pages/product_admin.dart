@@ -61,7 +61,7 @@ class ProductAdminPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tabChildren = [ProductEditPage(), ProductListPage()];
+    final tabChildren = [ProductEditPage(), ProductListPage(model)];
     return DefaultTabController(
       length: tabChildren.length,
       child: Scaffold(

@@ -33,7 +33,7 @@ class _MyProductPageState extends State<ProductsPage> {
           ),
           ListTile(
             leading: Icon(Icons.edit),
-            title: Text('Manage products'),
+            title: Text('Manage my products'),
             onTap: () {
               Navigator.pushReplacementNamed(context, '/admin');
             },
