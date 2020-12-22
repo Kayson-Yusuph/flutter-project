@@ -65,7 +65,8 @@ class ConnectedProductsModel extends Model {
         final String _id = _userData['localId'];
         final int _time = int.parse(_userData['expiresIn']);
         final DateTime now = DateTime.now();
-        final String _expireTime = now.add(Duration(seconds: _time)).toIso8601String();
+        final String _expireTime =
+            now.add(Duration(seconds: _time)).toIso8601String();
         setAuthTimer(_time);
         _user = User(
           id: _id,
@@ -94,7 +95,7 @@ class ConnectedProductsModel extends Model {
     await prefs.remove('auth-email');
     await prefs.remove('auth-token');
     _user = null;
-    if(_authTimer != null) {
+    if (_authTimer != null) {
       _authTimer.cancel();
     }
     notifyListeners();
@@ -107,11 +108,11 @@ class ConnectedProductsModel extends Model {
   void autoAuthenticate() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final _token = prefs.getString('auth-token');
-    if(_token != null) {
+    if (_token != null) {
       final _time = prefs.getString('auth-expire-time');
       final DateTime now = DateTime.now();
       final expireDate = DateTime.parse(_time);
-      if(now.isBefore(expireDate)) {
+      if (now.isBefore(expireDate)) {
         notifyListeners();
         return;
       }
@@ -186,7 +187,6 @@ class ProductsModel extends ConnectedProductsModel {
           body: json.encode(productData));
       if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
-        print(json.decode(response.body));
         notifyListeners();
         return false;
       }
@@ -238,7 +238,10 @@ class ProductsModel extends ConnectedProductsModel {
           price: product['price'],
           description: product['description'],
           image: product['imageUrl'],
-          favorite: product['favorite'] != null ? product['favorite'] : false,
+          favorite: product['wishLessUsers'] == null
+              ? false
+              : (product['wishLessUsers'] as Map<String, dynamic>)
+                  .containsKey(_user.id),
           userId: product['userId'],
           userEmail: product['userEmail'],
         );
@@ -299,7 +302,6 @@ class ProductsModel extends ConnectedProductsModel {
       'imageUrl': selectedProduct.image,
       'userEmail': selectedProduct.userEmail,
       'userId': selectedProduct.userId,
-      'favorite': selectedProduct.favorite,
     };
     _isLoading = true;
     notifyListeners();
@@ -323,7 +325,10 @@ class ProductsModel extends ConnectedProductsModel {
         image: resData['imageUrl'],
         userEmail: resData['userEmail'],
         userId: resData['userId'],
-        favorite: resData['favorite'],
+        favorite: resData['wishLessUsers'] == null
+            ? false
+            : (resData['wishLessUsers'] as Map<String, dynamic>)
+                .containsKey(_user.id),
       );
       _products[selectedProductIndex] = product;
       _isLoading = false;
@@ -340,21 +345,46 @@ class ProductsModel extends ConnectedProductsModel {
     _selProductId = id;
   }
 
-  void toggleProductFavoriteStatus() {
-    final bool oldFavorite = _products[selectedProductIndex].favorite;
+  void toggleProductFavoriteStatus() async {
+    final bool _oldFavorite = _products[selectedProductIndex].favorite;
+    final bool _newFavorite = !_oldFavorite;
     final Product oldProduct = _products[selectedProductIndex];
     _products[selectedProductIndex] = Product(
       image: oldProduct.image,
       description: oldProduct.description,
       id: oldProduct.id,
       title: oldProduct.title,
-      favorite: !oldFavorite,
+      favorite: _newFavorite,
       price: oldProduct.price,
       userId: oldProduct.userId,
       userEmail: oldProduct.userEmail,
     );
-    _selProductId = null;
     notifyListeners();
+    http.Response response;
+    final String _productWishlessUsersRefLink =
+        'https://flutter-project-841e3.firebaseio.com/products/${oldProduct.id}/wishLessUsers/${_user.id}.json?auth=${_user.token}';
+    if (_newFavorite) {
+      response = await http.put(
+        _productWishlessUsersRefLink,
+        body: json.encode(true),
+      );
+    } else {
+      response = await http.delete(_productWishlessUsersRefLink);
+    }
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      _products[selectedProductIndex] = Product(
+        image: oldProduct.image,
+        description: oldProduct.description,
+        id: oldProduct.id,
+        title: oldProduct.title,
+        favorite: !_newFavorite,
+        price: oldProduct.price,
+        userId: oldProduct.userId,
+        userEmail: oldProduct.userEmail,
+      );
+      notifyListeners();
+    }
+    _selProductId = null;
   }
 
   void toggleDisplayMode() {
