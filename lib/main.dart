@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:scoped_model/scoped_model.dart';
+import 'package:map_view/map_view.dart';
 
 import './pages/product_admin.dart';
 import './pages/auth.dart';
@@ -8,7 +9,10 @@ import './pages/product.dart';
 import './pages/page_not_found.dart';
 import './scoped-model/main.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  MapView.setApiKey("AIzaSyC6ZzyN3lWq757XpZ42aLFJ2cZzNlTu2jg");
+  runApp(MyApp());
+}
 
 class MyApp extends StatefulWidget {
   @override
