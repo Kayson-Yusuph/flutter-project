@@ -13,6 +13,7 @@ class AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<AuthPage> {
   String _emailValue;
+  bool _showPassword = false;
   AuthMode _authMode = AuthMode.Login;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
@@ -58,14 +59,27 @@ class _AuthPageState extends State<AuthPage> {
     );
   }
 
+  void _togglePasswordVisibility() {
+    setState(() {
+      _showPassword = !_showPassword;
+    });
+  }
+
   TextFormField _buildPasswordTextField() {
     return TextFormField(
       cursorColor: Colors.black,
       controller: _passwordController,
-      obscureText: true,
+      obscureText: !_showPassword,
       style: TextStyle(color: Colors.black),
       decoration: InputDecoration(
         labelText: 'Password',
+        suffixIcon: GestureDetector(
+          onTap: _togglePasswordVisibility,
+          child: Icon(
+            _showPassword ? Icons.visibility : Icons.visibility_off,
+            color: _showPassword ? Colors.blue : Colors.grey,
+          ),
+        ),
         errorStyle: TextStyle(
           color: Colors.black,
         ),
@@ -91,7 +105,7 @@ class _AuthPageState extends State<AuthPage> {
   TextFormField _buildConfirmPasswordTextField() {
     return TextFormField(
       cursorColor: Colors.black,
-      obscureText: true,
+      obscureText: !_showPassword,
       style: TextStyle(color: Colors.black),
       decoration: InputDecoration(
         labelText: 'Confirm Password',
@@ -121,9 +135,11 @@ class _AuthPageState extends State<AuthPage> {
         return Container(
           child: SwitchListTile(
             value: model.acceptedTerms,
-            onChanged: model.loading? null: (bool value) {
-              model.toggleTermAndConditions();
-            },
+            onChanged: model.loading
+                ? null
+                : (bool value) {
+                    model.toggleTermAndConditions();
+                  },
             title: Text(
               'Accept terms',
               style: TextStyle(color: Colors.white),

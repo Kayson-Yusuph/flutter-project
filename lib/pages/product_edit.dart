@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_project/widgets/shared/app-loader.dart';
+import 'package:location/location.dart';
 
 import 'package:scoped_model/scoped_model.dart';
 
 import '../models/product.model.dart';
 import '../scoped-model/main.dart';
 import '../widgets/helpers/ensure_visible.dart';
+import '../widgets/form_inputs/location.dart';
 
 class ProductEditPage extends StatefulWidget {
   @override
@@ -188,6 +190,40 @@ class _ProductEditPage extends State<ProductEditPage> {
   }
 
   List<Widget> _buildListViewChildren(BuildContext context, bool vertical) {
+    final Container _locationContainer = Container(
+      child: GestureDetector(
+        child: Icon(Icons.map),
+        onTap: () async {
+          Location location = new Location();
+
+          bool _serviceEnabled;
+          PermissionStatus _permissionGranted;
+          LocationData _locationData;
+
+          _serviceEnabled = await location.serviceEnabled();
+          if (!_serviceEnabled) {
+            _serviceEnabled = await location.requestService();
+            if (!_serviceEnabled) {
+              return;
+            }
+          }
+
+          _permissionGranted = await location.hasPermission();
+          if (_permissionGranted == PermissionStatus.denied) {
+            _permissionGranted = await location.requestPermission();
+            if (_permissionGranted != PermissionStatus.granted) {
+              return;
+            }
+          }
+
+          _locationData = await location.getLocation();
+          await Navigator.push(context,
+              MaterialPageRoute(builder: (BuildContext context) {
+            return LocationInput(_locationData);
+          }));
+        },
+      ),
+    );
     List<Widget> children = <Widget>[
       Container(
         child: _buildTitleTextField(),
@@ -204,6 +240,10 @@ class _ProductEditPage extends State<ProductEditPage> {
       Container(
         child: _buildDescriptionTextField(),
       ),
+      SizedBox(
+        height: 10,
+      ),
+      _locationContainer,
       SizedBox(
         height: 10,
       ),
@@ -237,6 +277,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         Container(
           child: _buildDescriptionTextField(),
         ),
+        _locationContainer,
         _buildButtonBar(),
       ];
     }
