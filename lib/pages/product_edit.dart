@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_project/widgets/form_inputs/image.dart';
+import 'package:flutter_project/widgets/form_inputs/static_map.dart';
 import 'package:flutter_project/widgets/shared/app-loader.dart';
 import 'package:location/location.dart';
 
@@ -7,7 +9,6 @@ import 'package:scoped_model/scoped_model.dart';
 import '../models/product.model.dart';
 import '../scoped-model/main.dart';
 import '../widgets/helpers/ensure_visible.dart';
-import '../widgets/form_inputs/location.dart';
 
 class ProductEditPage extends StatefulWidget {
   @override
@@ -110,27 +111,20 @@ class _ProductEditPage extends State<ProductEditPage> {
         builder: (BuildContext context, Widget child, MainModel model) {
       return model.loading && _savingData
           ? AppSimpleLoader()
-          : ButtonBar(
-              children: [
-                RaisedButton(
-                  color: Theme.of(context).secondaryHeaderColor,
-                  child: Text('Cancel'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
+          : SizedBox(
+              width: double.infinity,
+              child: RaisedButton(
+                color: Theme.of(context).primaryColor,
+                child: Text('Save'),
+                onPressed: () => onSave(
+                  context,
+                  model.addProduct,
+                  model.updateProduct,
+                  model.setSelectedProductId,
                 ),
-                RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  child: Text('Save'),
-                  onPressed: () => onSave(
-                    context,
-                    model.addProduct,
-                    model.updateProduct,
-                    model.setSelectedProductId,
-                  ),
-                ),
-              ],
-            );
+              )
+              //   ],
+              );
     });
   }
 
@@ -219,7 +213,16 @@ class _ProductEditPage extends State<ProductEditPage> {
           _locationData = await location.getLocation();
           await Navigator.push(context,
               MaterialPageRoute(builder: (BuildContext context) {
-            return LocationInput(_locationData);
+            final Map<String, String> location = {
+              'lat': _locationData.latitude.toString(),
+              'lng': _locationData.longitude.toString()
+            };
+            return StaticMap(
+              width: 500,
+              height: 400,
+              location: location,
+              zoom: 4,
+            );
           }));
         },
       ),
@@ -240,12 +243,17 @@ class _ProductEditPage extends State<ProductEditPage> {
       Container(
         child: _buildDescriptionTextField(),
       ),
-      SizedBox(
+      // TODO: Enable google map api to use these code
+      // SizedBox(
+      //   height: 10,
+      // ),
+      // _locationContainer,
+      Divider(
         height: 10,
       ),
-      _locationContainer,
+      ImageInput(),
       SizedBox(
-        height: 10,
+        height: 20,
       ),
       _buildButtonBar(),
     ];
