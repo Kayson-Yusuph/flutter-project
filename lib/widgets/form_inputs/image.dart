@@ -18,11 +18,9 @@ class _ImageInputState extends State<ImageInput> {
         context: context,
         builder: (BuildContext context) {
           return Container(
-            margin: EdgeInsets.symmetric(horizontal: 20),
-            height: 100,
+            height: 150,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 GestureDetector(
                   onTap: () {
@@ -31,7 +29,7 @@ class _ImageInputState extends State<ImageInput> {
                   child: Column(
                     children: [
                       Icon(Icons.camera_alt),
-                      Text('Take picture'),
+                      Text('Use camera'),
                     ],
                   ),
                 ),
@@ -40,10 +38,7 @@ class _ImageInputState extends State<ImageInput> {
                     _getImage(false);
                   },
                   child: Column(
-                    children: [
-                      Icon(Icons.photo_album),
-                      Text('pick from gallery')
-                    ],
+                    children: [Icon(Icons.photo_album), Text('Use gallery')],
                   ),
                 ),
               ],
