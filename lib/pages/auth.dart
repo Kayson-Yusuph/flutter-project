@@ -12,11 +12,11 @@ class AuthPage extends StatefulWidget {
 }
 
 class _AuthPageState extends State<AuthPage> {
-  String _emailValue;
   bool _showPassword = false;
   AuthMode _authMode = AuthMode.Login;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
 
   DecorationImage _buildBackgroundImage() {
     return DecorationImage(
@@ -29,6 +29,7 @@ class _AuthPageState extends State<AuthPage> {
 
   TextFormField _buildEmailTextField() {
     return TextFormField(
+      controller: _emailController,
       cursorColor: Colors.black,
       style: TextStyle(color: Colors.black),
       keyboardType: TextInputType.emailAddress,
@@ -52,9 +53,6 @@ class _AuthPageState extends State<AuthPage> {
           return 'Enter Valid Email';
         else
           return null;
-      },
-      onSaved: (String value) {
-        _emailValue = value;
       },
     );
   }
@@ -213,7 +211,7 @@ class _AuthPageState extends State<AuthPage> {
     }
     _formKey.currentState.save();
     final Map<String, dynamic> _response =
-        await authenticate(_emailValue, _passwordController.text, _authMode);
+        await authenticate(_emailController.text, _passwordController.text, _authMode);
     if (!_response['success']) {
       _showDialog(context, _response['message']);
     }
@@ -327,7 +325,6 @@ class _AuthPageState extends State<AuthPage> {
         child: RaisedButton(
           color: Colors.white,
           onPressed: () {
-            print('Closing Dialog now');
             Navigator.of(context).pop();
           },
           child: Text(
@@ -341,8 +338,9 @@ class _AuthPageState extends State<AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    _emailController.text = 'kytn@gmail.com';
+    _passwordController.text = '12345678';
     final double targetWidth = _deriveDeviceWidth(context);
-    // final _pageTitle = _authMode == AuthMode.Signup ? 'Sign-up' : 'Login';
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
         return model.loginUser == null
