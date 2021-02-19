@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ImageInput extends StatefulWidget {
+  final Function onPick;
+  final String imageUrl;
+
+  ImageInput({@required this.imageUrl, @required this.onPick});
   @override
   State<StatefulWidget> createState() => _ImageInputState();
 }
@@ -54,10 +58,11 @@ class _ImageInputState extends State<ImageInput> {
     setState(() {
       if (filePicked != null) {
         final String path = filePicked.path;
-        print({path: path});
+        widget.onPick(filePicked);
         _image = File(path);
       } else {
-        print('No image picked');
+        Scaffold.of(context)
+            .showSnackBar(SnackBar(content: Text('No file was selected')));
       }
     });
   }
@@ -88,7 +93,12 @@ class _ImageInputState extends State<ImageInput> {
           ),
         ),
         _image == null
-            ? SizedBox()
+            ? widget.imageUrl == null
+                ? SizedBox()
+                : Container(
+                    height: 250,
+                    child: Image.network(widget.imageUrl),
+                  )
             : Container(
                 height: 250,
                 child: Image.file(_image),

@@ -167,15 +167,15 @@ class ProductsModel extends ConnectedProductsModel {
 
   Future<bool> addProduct(
     String title,
-    double price,
+    String price,
     String description,
+    String imageUrl,
   ) async {
     final Map<String, dynamic> productData = {
       'title': title,
       'price': price,
       'description': description,
-      'imageUrl':
-          'https://vaya.in/recipes/wp-content/uploads/2018/02/Milk-Chocolate-1.jpg',
+      'imageUrl': imageUrl,
       'userEmail': _user.email,
       'userId': _user.id,
     };
@@ -213,12 +213,13 @@ class ProductsModel extends ConnectedProductsModel {
     }
   }
 
-  Future<bool> fetchProducts({onlyForUser: false}) {
+  Future<bool> fetchProducts({onlyForUser: false}) async{
     _isLoading = true;
+    try{
     notifyListeners();
-    return http
-        .get('$_dbUrl.json?auth=${_user.token}')
-        .then((http.Response response) {
+    http.Response response = await  http
+        .get('$_dbUrl.json?auth=${_user.token}');
+        // .then((http.Response response) {
       if (response.statusCode != 200 && response.statusCode != 201) {
         _isLoading = false;
         notifyListeners();
@@ -231,11 +232,12 @@ class ProductsModel extends ConnectedProductsModel {
         notifyListeners();
         return true;
       }
+      print('Length: ${_productData.length}');
       _productData.forEach((String productId, dynamic product) {
         final Product _product = Product(
           id: productId,
           title: product['title'],
-          price: product['price'],
+          price: product['price'].toString(),
           description: product['description'],
           image: product['imageUrl'],
           favorite: product['wishLessUsers'] == null
@@ -248,15 +250,21 @@ class ProductsModel extends ConnectedProductsModel {
 
         _fetchedProductList.add(_product);
       });
+      print('Fetched: ${_fetchedProductList.length}');
       _products = onlyForUser? _fetchedProductList.where((Product p) => p.userId == _user.id).toList(): _fetchedProductList;
       _isLoading = false;
       notifyListeners();
       return true;
-    }).catchError((error) {
+    } catch (error) {
       _isLoading = false;
       notifyListeners();
       return false;
-    });
+    }
+    // }).catchError((error) {
+    //   _isLoading = false;
+    //   notifyListeners();
+    //   return false;
+    // });
   }
 
   Future<bool> deleteProduct() {
@@ -290,8 +298,9 @@ class ProductsModel extends ConnectedProductsModel {
 
   Future<bool> updateProduct(
     String title,
-    double price,
+    String price,
     String description,
+    String imageUrl,
   ) {
     // update product
     final Map<String, dynamic> productData = {
@@ -299,7 +308,7 @@ class ProductsModel extends ConnectedProductsModel {
       'title': title,
       'price': price,
       'description': description,
-      'imageUrl': selectedProduct.image,
+      'imageUrl': imageUrl,
       'userEmail': selectedProduct.userEmail,
       'userId': selectedProduct.userId,
     };

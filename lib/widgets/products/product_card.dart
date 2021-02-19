@@ -89,8 +89,8 @@ class _ProductCardState extends State<ProductCard> {
           child: Column(
             children: <Widget>[
               FadeInImage(
-                image: NetworkImage(product.image),
-                placeholder: AssetImage('assets/image-not-found.jpg'),
+                image: product.imageExist? NetworkImage(product.image): AssetImage('assets/image-not-found.jpg'),
+                placeholder: AssetImage('assets/image-loading.png'),
               ),
               SizedBox(
                 height: 10,

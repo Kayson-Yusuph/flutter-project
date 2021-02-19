@@ -81,7 +81,6 @@ class _ProductListState extends State<ProductListPage> {
               _showErrorDialog(context);
             }
             setProductId(null);
-
           });
         } else {
           print('Other swipe directions!');
@@ -94,9 +93,13 @@ class _ProductListState extends State<ProductListPage> {
         children: [
           ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(
-                product.image,
-              ),
+              backgroundImage: product.imageExist
+                  ? NetworkImage(
+                      product.image,
+                    )
+                  : AssetImage(
+                      'assets/image-not-found.jpg',
+                    ),
             ),
             title: Text(
               product.title,

@@ -1,7 +1,12 @@
+import 'dart:io' as io;
+
+import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_project/widgets/form_inputs/image.dart';
 import 'package:flutter_project/widgets/form_inputs/static_map.dart';
 import 'package:flutter_project/widgets/shared/app-loader.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:location/location.dart';
 
 import 'package:scoped_model/scoped_model.dart';
@@ -16,14 +21,21 @@ class ProductEditPage extends StatefulWidget {
 }
 
 class _ProductEditPage extends State<ProductEditPage> {
-  final Map<String, dynamic> _formData = {
-    'title': null,
-    'price': null,
-    'description': null,
-    'favorite': false
-  };
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _priceController = TextEditingController();
+  final TextEditingController _descriptionController = TextEditingController();
+  
+
+  // final Map<String, dynamic> _formData = {
+  //   'title': null,
+  //   'price': null,
+  //   'description': null,
+  //   'favorite': false
+  // };
   Product _product;
   bool _savingData = false;
+  PickedFile file;
+  String _imageUrl;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _titleFocusNode = FocusNode();
@@ -36,7 +48,7 @@ class _ProductEditPage extends State<ProductEditPage> {
       child: Container(
         child: TextFormField(
           enabled: !_savingData,
-          initialValue: _product == null ? '' : _product.title,
+          controller: _titleController,
           focusNode: _titleFocusNode,
           decoration: InputDecoration(
             labelText: 'Title',
@@ -50,9 +62,6 @@ class _ProductEditPage extends State<ProductEditPage> {
             }
             return rtn;
           },
-          onSaved: (String value) {
-            _formData['title'] = value;
-          },
         ),
       ),
     );
@@ -63,7 +72,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         focusNode: _descriptionFocusNode,
         child: TextFormField(
           enabled: !_savingData,
-          initialValue: _product == null ? '' : _product.description,
+          controller: _descriptionController,
           focusNode: _descriptionFocusNode,
           decoration: InputDecoration(
             labelText: 'Description',
@@ -77,9 +86,6 @@ class _ProductEditPage extends State<ProductEditPage> {
             return rtn;
           },
           maxLines: 5,
-          onSaved: (String value) {
-            _formData['description'] = value;
-          },
         ));
   }
 
@@ -88,7 +94,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         focusNode: _priceFocusNode,
         child: TextFormField(
           enabled: !_savingData,
-          initialValue: _product == null ? '' : _product.price.toString(),
+          controller: _priceController,
           focusNode: _priceFocusNode,
           decoration:
               InputDecoration(labelText: 'Price', border: OutlineInputBorder()),
@@ -100,10 +106,38 @@ class _ProductEditPage extends State<ProductEditPage> {
             }
             return rtn;
           },
-          onSaved: (String value) {
-            _formData['price'] = double.parse(value);
-          },
         ));
+  }
+
+  void setImagePickedFile(PickedFile pFile) {
+    setState(() {
+      file = pFile;
+    });
+  }
+
+  Future<firebase_storage.UploadTask> _uploadFile() async {
+
+    firebase_storage.UploadTask uploadTask;
+    String name = '${_titleController.text}_';
+    final DateTime now = DateTime.now();
+    name = '$name${now.toIso8601String()}';
+
+    firebase_storage.Reference ref = firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child('products')
+        .child('/$name.png');
+    final metaData = firebase_storage.SettableMetadata(
+      contentType: 'image/jpeg',
+      customMetadata: {'picked-file-path': file.path},
+    );
+
+    if (kIsWeb) {
+      uploadTask = ref.putData(await file.readAsBytes(), metaData);
+    } else {
+      uploadTask = ref.putFile(io.File(file.path), metaData);
+    }
+
+    return Future.value(uploadTask);
   }
 
   Widget _buildButtonBar() {
@@ -147,39 +181,55 @@ class _ProductEditPage extends State<ProductEditPage> {
   }
 
   void onSave(BuildContext context, Function addProduct, Function updateProduct,
-      Function setProductId) {
-    setState(() => _savingData = true);
+      Function setProductId) async {
     if (!_formKey.currentState.validate()) {
-      setState(() => _savingData = false);
       return;
     }
-    _formKey.currentState.save();
-    if (_product == null) {
-      addProduct(
-        _formData['title'],
-        _formData['price'],
-        _formData['description'],
-      ).then((bool success) {
-        if (success) {
-          Navigator.pushReplacementNamed(context, '/');
-          setProductId(null);
-        } else {
-          _showErrorDialog(context);
-        }
-      });
-    } else {
-      updateProduct(
-        _formData['title'],
-        _formData['price'],
-        _formData['description'],
-      ).then((bool success) {
-        if (success) {
-          Navigator.pushReplacementNamed(context, '/');
-          setProductId(null);
-        } else {
-          _showErrorDialog(context);
-        }
-      });
+    setState(() => _savingData = true);
+    try {
+      if (file != null) {
+        final firebase_storage.UploadTask _taskDone = await _uploadFile();
+        print('Done uploading');
+        final String downloadUrl =
+            await _taskDone.snapshot.ref.getDownloadURL();
+            print('Url download got');
+            
+        _imageUrl = downloadUrl;
+      }
+      _formKey.currentState.save();
+      if (_product == null) {
+        addProduct(
+          _titleController.text,
+          _priceController.text,
+          _descriptionController.text,
+          _imageUrl,
+        ).then((bool success) {
+          if (success) {
+            Navigator.pushReplacementNamed(context, '/');
+            setProductId(null);
+          } else {
+            _showErrorDialog(context);
+          }
+        });
+      } else {
+        updateProduct(
+          _titleController.text,
+          _priceController.text,
+          _descriptionController.text,
+          _imageUrl,
+        ).then((bool success) {
+          if (success) {
+            Navigator.pushReplacementNamed(context, '/');
+            setProductId(null);
+          } else {
+            _showErrorDialog(context);
+          }
+        });
+      }
+    } catch (e) {
+      print('Error: $e');
+      // _showErrorDialog(context);
+      setState(() => _savingData = false);
     }
   }
 
@@ -251,7 +301,7 @@ class _ProductEditPage extends State<ProductEditPage> {
       Divider(
         height: 10,
       ),
-      ImageInput(),
+      ImageInput(imageUrl: _imageUrl, onPick: setImagePickedFile),
       SizedBox(
         height: 20,
       ),
@@ -288,7 +338,7 @@ class _ProductEditPage extends State<ProductEditPage> {
         SizedBox(
           height: 10,
         ),
-        ImageInput(),
+        ImageInput(imageUrl: _imageUrl, onPick: setImagePickedFile),
         SizedBox(
           height: 10,
         ),
@@ -322,6 +372,12 @@ class _ProductEditPage extends State<ProductEditPage> {
     return ScopedModelDescendant(
       builder: (BuildContext context, Widget child, MainModel model) {
         _product = model.selectedProduct;
+        if (_product != null) {
+          _imageUrl = _product.imageExist? _product.image: null;
+          _titleController.text = _product.title;
+          _priceController.text = _product.price.toString();
+          _descriptionController.text = _product.description;
+        }
         final deviceWidth = MediaQuery.of(context).size.width;
         bool alignVertical = true;
         if (deviceWidth > 420) {

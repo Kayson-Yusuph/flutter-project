@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Product {
   final String id;
   final String title;
-  final double price;
+  final String price;
   final String description;
   final String image;
   final String userEmail;
@@ -20,4 +20,6 @@ class Product {
     @required this.userId,
     this.favorite = false,
   });
+
+  bool get imageExist => this.image != null && this.image != '';
 }
