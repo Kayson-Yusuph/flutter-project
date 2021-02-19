@@ -24,7 +24,7 @@ class _ImageInputState extends State<ImageInput> {
               children: [
                 GestureDetector(
                   onTap: () {
-                    _getImage(true);
+                    _getImage(context, ImageSource.camera);
                   },
                   child: Column(
                     children: [
@@ -35,7 +35,7 @@ class _ImageInputState extends State<ImageInput> {
                 ),
                 GestureDetector(
                   onTap: () {
-                    _getImage(false);
+                    _getImage(context, ImageSource.gallery);
                   },
                   child: Column(
                     children: [Icon(Icons.photo_album), Text('Use gallery')],
@@ -47,17 +47,15 @@ class _ImageInputState extends State<ImageInput> {
         });
   }
 
-  Future _getImage(bool usingCamera) async {
-    PickedFile filePicked;
-    if (usingCamera) {
-      filePicked = await picker.getImage(source: ImageSource.camera);
-    } else {
-      filePicked = await picker.getImage(source: ImageSource.gallery);
-    }
+  Future _getImage(BuildContext sheetContext, ImageSource source) async {
+    Navigator.of(sheetContext).pop();
+    final PickedFile filePicked = await picker.getImage(source: source);
 
     setState(() {
       if (filePicked != null) {
-        _image = File(filePicked.path);
+        final String path = filePicked.path;
+        print({path: path});
+        _image = File(path);
       } else {
         print('No image picked');
       }
@@ -92,7 +90,7 @@ class _ImageInputState extends State<ImageInput> {
         _image == null
             ? SizedBox()
             : Container(
-                height: 300,
+                height: 250,
                 child: Image.file(_image),
               )
       ],

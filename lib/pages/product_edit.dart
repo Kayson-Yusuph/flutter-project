@@ -285,7 +285,15 @@ class _ProductEditPage extends State<ProductEditPage> {
         Container(
           child: _buildDescriptionTextField(),
         ),
-        _locationContainer,
+        SizedBox(
+          height: 10,
+        ),
+        ImageInput(),
+        SizedBox(
+          height: 10,
+        ),
+        // TODO: Enable google map api to use these code
+        // _locationContainer,
         _buildButtonBar(),
       ];
     }
