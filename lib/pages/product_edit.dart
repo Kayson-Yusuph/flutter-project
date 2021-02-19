@@ -228,7 +228,7 @@ class _ProductEditPage extends State<ProductEditPage> {
       }
     } catch (e) {
       print('Error: $e');
-      // _showErrorDialog(context);
+      _showErrorDialog(context);
       setState(() => _savingData = false);
     }
   }
